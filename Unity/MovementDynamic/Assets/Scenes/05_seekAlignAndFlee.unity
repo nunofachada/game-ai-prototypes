@@ -389,12 +389,12 @@ Prefab:
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 2}
       propertyPath: maxAngularAccel
-      value: 20
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 2}
       propertyPath: maxRotation
-      value: 40
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b07f44db1aa7651428552241d8310441, type: 2}
@@ -593,9 +593,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weight: 1
-  targetRadius: 0.1
-  slowdownRadius: 20
-  timeToTarget: 1
+  targetAngleRadius: 1
+  slowdownAngleRadius: 10
+  timeToTarget: 0.1
 --- !u!1 &1581820015
 GameObject:
   m_ObjectHideFlags: 0

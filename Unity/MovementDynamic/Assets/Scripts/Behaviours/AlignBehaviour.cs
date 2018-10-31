@@ -3,12 +3,12 @@
 public class AlignBehaviour : SteeringBehaviour
 {
 
-    // Target radius
-    public float targetRadius = 0.1f;
-    // Slowdown radius
-    public float slowdownRadius = 20f;
+    // Target angle radius in degrees
+    public float targetAngleRadius = 1f;
+    // Slowdown angle radius in degrees
+    public float slowdownAngleRadius = 10f;
     // Time to target
-    public float timeToTarget = 1f;
+    public float timeToTarget = 0.1f;
 
     // Align behaviour
     public override SteeringOutput GetSteering(GameObject target)
@@ -20,51 +20,58 @@ public class AlignBehaviour : SteeringBehaviour
         // Do I have a target?
         if (target != null)
         {
-            // Desired rotation
-            float orientation, orientationAbs, desiredRotation, angularAccel;
+            // Orientation differences (actual and absolute values)
+            float orientation, orientationAbs;
+            
+            // Desired angular velocity and absolute angular force to apply
+            float desiredAngularVelocity, angularAbs;
 
-            // Get the naive rotation to the target
+            // Get the orientation difference to the target
             orientation =
                 target.transform.eulerAngles.z - agent.transform.eulerAngles.z;
 
-            // Map the angle to the (-180, 180) interval
+            // Map the orientation difference to the (-180, 180) interval
             while (orientation > 180) orientation -= 360;
             while (orientation < -180) orientation += 360;
 
-            // Get the absolute angle
+            // Get the absolute orientation difference
             orientationAbs = Mathf.Abs(orientation);
 
-            // Are we at the target radius yet?
-            if (orientationAbs < targetRadius)
+            // Are we within the target angle radius yet?
+            if (orientationAbs < targetAngleRadius)
             {
                 // Return no steering whatsoever
                 return new SteeringOutput(Vector2.zero, 0f);
              }
-            // Are we within the slowdown radius?
-            else if (orientation < slowdownRadius)
+            // Are we within the slowdown angle radius?
+            else if (orientationAbs < slowdownAngleRadius)
             {
-                // Adjust desired rotation depending current orientation
-                desiredRotation =
-                    agent.maxRotation * orientationAbs / slowdownRadius;
+                // Adjust desired angular velocity depending current
+                // orientation
+                desiredAngularVelocity =
+                    agent.maxRotation * orientationAbs / slowdownAngleRadius;
             }
             else
             {
                 // If we're outside the slowdown radius, go for max rotation
-                desiredRotation = agent.maxRotation;
+                desiredAngularVelocity = agent.maxRotation;
             }
 
-            // The final desired rotation combines rotation and orientation
-            desiredRotation *= orientation / orientationAbs;
+            // Set the correct sign in the desired angular velocity
+            desiredAngularVelocity *= orientation / orientationAbs;
 
-            // Acceleration tries to get to the target rotation
-            angular = desiredRotation - agent.Rb.angularVelocity;
-            angular /= timeToTarget;
+            // Determine the angular force (difference in desired angular
+            // velocity and current angular velocity, divided by the time
+            // to target)
+            angular = (desiredAngularVelocity - agent.Rb.angularVelocity)
+                / timeToTarget;
 
-            // Check if acceleration is too great
-            angularAccel = Mathf.Abs(angular);
-            if (angularAccel > agent.maxAngularAccel)
+            // Check if angular force/acceleration is too great
+            angularAbs = Mathf.Abs(angular);
+            if (angularAbs > agent.maxAngularAccel)
             {
-                angular /= angularAccel;
+                // If so set it to the maximum allowed value
+                angular /= angularAbs;
                 angular *= agent.maxAngularAccel;
             }
         }
