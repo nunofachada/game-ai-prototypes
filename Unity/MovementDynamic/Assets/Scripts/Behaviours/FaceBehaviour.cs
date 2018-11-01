@@ -21,8 +21,7 @@ public class FaceBehaviour : AlignBehaviour
             {
                 // Determine the orientation for our temporary target, which
                 // should be as if it was looking away from me
-                float angle = Mathf.Atan2(direction.y, direction.x)
-                    * Mathf.Rad2Deg;
+                float angle = Vec2Deg(direction);
 
                 // Create our temporary target
                 GameObject tempTarget = CreateTarget(Vector3.zero, angle);

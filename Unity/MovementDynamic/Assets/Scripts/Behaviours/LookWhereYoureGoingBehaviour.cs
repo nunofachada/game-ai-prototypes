@@ -14,8 +14,7 @@ public class LookWhereYoureGoingBehaviour : AlignBehaviour
         {
             // Determine the orientation of our temporary target, which should
             // be in the direction we're going
-            float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x)
-                * Mathf.Rad2Deg;
+            float angle = Vec2Deg(rb.velocity);
 
             // Create our temporary target
             GameObject tempTarget = CreateTarget(Vector3.zero, angle);

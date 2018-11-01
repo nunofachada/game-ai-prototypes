@@ -24,6 +24,11 @@ public abstract class SteeringBehaviour : MonoBehaviour, ISteeringBehaviour {
         return new Vector2(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
     }
 
+    public static float Vec2Deg(Vector2 vector)
+    {
+        return Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg;
+    }
+
     public static GameObject CreateTarget(Vector3 position, float orientation)
     {
         GameObject target = new GameObject();
