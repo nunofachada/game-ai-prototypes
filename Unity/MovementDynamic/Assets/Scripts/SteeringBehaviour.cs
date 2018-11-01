@@ -17,4 +17,17 @@ public abstract class SteeringBehaviour : MonoBehaviour, ISteeringBehaviour {
     }
 
     public abstract SteeringOutput GetSteering(GameObject target);
+
+    public static Vector2 Deg2Vec(float angle)
+    {
+        return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+    }
+
+    public static GameObject CreateTarget(Vector3 position, float orientation)
+    {
+        GameObject target = new GameObject();
+        target.transform.position = position;
+        target.transform.Rotate(new Vector3(0, 0, orientation), Space.World);
+        return target;
+    }
 }
