@@ -309,7 +309,7 @@ MonoBehaviour:
   timeToTarget: 0.1
   wanderOffset: 10
   wanderRadius: 10
-  wanderRate: 0.2
+  wanderRate: 0.25
 --- !u!4 &1326750659 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441,
@@ -404,7 +404,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1506471656861450, guid: b07f44db1aa7651428552241d8310441, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b07f44db1aa7651428552241d8310441, type: 2}
