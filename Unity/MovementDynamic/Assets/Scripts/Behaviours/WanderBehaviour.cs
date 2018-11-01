@@ -54,10 +54,6 @@ public class WanderBehaviour : FaceBehaviour
             agent.maxAccel * Deg2Vec(agent.transform.eulerAngles.z),
             sout.Angular);
 
-        if (agent.tag == "Target")
-            Debug.Log($"Target angle {targetOrientation} | Agent angle {agent.transform.eulerAngles.z} | Diff {Mathf.DeltaAngle(targetOrientation, agent.transform.eulerAngles.z)}");
-
-
         // Return steering behaviour
         return sout;
     }

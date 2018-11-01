@@ -20,7 +20,8 @@ public abstract class SteeringBehaviour : MonoBehaviour, ISteeringBehaviour {
 
     public static Vector2 Deg2Vec(float angle)
     {
-        return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+        float angleRad = angle * Mathf.Deg2Rad;
+        return new Vector2(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
     }
 
     public static GameObject CreateTarget(Vector3 position, float orientation)
