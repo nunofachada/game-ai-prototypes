@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Author: Nuno Fachada 
+ * Author: Nuno Fachada
  * */
 using UnityEngine;
 
@@ -13,7 +13,7 @@ public class PathFollowingBehaviour : SeekBehaviour
     public float pathOffset = 5f;
 
     // The path object we'll use
-    private AbstractPath path = null;
+    private IPath path = null;
 
     // Current distance along path
     private float currentParam = 0;
@@ -22,10 +22,10 @@ public class PathFollowingBehaviour : SeekBehaviour
     protected override void Start()
     {
         base.Start();
-        path = GetComponent<AbstractPath>();
+        path = GetComponent<IPath>();
     }
 
-    // Path following behaviour
+    // Path following behaviour (non-predictive)
     public override SteeringOutput GetSteering(GameObject target)
     {
         // Initialize linear and angular forces to zero
@@ -34,8 +34,6 @@ public class PathFollowingBehaviour : SeekBehaviour
         // Do we have a path object to follow?
         if (path != null)
         {
-            // Target parameter (distance along path)
-            float targetParam;
             // Target position in path
             Vector2 targetPosition;
 
@@ -43,9 +41,9 @@ public class PathFollowingBehaviour : SeekBehaviour
             currentParam =
                 path.GetParam(agent.transform.position, currentParam);
 
-            // Determine target parameter (distance along path) and position
-            targetParam = currentParam + pathOffset;
-            targetPosition = path.GetPosition(targetParam);
+            // Update parameter (distance along path) and position
+            currentParam += pathOffset;
+            targetPosition = path.GetPosition(currentParam);
 
             // Create temporary target with determined position
             target = CreateTarget(targetPosition, 0f);
