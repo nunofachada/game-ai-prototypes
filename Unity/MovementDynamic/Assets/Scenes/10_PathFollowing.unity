@@ -288,7 +288,7 @@ Prefab:
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 2}
       propertyPath: maxSpeed
-      value: 20
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 2}
@@ -299,6 +299,11 @@ Prefab:
         type: 2}
       propertyPath: maxRotation
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 2}
+      propertyPath: maxAccel
+      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b07f44db1aa7651428552241d8310441, type: 2}
@@ -325,7 +330,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weight: 1
-  pathOffset: 1e-12
+  pathOffset: 2
 --- !u!114 &1317053626
 MonoBehaviour:
   m_ObjectHideFlags: 0
