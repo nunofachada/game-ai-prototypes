@@ -309,7 +309,7 @@ MonoBehaviour:
   timeToTarget: 0.1
   wanderOffset: 10
   wanderRadius: 10
-  wanderRate: 0.25
+  wanderRate: 0.75
 --- !u!4 &1326750659 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441,
