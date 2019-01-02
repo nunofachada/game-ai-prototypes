@@ -320,21 +320,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 1
   radius: 2
---- !u!114 &311342429
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 311342427}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1f577f635da84797b19e2f28643120c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 1
-  targetAngleRadius: 1
-  slowdownAngleRadius: 10
-  timeToTarget: 0.1
 --- !u!114 &311342430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -427,21 +412,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 1
   radius: 2
---- !u!114 &342636326
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 342636324}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1f577f635da84797b19e2f28643120c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 1
-  targetAngleRadius: 1
-  slowdownAngleRadius: 10
-  timeToTarget: 0.1
 --- !u!114 &342636327
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -534,21 +504,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 1
   radius: 2
---- !u!114 &427568774
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 427568772}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1f577f635da84797b19e2f28643120c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 1
-  targetAngleRadius: 1
-  slowdownAngleRadius: 10
-  timeToTarget: 0.1
 --- !u!114 &427568775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -641,21 +596,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 1
   radius: 2
---- !u!114 &526286682
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 526286680}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1f577f635da84797b19e2f28643120c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 1
-  targetAngleRadius: 1
-  slowdownAngleRadius: 10
-  timeToTarget: 0.1
 --- !u!114 &526286683
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -748,21 +688,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 1
   radius: 2
---- !u!114 &633826243
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 633826241}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1f577f635da84797b19e2f28643120c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 1
-  targetAngleRadius: 1
-  slowdownAngleRadius: 10
-  timeToTarget: 0.1
 --- !u!114 &633826244
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -855,21 +780,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 1
   radius: 2
---- !u!114 &830567499
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 830567497}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1f577f635da84797b19e2f28643120c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 1
-  targetAngleRadius: 1
-  slowdownAngleRadius: 10
-  timeToTarget: 0.1
 --- !u!114 &830567500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -958,21 +868,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 1
   radius: 2
---- !u!114 &947219971
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 947219969}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1f577f635da84797b19e2f28643120c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 1
-  targetAngleRadius: 1
-  slowdownAngleRadius: 10
-  timeToTarget: 0.1
 --- !u!114 &947219972
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1065,21 +960,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 1
   radius: 2
---- !u!114 &1115962954
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1115962952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1f577f635da84797b19e2f28643120c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 1
-  targetAngleRadius: 1
-  slowdownAngleRadius: 10
-  timeToTarget: 0.1
 --- !u!114 &1115962955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1358,21 +1238,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 1
   radius: 2
---- !u!114 &1731087626
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1731087624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1f577f635da84797b19e2f28643120c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 1
-  targetAngleRadius: 1
-  slowdownAngleRadius: 10
-  timeToTarget: 0.1
 --- !u!114 &1731087627
 MonoBehaviour:
   m_ObjectHideFlags: 0
