@@ -54,13 +54,22 @@ public class DynamicAgent : MonoBehaviour
         // Obtain steering behaviours
         SteeringOutput steerWeighted = new SteeringOutput();
 
+        // Get a weighted steering behaviour from the existing behaviours
         foreach (ISteeringBehaviour behaviour in steeringBehaviours)
         {
+            // Current steering behaviour
             SteeringOutput steer = behaviour.GetSteering(target);
+
+            // Include current behaviour in the overall weighted behaviour
             steerWeighted = new SteeringOutput(
                 steerWeighted.Linear + behaviour.Weight * steer.Linear,
                 steerWeighted.Angular + behaviour.Weight * steer.Angular);
         }
+
+        // Limit acceleration
+        steerWeighted = new SteeringOutput(
+            Vector2.ClampMagnitude(steerWeighted.Linear, maxAccel),
+            Mathf.Min(steerWeighted.Angular, maxAngularAccel));
 
         // Apply steering
         Rb.AddForce(steerWeighted.Linear);
