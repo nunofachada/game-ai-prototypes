@@ -27,7 +27,7 @@ public class CollisionAvoidanceBehaviour : SteeringBehaviour
         // First collision time
         float shortestTime = float.PositiveInfinity;
 
-        // Store the target that collidens and auxiliar data
+        // Store the target that collides and auxiliar data
         DynamicAgent firstTarget = null;
         float firstMinSep = 0, firstDistance = 0;
         Vector2 firstRelPos = Vector2.zero, firstRelVel = Vector2.zero;
@@ -43,7 +43,7 @@ public class CollisionAvoidanceBehaviour : SteeringBehaviour
             float timeToCollision =
                 Vector2.Dot(relPos, relVel) / (relSpeed * relSpeed);
 
-            // Check if it is goind to be a collision at all
+            // Check if it is going to be a collision at all
             float distance = relPos.magnitude;
             float minSep = distance - relSpeed * timeToCollision;
             if (minSep > 2 * radius) continue;
@@ -68,7 +68,7 @@ public class CollisionAvoidanceBehaviour : SteeringBehaviour
         {
             Vector2 relPos;
 
-            // If we're goind to hit exactly or if we're already colliding,
+            // If we're going to hit exactly or if we're already colliding,
             // then do the steering based on current position
             if (firstMinSep <= 0 || firstDistance < 2 * radius)
                 relPos = transform.position - firstTarget.transform.position;
