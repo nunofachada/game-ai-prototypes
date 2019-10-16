@@ -2,49 +2,33 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Author: Nuno Fachada 
+ * Author: Nuno Fachada
  * */
 
 using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-// Kinds of steering behaviour for kinematic agents
-public enum KinematicSteeringBehaviour
-{
-    Seek,
-    SeekWithArrive,
-    Flee,
-    Wander
-}
-
-// Kinds of wall bump behaviour for kinematic agents
-public enum KinematicWallBumpBehaviour
-{
-    RandomPosition,
-    AppearOnOtherSide
-}
-
 // This class defines movement for kinematic agents
 public class KinematicAgent : MonoBehaviour
 {
 
     // Maximum speed for this agent
-    public float maxSpeed;
+    [SerializeField] private float maxSpeed;
 
     // The tag for this agent's target
-    public string targetTag;
+    [SerializeField] private string targetTag;
 
     // Agent behaviours, selectable in Unity editor
-    public KinematicSteeringBehaviour steeringBehaviour;
-    public KinematicWallBumpBehaviour wallBumpBehaviour;
+    [SerializeField] private KinematicSteeringBehaviour steeringBehaviour;
+    [SerializeField] private KinematicWallBumpBehaviour wallBumpBehaviour;
 
     // These are only valid for SeekWithArrive behaviour
-    public float satisfactionRadius;
-    public float timeToTarget;
+    [SerializeField] private float satisfactionRadius;
+    [SerializeField] private float timeToTarget;
 
-    // Maximum angular velocity for wander behaviour 
-    public float maxAngularVelocity;
+    // Maximum angular velocity for wander behaviour
+    [SerializeField] private float maxAngularVelocity;
 
     // Actual functions defining agent behaviour
     private Func<GameObject, SteeringOutput> steer;
@@ -111,7 +95,7 @@ public class KinematicAgent : MonoBehaviour
         rb.angularVelocity = steering.Angular;
     }
 
-    // This function is called by the steering behaviours in order to detemrine
+    // This function is called by the steering behaviours in order to determine
     // a new orientation based on the current orientation and velocity
     private float GetNewOrientation(float orientation, Vector2 velocity)
     {
@@ -129,7 +113,7 @@ public class KinematicAgent : MonoBehaviour
         }
     }
 
-    // If we bump into wall, I reappear in a random location
+    // If we bump into wall, we call the bump delegate to decide what to do
     private void OnTriggerEnter2D(Collider2D other)
     {
         bump(other);
@@ -175,7 +159,7 @@ public class KinematicAgent : MonoBehaviour
         if (target != null)
         {
             // Get the direction to the target
-            linear = target.transform.position - rb.transform.position;
+            linear = target.transform.position - transform.position;
 
             // The velocity is along this direction, at full speed
             linear = linear.normalized * maxSpeed;
@@ -185,7 +169,7 @@ public class KinematicAgent : MonoBehaviour
 
             // Angular velocity not used here, we already changed orientation
             // in the code above
-            angular = 0;
+            angular = 0f;
         }
 
         // Output the steering
@@ -209,7 +193,7 @@ public class KinematicAgent : MonoBehaviour
 
         // Angular velocity not used here, we already changed orientation
         // in the code above
-        angular = 0;
+        angular = 0f;
 
         // Output the steering
         return new SteeringOutput(linear, angular);
@@ -227,7 +211,7 @@ public class KinematicAgent : MonoBehaviour
         {
 
             // Get the direction to the target
-            linear = target.transform.position - rb.transform.position;
+            linear = target.transform.position - transform.position;
 
             // Check if we're within radius
             if (linear.magnitude < satisfactionRadius)
