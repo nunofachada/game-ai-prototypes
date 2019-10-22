@@ -11,10 +11,9 @@ using System.Collections.Generic;
 public abstract class AbstractPath : MonoBehaviour, IPath
 {
 
-    private AbstractPathGenerator pathGenerator;
+    [SerializeField] private bool isClosedPath = true;
 
-    [SerializeField]
-    private bool isClosedPath = true;
+    private AbstractPathGenerator pathGenerator;
 
     public bool IsClosedPath => isClosedPath;
 

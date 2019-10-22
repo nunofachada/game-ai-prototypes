@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Author: Nuno Fachada 
+ * Author: Nuno Fachada
  * */
 
 using UnityEngine;
@@ -12,32 +12,53 @@ public class DynamicAgent : MonoBehaviour
 {
 
     // Maximum acceleration for this agent
-    public float maxAccel;
+    [SerializeField] private float maxAccel = 1f;
 
     // Maximum speed for this agent
-    public float maxSpeed;
+    [SerializeField] private float maxSpeed  = 1f;
 
     // Maximum angular acceleration for this agent
-    public float maxAngularAccel;
+    [SerializeField] private float maxAngularAccel = 1f;
 
     // Maximum rotation (angular velocity) for this agent
-    public float maxRotation;
+    [SerializeField] private float maxRotation = 1f;
 
     // The tag for this agent's target
-    public string targetTag;
+    [SerializeField] private string targetTag = "";
 
     // Agent steering behaviours
-    private ISteeringBehaviour[] steeringBehaviours;
+    private ISteeringBehaviour[] steeringBehaviours = default;
 
     // The agent's rigid body
-    public Rigidbody2D Rb { get; private set; }
+    private Rigidbody2D rb;
+
+    // Maximum acceleration for this agent
+    public float MaxAccel => maxAccel;
+
+   // Maximum speed for this agent
+    public float MaxSpeed  => maxSpeed;
+
+    // Maximum angular acceleration for this agent
+    public float MaxAngularAccel => maxAngularAccel;
+
+    // Maximum rotation (angular velocity) for this agent
+    public float MaxRotation  => maxRotation;
+
+    // The tag for this agent's target
+    public string TargetTag => targetTag;
+
+    // Current angular velocity of this agent
+    public float AngularVelocity => rb.angularVelocity;
+
+    // Current velocity of this agent
+    public Vector2 Velocity => rb.velocity;
 
     // Use this for initialization
     private void Start()
     {
 
         // Keep reference to rigid body
-        Rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
 
         // Get steering behaviours defined for this agent
         steeringBehaviours = GetComponents<ISteeringBehaviour>();
@@ -72,19 +93,19 @@ public class DynamicAgent : MonoBehaviour
             Mathf.Min(steerWeighted.Angular, maxAngularAccel));
 
         // Apply steering
-        Rb.AddForce(steerWeighted.Linear);
-        Rb.AddTorque(steerWeighted.Angular);
+        rb.AddForce(steerWeighted.Linear);
+        rb.AddTorque(steerWeighted.Angular);
 
         // Limit speed
-        if (Rb.velocity.magnitude > maxSpeed)
+        if (rb.velocity.magnitude > maxSpeed)
         {
-            Rb.velocity = Rb.velocity.normalized * maxSpeed;
+            rb.velocity = rb.velocity.normalized * maxSpeed;
         }
 
         // Limit rotation (angular velocity)
-        if (Rb.angularVelocity > maxRotation)
+        if (rb.angularVelocity > maxRotation)
         {
-            Rb.angularVelocity = maxRotation;
+            rb.angularVelocity = maxRotation;
         }
     }
 }

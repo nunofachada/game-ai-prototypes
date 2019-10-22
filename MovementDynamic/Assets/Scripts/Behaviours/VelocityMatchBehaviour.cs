@@ -2,14 +2,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Author: Nuno Fachada 
+ * Author: Nuno Fachada
  * */
 using UnityEngine;
 
 public class VelocityMatchBehaviour : SteeringBehaviour
 {
 
-    public float timeToTarget = 0.1f;
+    [SerializeField] private float timeToTarget = 0.1f;
 
     // Velocity match behaviour
     public override SteeringOutput GetSteering(GameObject target)
@@ -25,16 +25,16 @@ public class VelocityMatchBehaviour : SteeringBehaviour
             Rigidbody2D targetRb = target.GetComponent<Rigidbody2D>();
 
             // Get the target's velocity (if its rigid body is not null)
-            Vector2 targetVelocity = 
+            Vector2 targetVelocity =
                 targetRb != null ? targetRb.velocity : Vector2.zero;
 
             // Acceleration tries to get to the target's velocity
-            linear = (targetVelocity - rb.velocity) / timeToTarget;
+            linear = (targetVelocity - Agent.Velocity) / timeToTarget;
 
             // Check if acceleration is too fast
-            if (linear.magnitude > agent.maxAccel)
+            if (linear.magnitude > Agent.MaxAccel)
             {
-                linear = linear.normalized * agent.maxAccel;
+                linear = linear.normalized * Agent.MaxAccel;
             }
         }
 

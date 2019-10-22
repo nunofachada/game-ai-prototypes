@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Author: Nuno Fachada 
+ * Author: Nuno Fachada
  * */
 
 using UnityEngine;
@@ -12,10 +12,10 @@ public class StaticTargetController : MonoBehaviour
 {
 
     // Holds an instance of a static target
-    public GameObject target;
+    [SerializeField] private GameObject target = default;
 
     // How long between target destruction and target spawn
-    public float delay;
+    [SerializeField] private float delay = 1f;
 
     // The game area
     private GameArea gameArea;
@@ -47,5 +47,4 @@ public class StaticTargetController : MonoBehaviour
         Vector2 pos = gameArea.RandomPosition(0.9f);
         Instantiate(target, pos, Quaternion.identity);
     }
-
 }

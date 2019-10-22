@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Author: Nuno Fachada 
+ * Author: Nuno Fachada
  * */
 using UnityEngine;
 
@@ -10,11 +10,11 @@ public class ArriveBehaviour : SteeringBehaviour
 {
 
     // Target radius
-    public float targetRadius = 0.1f;
+    [SerializeField] private float targetRadius = 0.1f;
     // Slowdown radius
-    public float slowdownRadius = 20f;
+    [SerializeField] private float slowdownRadius = 20f;
     // Time to target
-    public float timeToTarget = 1f;
+    [SerializeField] private float timeToTarget = 1f;
 
     // Arrive behaviour
     public override SteeringOutput GetSteering(GameObject target)
@@ -31,7 +31,7 @@ public class ArriveBehaviour : SteeringBehaviour
             Vector2 desiredVelocity;
 
             // Get the direction to the target
-            Vector2 dir = target.transform.position - rb.transform.position;
+            Vector2 dir = target.transform.position - Agent.transform.position;
 
             // Get distance to target
             float distance = dir.magnitude;
@@ -46,24 +46,24 @@ public class ArriveBehaviour : SteeringBehaviour
             else if (distance < slowdownRadius)
             {
                 // Adjust desired speed depending on distance to target
-                desiredSpeed = agent.maxSpeed * distance / slowdownRadius;
+                desiredSpeed = Agent.MaxSpeed * distance / slowdownRadius;
             }
             else
             {
                 // If we're outside the slowdown radius, go for max speed
-                desiredSpeed = agent.maxSpeed;
+                desiredSpeed = Agent.MaxSpeed;
             }
 
             // Desired velocity combines desired speed and direction to target
             desiredVelocity = dir.normalized * desiredSpeed;
 
             // Linear acceleration tries to get to the target velocity
-            linear = (desiredVelocity - rb.velocity) / timeToTarget;
+            linear = (desiredVelocity - Agent.Velocity) / timeToTarget;
 
             // Check if acceleration is too fast
-            if (linear.magnitude > agent.maxAccel)
+            if (linear.magnitude > Agent.MaxAccel)
             {
-                linear = linear.normalized * agent.maxAccel;
+                linear = linear.normalized * Agent.MaxAccel;
             }
         }
 

@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Author: Nuno Fachada 
+ * Author: Nuno Fachada
  * */
 using UnityEngine;
 
@@ -16,11 +16,11 @@ public class LookWhereYoureGoingBehaviour : AlignBehaviour
         SteeringOutput sout = new SteeringOutput(Vector2.zero, 0);
 
         // Am I moving?
-        if (rb.velocity.magnitude > 0)
+        if (Agent.Velocity.magnitude > 0)
         {
             // Determine the orientation of our temporary target, which should
             // be in the direction we're going
-            float angle = Vec2Deg(rb.velocity);
+            float angle = Vec2Deg(Agent.Velocity);
 
             // Create our temporary target
             GameObject tempTarget = CreateTarget(Vector3.zero, angle);

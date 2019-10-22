@@ -9,7 +9,7 @@ using UnityEngine;
 public class EvadeBehaviour : FleeBehaviour
 {
     // Maximum prediction time
-    public float maxPrediction = 4f;
+    [SerializeField] private float maxPrediction = 4f;
 
     // Evade behaviour
     // This is essentially the same code as Pursue, so we should abstract it
@@ -36,7 +36,7 @@ public class EvadeBehaviour : FleeBehaviour
             float distance = direction.magnitude;
 
             // Determine the agent's current speed
-            float speed = rb.velocity.magnitude;
+            float speed = Agent.Velocity.magnitude;
 
             // Check if speed is too small to give reasonable predicition time
             if (speed <= distance / maxPrediction) prediction = maxPrediction;

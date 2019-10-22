@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Author: Nuno Fachada 
+ * Author: Nuno Fachada
  * */
 using UnityEngine;
 
@@ -20,7 +20,7 @@ public class FaceBehaviour : AlignBehaviour
         {
             // Determine the direction to our target
             Vector2 direction =
-                target.transform.position - agent.transform.position;
+                target.transform.position - Agent.transform.position;
 
             // Continue only if there is a distance between us and the target
             if (direction.magnitude > 0)

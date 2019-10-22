@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Author: Nuno Fachada 
+ * Author: Nuno Fachada
  * */
  using UnityEngine;
 
@@ -20,10 +20,10 @@ public class SeekBehaviour : SteeringBehaviour
         if (target != null)
         {
             // Get the direction to the target
-            linear = target.transform.position - rb.transform.position;
+            linear = target.transform.position - Agent.transform.position;
 
             // Give full acceleration along this direction
-            linear = linear.normalized * agent.maxAccel;
+            linear = linear.normalized * Agent.MaxAccel;
 
             // Seek behaviour does not set torque
             angular = 0f;

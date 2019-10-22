@@ -10,7 +10,7 @@ public class PathFollowingBehaviour : SeekBehaviour
 {
     // Path offset: how far to look ahead for target from current position in
     // path
-    public float pathOffset = 5f;
+    [SerializeField] private float pathOffset = 5f;
 
     // The path object we'll use
     private IPath path = null;
@@ -39,7 +39,7 @@ public class PathFollowingBehaviour : SeekBehaviour
 
             // Get nearest point in path from current agent position
             currentParam =
-                path.GetParam(agent.transform.position, currentParam);
+                path.GetParam(Agent.transform.position, currentParam);
 
             // Update parameter (distance along path) and position
             currentParam += pathOffset;

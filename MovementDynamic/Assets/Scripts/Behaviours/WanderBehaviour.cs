@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Author: Nuno Fachada 
+ * Author: Nuno Fachada
  * */
 using UnityEngine;
 
@@ -10,13 +10,13 @@ public class WanderBehaviour : FaceBehaviour
 {
 
     // Wander forward offset
-    public float wanderOffset = 4f;
+    [SerializeField] private float wanderOffset = 4f;
 
     // Radius of the wander circle
-    public float wanderRadius = 1f;
+    [SerializeField] private float wanderRadius = 1f;
 
     // The maximum rate at which the wander orientation can change
-    public float wanderRate = 0.5f;
+    [SerializeField] private float wanderRate = 0.5f;
 
     // The current orientation of the wander target
     private float wanderOrientation = 0f;
@@ -36,11 +36,11 @@ public class WanderBehaviour : FaceBehaviour
             (Random.Range(0, 1f) - Random.Range(0, 1f)) * wanderRate;
 
         // Calculate the combined target orientation
-        targetOrientation = wanderOrientation + agent.transform.eulerAngles.z;
+        targetOrientation = wanderOrientation + Agent.transform.eulerAngles.z;
 
         // Calculate the center of the wander circle
-        targetPosition = ((Vector2)agent.transform.position)
-            + wanderOffset * Deg2Vec(agent.transform.eulerAngles.z);
+        targetPosition = ((Vector2)Agent.transform.position)
+            + wanderOffset * Deg2Vec(Agent.transform.eulerAngles.z);
 
         // Calculate the target location
         targetPosition += wanderRadius * Deg2Vec(targetOrientation);
@@ -57,7 +57,7 @@ public class WanderBehaviour : FaceBehaviour
         // Set the linear acceleration to maximum in the direction of the
         // agent's current orientation
         sout = new SteeringOutput(
-            agent.maxAccel * Deg2Vec(agent.transform.eulerAngles.z),
+            Agent.MaxAccel * Deg2Vec(Agent.transform.eulerAngles.z),
             sout.Angular);
 
         // Return steering behaviour

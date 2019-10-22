@@ -2,24 +2,23 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Author: Nuno Fachada 
+ * Author: Nuno Fachada
  * */
 using UnityEngine;
 
-public abstract class SteeringBehaviour : MonoBehaviour, ISteeringBehaviour {
+public abstract class SteeringBehaviour : MonoBehaviour, ISteeringBehaviour
+{
 
-    public float weight = 1;
+    [SerializeField] private float weight = 1f;
 
-    protected DynamicAgent agent;
-    protected Rigidbody2D rb;
+    protected DynamicAgent Agent { get; private set; }
 
-    public float Weight { get { return weight; } }
+    public float Weight => weight;
 
     // Use this for initialization
     protected virtual void Start()
     {
-        agent = GetComponent<DynamicAgent>();
-        rb = GetComponent<Rigidbody2D>();
+        Agent = GetComponent<DynamicAgent>();
     }
 
     public abstract SteeringOutput GetSteering(GameObject target);

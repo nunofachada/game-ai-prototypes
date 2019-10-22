@@ -10,7 +10,7 @@ using UnityEngine;
 public class UserDefinedPathGenerator : AbstractPathGenerator
 {
 	[SerializeField]
-	private Vector2[] pathPoints;
+	private Vector2[] pathPoints = default;
 
     public override IList<Vector2> GeneratePath() {
 		return pathPoints;

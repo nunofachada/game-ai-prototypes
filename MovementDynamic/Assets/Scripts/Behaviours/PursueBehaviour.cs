@@ -9,7 +9,7 @@ using UnityEngine;
 public class PursueBehaviour : SeekBehaviour
 {
     // Maximum prediction time
-    public float maxPrediction = 4f;
+    [SerializeField] private float maxPrediction = 4f;
 
     // Pursue behaviour
     public override SteeringOutput GetSteering(GameObject target)
@@ -34,7 +34,7 @@ public class PursueBehaviour : SeekBehaviour
             float distance = direction.magnitude;
 
             // Determine the agent's current speed
-            float speed = rb.velocity.magnitude;
+            float speed = Agent.Velocity.magnitude;
 
             // Check if speed is too small to give reasonable predicition time
             if (speed <= distance / maxPrediction) prediction = maxPrediction;

@@ -23,7 +23,7 @@ public class PlayerBehaviour : SteeringBehaviour
         linear = (new Vector2(x, y)).normalized;
 
         // Give full acceleration along this direction
-        linear = linear.normalized * agent.maxAccel;
+        linear = linear.normalized * Agent.MaxAccel;
 
         // Output the steering
         return new SteeringOutput(linear, 0);

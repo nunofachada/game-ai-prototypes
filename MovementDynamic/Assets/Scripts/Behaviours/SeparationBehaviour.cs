@@ -2,17 +2,17 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Author: Nuno Fachada 
+ * Author: Nuno Fachada
  * */
 using UnityEngine;
 
 public class SeparationBehaviour : SteeringBehaviour
 {
     // The threshold to take action
-    public float threshold = 5f;
+    [SerializeField] private float threshold = 5f;
 
     // The constant coefficient of decay for the inverse square law force
-    public float decayCoefficient = 8f;
+    [SerializeField] private float decayCoefficient = 8f;
 
     // Separation behaviour
     public override SteeringOutput GetSteering(GameObject target)
@@ -22,7 +22,7 @@ public class SeparationBehaviour : SteeringBehaviour
         float angular = 0f; // Not used
 
         // Find similar agents to me
-        GameObject[] neighbours = GameObject.FindGameObjectsWithTag(agent.tag);
+        GameObject[] neighbours = GameObject.FindGameObjectsWithTag(Agent.tag);
 
         // Loop through each target
         foreach (GameObject neighbour in neighbours)
@@ -44,7 +44,7 @@ public class SeparationBehaviour : SteeringBehaviour
                 // Determine strength of repulsion
                 float strenght = Mathf.Min(
                     decayCoefficient / (distance * distance),
-                    agent.maxAccel);
+                    Agent.MaxAccel);
 
                 // Add the acceleration
                 linear += strenght * direction.normalized;

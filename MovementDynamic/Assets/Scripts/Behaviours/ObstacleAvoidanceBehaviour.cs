@@ -10,10 +10,10 @@ public class ObstacleAvoidanceBehaviour : SeekBehaviour
 {
     // Minimum distance to a wall, should be greater than the radius of the
     // agent
-    public float avoidDist = 2f;
+    [SerializeField] private float avoidDist = 2f;
 
     // Lookahead distance for raycast
-    public float lookaheadDist = 4;
+    [SerializeField] private float lookaheadDist = 4;
 
     // Where the casted ray ends, for gizmo drawing purposes
     private Vector2 endRay;
@@ -35,7 +35,7 @@ public class ObstacleAvoidanceBehaviour : SeekBehaviour
         SteeringOutput sout = new SteeringOutput(Vector2.zero, 0);
 
         // Determine the collision ray direction
-        Vector2 rayDir = rb.velocity.normalized;
+        Vector2 rayDir = Agent.Velocity.normalized;
 
         // Find the collision
         RaycastHit2D hit = Physics2D.Raycast(

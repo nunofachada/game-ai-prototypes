@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Author: Nuno Fachada 
+ * Author: Nuno Fachada
  * */
 using UnityEngine;
 
@@ -10,7 +10,7 @@ public class CollisionAvoidanceBehaviour : SteeringBehaviour
 {
 
     // Collision radius
-    public float radius;
+    [SerializeField] private float radius = 1f;
 
     // Collision avoidance behaviour
     public override SteeringOutput GetSteering(GameObject target)
@@ -38,7 +38,7 @@ public class CollisionAvoidanceBehaviour : SteeringBehaviour
             // Calculate the time to collision
             Vector2 relPos =
                 transform.position - currTarget.transform.position;
-            Vector2 relVel = currTarget.Rb.velocity - rb.velocity;
+            Vector2 relVel = currTarget.Velocity - Agent.Velocity;
             float relSpeed = relVel.magnitude;
             float timeToCollision =
                 Vector2.Dot(relPos, relVel) / (relSpeed * relSpeed);
@@ -76,8 +76,7 @@ public class CollisionAvoidanceBehaviour : SteeringBehaviour
             else
                 relPos = firstRelPos + firstRelVel * shortestTime;
             // Avoid the target
-            linear = relPos.normalized * agent.maxAccel;
-
+            linear = relPos.normalized * Agent.MaxAccel;
         }
 
         // Output the steering
