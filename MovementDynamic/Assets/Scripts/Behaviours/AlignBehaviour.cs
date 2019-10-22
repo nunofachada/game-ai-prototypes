@@ -33,12 +33,9 @@ public class AlignBehaviour : SteeringBehaviour
             float desiredAngularVelocity, angularAbs;
 
             // Get the orientation difference to the target
-            orientation =
-                target.transform.eulerAngles.z - transform.eulerAngles.z;
-
-            // Map the orientation difference to the (-180, 180) interval
-            while (orientation > 180) orientation -= 360;
-            while (orientation < -180) orientation += 360;
+            orientation = Mathf.DeltaAngle(
+                transform.eulerAngles.z,
+                target.transform.eulerAngles.z);
 
             // Get the absolute orientation difference
             orientationAbs = Mathf.Abs(orientation);
@@ -83,6 +80,6 @@ public class AlignBehaviour : SteeringBehaviour
         }
 
         // Output the steering
-        return new SteeringOutput(linear, angular);
+        return new SteeringOutput(linear, angular * Mathf.Deg2Rad);
     }
 }
