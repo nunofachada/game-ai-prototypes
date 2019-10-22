@@ -20,10 +20,10 @@ public class SeekBehaviour : SteeringBehaviour
         if (target != null)
         {
             // Get the direction to the target
-            linear = target.transform.position - Agent.transform.position;
+            linear = target.transform.position - transform.position;
 
             // Give full acceleration along this direction
-            linear = linear.normalized * Agent.MaxAccel;
+            linear = linear.normalized * MaxAccel;
 
             // Seek behaviour does not set torque
             angular = 0f;

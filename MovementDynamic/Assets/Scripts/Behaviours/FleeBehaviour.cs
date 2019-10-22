@@ -20,10 +20,10 @@ public class FleeBehaviour : SteeringBehaviour
         if (target != null)
         {
             // Get the direction to the target
-            linear = Agent.transform.position - target.transform.position;
+            linear = transform.position - target.transform.position;
 
             // Give full acceleration along this direction
-            linear = linear.normalized * Agent.MaxAccel;
+            linear = linear.normalized * MaxAccel;
 
             // Fundamental flee behaviour does not set torque
             angular = 0f;

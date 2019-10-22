@@ -31,7 +31,7 @@ public class ArriveBehaviour : SteeringBehaviour
             Vector2 desiredVelocity;
 
             // Get the direction to the target
-            Vector2 dir = target.transform.position - Agent.transform.position;
+            Vector2 dir = target.transform.position - transform.position;
 
             // Get distance to target
             float distance = dir.magnitude;
@@ -46,24 +46,24 @@ public class ArriveBehaviour : SteeringBehaviour
             else if (distance < slowdownRadius)
             {
                 // Adjust desired speed depending on distance to target
-                desiredSpeed = Agent.MaxSpeed * distance / slowdownRadius;
+                desiredSpeed = MaxSpeed * distance / slowdownRadius;
             }
             else
             {
                 // If we're outside the slowdown radius, go for max speed
-                desiredSpeed = Agent.MaxSpeed;
+                desiredSpeed = MaxSpeed;
             }
 
             // Desired velocity combines desired speed and direction to target
             desiredVelocity = dir.normalized * desiredSpeed;
 
             // Linear acceleration tries to get to the target velocity
-            linear = (desiredVelocity - Agent.Velocity) / timeToTarget;
+            linear = (desiredVelocity - Velocity) / timeToTarget;
 
             // Check if acceleration is too fast
-            if (linear.magnitude > Agent.MaxAccel)
+            if (linear.magnitude > MaxAccel)
             {
-                linear = linear.normalized * Agent.MaxAccel;
+                linear = linear.normalized * MaxAccel;
             }
         }
 

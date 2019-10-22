@@ -34,7 +34,7 @@ public class AlignBehaviour : SteeringBehaviour
 
             // Get the orientation difference to the target
             orientation =
-                target.transform.eulerAngles.z - Agent.transform.eulerAngles.z;
+                target.transform.eulerAngles.z - transform.eulerAngles.z;
 
             // Map the orientation difference to the (-180, 180) interval
             while (orientation > 180) orientation -= 360;
@@ -55,12 +55,12 @@ public class AlignBehaviour : SteeringBehaviour
                 // Adjust desired angular velocity depending current
                 // orientation
                 desiredAngularVelocity =
-                    Agent.MaxRotation * orientationAbs / slowdownAngleRadius;
+                    MaxRotation * orientationAbs / slowdownAngleRadius;
             }
             else
             {
                 // If we're outside the slowdown radius, go for max rotation
-                desiredAngularVelocity = Agent.MaxRotation;
+                desiredAngularVelocity = MaxRotation;
             }
 
             // Set the correct sign in the desired angular velocity
@@ -69,16 +69,16 @@ public class AlignBehaviour : SteeringBehaviour
             // Determine the angular force (difference in desired angular
             // velocity and current angular velocity, divided by the time
             // to target)
-            angular = (desiredAngularVelocity - Agent.AngularVelocity)
+            angular = (desiredAngularVelocity - AngularVelocity)
                 / timeToTarget;
 
             // Check if angular force/acceleration is too great
             angularAbs = Mathf.Abs(angular);
-            if (angularAbs > Agent.MaxAngularAccel)
+            if (angularAbs > MaxAngularAccel)
             {
                 // If so set it to the maximum allowed value
                 angular /= angularAbs;
-                angular *= Agent.MaxAngularAccel;
+                angular *= MaxAngularAccel;
             }
         }
 

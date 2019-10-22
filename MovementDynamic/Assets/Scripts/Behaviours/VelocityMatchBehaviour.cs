@@ -29,12 +29,12 @@ public class VelocityMatchBehaviour : SteeringBehaviour
                 targetRb != null ? targetRb.velocity : Vector2.zero;
 
             // Acceleration tries to get to the target's velocity
-            linear = (targetVelocity - Agent.Velocity) / timeToTarget;
+            linear = (targetVelocity - Velocity) / timeToTarget;
 
             // Check if acceleration is too fast
-            if (linear.magnitude > Agent.MaxAccel)
+            if (linear.magnitude > MaxAccel)
             {
-                linear = linear.normalized * Agent.MaxAccel;
+                linear = linear.normalized * MaxAccel;
             }
         }
 

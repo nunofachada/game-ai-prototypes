@@ -38,7 +38,7 @@ public class CollisionAvoidanceBehaviour : SteeringBehaviour
             // Calculate the time to collision
             Vector2 relPos =
                 transform.position - currTarget.transform.position;
-            Vector2 relVel = currTarget.Velocity - Agent.Velocity;
+            Vector2 relVel = currTarget.Velocity - Velocity;
             float relSpeed = relVel.magnitude;
             float timeToCollision =
                 Vector2.Dot(relPos, relVel) / (relSpeed * relSpeed);
@@ -76,7 +76,7 @@ public class CollisionAvoidanceBehaviour : SteeringBehaviour
             else
                 relPos = firstRelPos + firstRelVel * shortestTime;
             // Avoid the target
-            linear = relPos.normalized * Agent.MaxAccel;
+            linear = relPos.normalized * MaxAccel;
         }
 
         // Output the steering

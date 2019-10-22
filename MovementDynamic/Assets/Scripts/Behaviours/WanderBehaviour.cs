@@ -36,11 +36,11 @@ public class WanderBehaviour : FaceBehaviour
             (Random.Range(0, 1f) - Random.Range(0, 1f)) * wanderRate;
 
         // Calculate the combined target orientation
-        targetOrientation = wanderOrientation + Agent.transform.eulerAngles.z;
+        targetOrientation = wanderOrientation + transform.eulerAngles.z;
 
         // Calculate the center of the wander circle
-        targetPosition = ((Vector2)Agent.transform.position)
-            + wanderOffset * Deg2Vec(Agent.transform.eulerAngles.z);
+        targetPosition = ((Vector2)transform.position)
+            + wanderOffset * Deg2Vec(transform.eulerAngles.z);
 
         // Calculate the target location
         targetPosition += wanderRadius * Deg2Vec(targetOrientation);
@@ -57,7 +57,7 @@ public class WanderBehaviour : FaceBehaviour
         // Set the linear acceleration to maximum in the direction of the
         // agent's current orientation
         sout = new SteeringOutput(
-            Agent.MaxAccel * Deg2Vec(Agent.transform.eulerAngles.z),
+            MaxAccel * Deg2Vec(transform.eulerAngles.z),
             sout.Angular);
 
         // Return steering behaviour

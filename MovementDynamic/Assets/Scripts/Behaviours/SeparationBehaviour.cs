@@ -22,7 +22,7 @@ public class SeparationBehaviour : SteeringBehaviour
         float angular = 0f; // Not used
 
         // Find similar agents to me
-        GameObject[] neighbours = GameObject.FindGameObjectsWithTag(Agent.tag);
+        GameObject[] neighbours = GameObject.FindGameObjectsWithTag(Tag);
 
         // Loop through each target
         foreach (GameObject neighbour in neighbours)
@@ -42,12 +42,12 @@ public class SeparationBehaviour : SteeringBehaviour
             if (distance < threshold)
             {
                 // Determine strength of repulsion
-                float strenght = Mathf.Min(
+                float strength = Mathf.Min(
                     decayCoefficient / (distance * distance),
-                    Agent.MaxAccel);
+                    MaxAccel);
 
                 // Add the acceleration
-                linear += strenght * direction.normalized;
+                linear += strength * direction.normalized;
             }
         }
 

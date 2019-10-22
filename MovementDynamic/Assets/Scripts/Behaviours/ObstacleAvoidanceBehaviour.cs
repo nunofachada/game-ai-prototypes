@@ -35,7 +35,7 @@ public class ObstacleAvoidanceBehaviour : SeekBehaviour
         SteeringOutput sout = new SteeringOutput(Vector2.zero, 0);
 
         // Determine the collision ray direction
-        Vector2 rayDir = Agent.Velocity.normalized;
+        Vector2 rayDir = Velocity.normalized;
 
         // Find the collision
         RaycastHit2D hit = Physics2D.Raycast(

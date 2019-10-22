@@ -11,14 +11,40 @@ public abstract class SteeringBehaviour : MonoBehaviour, ISteeringBehaviour
 
     [SerializeField] private float weight = 1f;
 
-    protected DynamicAgent Agent { get; private set; }
+    private DynamicAgent agent;
+    private Rigidbody2D rb;
 
     public float Weight => weight;
+
+    // Maximum acceleration for this agent
+    protected float MaxAccel => agent.MaxAccel;
+
+   // Maximum speed for this agent
+    protected float MaxSpeed  => agent.MaxSpeed;
+
+    // Maximum angular acceleration for this agent
+    protected float MaxAngularAccel => agent.MaxAngularAccel;
+
+    // Maximum rotation (angular velocity) for this agent
+    protected float MaxRotation  => agent.MaxRotation;
+
+    // The tag for this agent's target
+    protected string TargetTag => agent.TargetTag;
+
+    // Current angular velocity of this agent
+    protected float AngularVelocity => rb.angularVelocity;
+
+    // Current velocity of this agent
+    protected Vector2 Velocity => rb.velocity;
+
+    // Tag for this agent
+    protected string Tag => agent.tag;
 
     // Use this for initialization
     protected virtual void Start()
     {
-        Agent = GetComponent<DynamicAgent>();
+        agent = GetComponent<DynamicAgent>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     public abstract SteeringOutput GetSteering(GameObject target);

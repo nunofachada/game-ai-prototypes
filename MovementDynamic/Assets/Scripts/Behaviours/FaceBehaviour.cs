@@ -20,7 +20,7 @@ public class FaceBehaviour : AlignBehaviour
         {
             // Determine the direction to our target
             Vector2 direction =
-                target.transform.position - Agent.transform.position;
+                target.transform.position - transform.position;
 
             // Continue only if there is a distance between us and the target
             if (direction.magnitude > 0)

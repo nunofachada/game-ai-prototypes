@@ -39,7 +39,7 @@ public class PathFollowingBehaviour : SeekBehaviour
 
             // Get nearest point in path from current agent position
             currentParam =
-                path.GetParam(Agent.transform.position, currentParam);
+                path.GetParam(transform.position, currentParam);
 
             // Update parameter (distance along path) and position
             currentParam += pathOffset;

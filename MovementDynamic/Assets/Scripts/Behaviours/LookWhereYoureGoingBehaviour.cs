@@ -16,11 +16,11 @@ public class LookWhereYoureGoingBehaviour : AlignBehaviour
         SteeringOutput sout = new SteeringOutput(Vector2.zero, 0);
 
         // Am I moving?
-        if (Agent.Velocity.magnitude > 0)
+        if (Velocity.magnitude > 0)
         {
             // Determine the orientation of our temporary target, which should
             // be in the direction we're going
-            float angle = Vec2Deg(Agent.Velocity);
+            float angle = Vec2Deg(Velocity);
 
             // Create our temporary target
             GameObject tempTarget = CreateTarget(Vector3.zero, angle);

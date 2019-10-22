@@ -34,7 +34,7 @@ public class PursueBehaviour : SeekBehaviour
             float distance = direction.magnitude;
 
             // Determine the agent's current speed
-            float speed = Agent.Velocity.magnitude;
+            float speed = Velocity.magnitude;
 
             // Check if speed is too small to give reasonable predicition time
             if (speed <= distance / maxPrediction) prediction = maxPrediction;
