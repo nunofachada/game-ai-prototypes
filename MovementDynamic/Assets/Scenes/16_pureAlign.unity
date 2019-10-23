@@ -334,12 +334,12 @@ PrefabInstance:
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 3}
       propertyPath: maxAngularAccel
-      value: 100
+      value: 360
       objectReference: {fileID: 0}
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 3}
       propertyPath: maxRotation
-      value: 100
+      value: 180
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b07f44db1aa7651428552241d8310441, type: 3}
@@ -365,9 +365,9 @@ MonoBehaviour:
   targetAngleRadius: 0.5
   slowdownAngleRadius: 10
   timeToTarget: 0.1
-  wanderOffset: 6
-  wanderRadius: 3
-  wanderRate: 0.75
+  wanderOffset: 2
+  wanderRadius: 2
+  wanderRate: 0.25
 --- !u!1 &1023986096 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1506471656861450, guid: b07f44db1aa7651428552241d8310441,
@@ -848,12 +848,12 @@ PrefabInstance:
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 3}
       propertyPath: maxAngularAccel
-      value: 10
+      value: 360
       objectReference: {fileID: 0}
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 3}
       propertyPath: maxRotation
-      value: 1000
+      value: 180
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b07f44db1aa7651428552241d8310441, type: 3}
