@@ -83,4 +83,12 @@ public class CollisionAvoidanceBehaviour : SteeringBehaviour
         return new SteeringOutput(linear, angular);
     }
 
+    // Draw gizmos, namely the collision radius
+    public void OnDrawGizmos()
+    {
+        if (!Application.isPlaying) return;
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, radius);
+    }
+
 }

@@ -54,4 +54,13 @@ public class SeparationBehaviour : SteeringBehaviour
         // Output the steering
         return new SteeringOutput(linear, angular);
     }
+
+    // Draw gizmos, namely the separation force field
+    public void OnDrawGizmos()
+    {
+        if (!Application.isPlaying) return;
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, threshold);
+    }
+
 }

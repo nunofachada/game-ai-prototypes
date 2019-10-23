@@ -21,6 +21,14 @@ public class WanderBehaviour : FaceBehaviour
     // The current orientation of the wander target
     private float wanderOrientation = 0f;
 
+    private GameObject fakeTarget;
+
+    private void Awake()
+    {
+        fakeTarget = new GameObject();
+        fakeTarget.hideFlags = HideFlags.HideInHierarchy;
+    }
+
     // Wander behaviour
     public override SteeringOutput GetSteering(GameObject target)
     {
@@ -46,13 +54,11 @@ public class WanderBehaviour : FaceBehaviour
         targetPosition += wanderRadius * Deg2Vec(targetOrientation);
 
         // Instantiate a temporary target for Face to aim at
-        target = CreateTarget(targetPosition, targetOrientation);
+        fakeTarget.transform.position = targetPosition;
+        fakeTarget.transform.Rotate(0f, 0f, targetOrientation);
 
         // Ask superclass method to look at target
-        sout = base.GetSteering(target);
-
-        // Destroy temporary target
-        Destroy(target);
+        sout = base.GetSteering(fakeTarget);
 
         // Set the linear acceleration to maximum in the direction of the
         // agent's current orientation
@@ -64,4 +70,12 @@ public class WanderBehaviour : FaceBehaviour
         return sout;
     }
 
+    // Draw gizmos, namely a sphere around the fake target
+    public void OnDrawGizmos()
+    {
+        if (!Application.isPlaying) return;
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(
+            fakeTarget.transform.position, Mathf.Max(0.1f, wanderRadius));
+    }
 }

@@ -94,7 +94,7 @@ public class DynamicAgent : MonoBehaviour
 
         // Apply steering
         rb.AddForce(steerWeighted.Linear);
-        rb.AddTorque(steerWeighted.Angular);
+        rb.AddTorque(steerWeighted.Angular * Mathf.Deg2Rad);
 
         // Limit speed
         if (rb.velocity.magnitude > maxSpeed)

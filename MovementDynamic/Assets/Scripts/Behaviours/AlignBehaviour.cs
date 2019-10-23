@@ -80,6 +80,6 @@ public class AlignBehaviour : SteeringBehaviour
         }
 
         // Output the steering
-        return new SteeringOutput(linear, angular * Mathf.Deg2Rad);
+        return new SteeringOutput(linear, angular);
     }
 }
