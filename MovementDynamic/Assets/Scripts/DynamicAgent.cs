@@ -11,6 +11,9 @@ using UnityEngine;
 public class DynamicAgent : MonoBehaviour
 {
 
+    // TODO Set target by movement (not by agent), not all movements need target
+    // TODO Implement priorities, maybe just add group ID to movements
+
     // Maximum acceleration for this agent
     [SerializeField] private float maxAccel = 1f;
 
