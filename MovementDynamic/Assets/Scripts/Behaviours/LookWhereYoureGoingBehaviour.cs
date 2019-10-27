@@ -9,6 +9,16 @@ using UnityEngine;
 public class LookWhereYoureGoingBehaviour : AlignBehaviour
 {
 
+    private GameObject lookFakeTarget;
+
+    // Use Awake() to initialize our fake target
+    private void Awake()
+    {
+        lookFakeTarget = new GameObject();
+        lookFakeTarget.hideFlags = HideFlags.HideInHierarchy;
+        lookFakeTarget.transform.position = Vector3.zero;
+    }
+
     // Look Where You're Going behaviour
     public override SteeringOutput GetSteering(GameObject target)
     {
@@ -18,20 +28,17 @@ public class LookWhereYoureGoingBehaviour : AlignBehaviour
         // Am I moving?
         if (Velocity.magnitude > 0)
         {
-            // Determine the orientation of our temporary target, which should
+            // Determine the orientation of our fake target, which should
             // be in the direction we're going
             float angle = Vec2Deg(Velocity);
 
-            // Create our temporary target
-            GameObject tempTarget = CreateTarget(Vector3.zero, angle);
+            // Set orientation of our fake target
+            lookFakeTarget.transform.eulerAngles = new Vector3(0f, 0f, angle);
 
             // Use align superclass to determine the torque to return based
             // on the temporary target orientation (which is the direction
             // we're going)
-            sout = base.GetSteering(tempTarget);
-
-            // Destroy the temporary copy of our target
-            Destroy(tempTarget);
+            sout = base.GetSteering(lookFakeTarget);
         }
 
         // Output the steering

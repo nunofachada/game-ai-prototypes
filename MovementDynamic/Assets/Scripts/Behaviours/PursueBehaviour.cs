@@ -11,6 +11,17 @@ public class PursueBehaviour : SeekBehaviour
     // Maximum prediction time
     [SerializeField] private float maxPrediction = 4f;
 
+    // A fake target to aid in the movement decision
+    private GameObject fakeTarget;
+
+    // Use Awake() to initialize a fake target
+    private void Awake()
+    {
+        fakeTarget = new GameObject();
+        fakeTarget.hideFlags = HideFlags.HideInHierarchy;
+        fakeTarget.transform.eulerAngles = Vector3.zero;
+    }
+
     // Pursue behaviour
     public override SteeringOutput GetSteering(GameObject target)
     {
@@ -41,15 +52,12 @@ public class PursueBehaviour : SeekBehaviour
             // Otherwise determine the prediction time
             else prediction = distance / speed;
 
-            // Create our temporary target
-            GameObject tempTarget = CreateTarget(
-                targetPosition + targetVelocity * prediction, 0f);
+            // Set fake target position
+            fakeTarget.transform.position =
+                targetPosition + targetVelocity * prediction;
 
             // Use seek superclass to determine steering
-            sout = base.GetSteering(tempTarget);
-
-            // Destroy the temporary copy of our target
-            Destroy(tempTarget);
+            sout = base.GetSteering(fakeTarget);
         }
 
         // Output the steering

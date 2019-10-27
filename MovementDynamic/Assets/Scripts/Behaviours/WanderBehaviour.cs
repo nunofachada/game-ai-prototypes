@@ -21,12 +21,15 @@ public class WanderBehaviour : FaceBehaviour
     // The current orientation of the wander target
     private float wanderOrientation = 0f;
 
-    private GameObject fakeTarget;
+    // A fake target to aid in the movement decision
+    private GameObject wanderFakeTarget;
 
-    private void Awake()
+    // Use Awake() to initialize a fake target
+    protected override void Awake()
     {
-        fakeTarget = new GameObject();
-        fakeTarget.hideFlags = HideFlags.HideInHierarchy;
+        base.Awake();
+        wanderFakeTarget = new GameObject();
+        wanderFakeTarget.hideFlags = HideFlags.HideInHierarchy;
     }
 
     // Wander behaviour
@@ -53,12 +56,13 @@ public class WanderBehaviour : FaceBehaviour
         // Calculate the target location
         targetPosition += wanderRadius * Deg2Vec(targetOrientation);
 
-        // Instantiate a temporary target for Face to aim at
-        fakeTarget.transform.position = targetPosition;
-        fakeTarget.transform.Rotate(0f, 0f, targetOrientation);
+        // Use a temporary target for Face superclass to aim at
+        wanderFakeTarget.transform.position = targetPosition;
+        wanderFakeTarget.transform.eulerAngles =
+            new Vector3(0f, 0f, targetOrientation);
 
         // Ask superclass method to look at target
-        sout = base.GetSteering(fakeTarget);
+        sout = base.GetSteering(wanderFakeTarget);
 
         // Set the linear acceleration to maximum in the direction of the
         // agent's current orientation
@@ -76,6 +80,6 @@ public class WanderBehaviour : FaceBehaviour
         if (!Application.isPlaying) return;
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(
-            fakeTarget.transform.position, Mathf.Max(0.1f, wanderRadius));
+            wanderFakeTarget.transform.position, Mathf.Max(0.1f, wanderRadius));
     }
 }

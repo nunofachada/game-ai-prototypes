@@ -21,6 +21,17 @@ public class ObstacleAvoidanceBehaviour : SeekBehaviour
     // Obstacle layer mask, for ray casting purposes
     private int obstLayerMask;
 
+    // A fake target to aid in the movement decision
+    private GameObject fakeTarget;
+
+    // Use Awake() to initialize a fake target
+    private void Awake()
+    {
+        fakeTarget = new GameObject();
+        fakeTarget.hideFlags = HideFlags.HideInHierarchy;
+        fakeTarget.transform.eulerAngles = Vector3.zero;
+    }
+
     // Initial setup
     protected override void Start()
     {
@@ -47,15 +58,12 @@ public class ObstacleAvoidanceBehaviour : SeekBehaviour
         // Do we have a collision?
         if (hit)
         {
-            // Instantiate a temporary target for Seek
-            target = CreateTarget(
-                ((Vector2)transform.position) + hit.normal * avoidDist, 0f);
+            // Set up a fake target for Seek
+            fakeTarget.transform.position =
+                ((Vector2)transform.position) + hit.normal * avoidDist;
 
             // Delegate to seek
-            sout = base.GetSteering(target);
-
-            // Destroy temporary target
-            Destroy(target);
+            sout = base.GetSteering(fakeTarget);
         }
 
         // Output the steering

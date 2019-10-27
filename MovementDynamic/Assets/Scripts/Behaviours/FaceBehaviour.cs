@@ -9,6 +9,17 @@ using UnityEngine;
 public class FaceBehaviour : AlignBehaviour
 {
 
+    // A fake target to aid in the movement decision
+    private GameObject faceFakeTarget;
+
+    // Use Awake() to initialize a fake target
+    protected virtual void Awake()
+    {
+        faceFakeTarget = new GameObject();
+        faceFakeTarget.hideFlags = HideFlags.HideInHierarchy;
+        faceFakeTarget.transform.position = Vector3.zero;
+    }
+
     // Face behaviour
     public override SteeringOutput GetSteering(GameObject target)
     {
@@ -29,15 +40,13 @@ public class FaceBehaviour : AlignBehaviour
                 // should be as if it was looking away from me
                 float angle = Vec2Deg(direction);
 
-                // Create our temporary target
-                GameObject tempTarget = CreateTarget(Vector3.zero, angle);
+                // Set orientation of our fake target
+                faceFakeTarget.transform.eulerAngles =
+                    new Vector3(0f, 0f, angle);
 
                 // Use align superclass to determine the torque to return based
                 // on the temp. target orientation (i.e. looking away from me)
-                sout = base.GetSteering(tempTarget);
-
-                // Destroy the temporary copy of our target
-                Destroy(tempTarget);
+                sout = base.GetSteering(faceFakeTarget);
             }
         }
         // Output the steering

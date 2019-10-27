@@ -318,6 +318,16 @@ PrefabInstance:
       propertyPath: maxRotation
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxAccel
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b07f44db1aa7651428552241d8310441, type: 3}
 --- !u!1 &311342427 stripped
@@ -357,8 +367,8 @@ MonoBehaviour:
   targetAngleRadius: 1
   slowdownAngleRadius: 10
   timeToTarget: 0.01
-  wanderOffset: 2
-  wanderRadius: 1
+  wanderOffset: 3
+  wanderRadius: 0.8
   wanderRate: 0.75
 --- !u!114 &311342435
 MonoBehaviour:
@@ -373,7 +383,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weight: 1
-  radius: 6
+  radius: 12
 --- !u!1001 &342636323
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -431,6 +441,16 @@ PrefabInstance:
       propertyPath: maxRotation
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxAccel
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 15
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b07f44db1aa7651428552241d8310441, type: 3}
 --- !u!1 &342636324 stripped
@@ -470,9 +490,9 @@ MonoBehaviour:
   targetAngleRadius: 1
   slowdownAngleRadius: 10
   timeToTarget: 0.01
-  wanderOffset: 2
-  wanderRadius: 1
-  wanderRate: 0.75
+  wanderOffset: 3
+  wanderRadius: 0.8
+  wanderRate: 0.9
 --- !u!114 &342636332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -486,7 +506,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weight: 1
-  radius: 6
+  radius: 2
 --- !u!1001 &427568771
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -542,7 +562,17 @@ PrefabInstance:
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 3}
       propertyPath: maxRotation
-      value: 180
+      value: 270
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxAccel
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b07f44db1aa7651428552241d8310441, type: 3}
@@ -565,8 +595,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weight: 1
-  avoidDist: 4
-  lookaheadDist: 8
+  avoidDist: 6
+  lookaheadDist: 12
 --- !u!114 &427568775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -583,9 +613,9 @@ MonoBehaviour:
   targetAngleRadius: 1
   slowdownAngleRadius: 10
   timeToTarget: 0.01
-  wanderOffset: 2
-  wanderRadius: 1
-  wanderRate: 0.75
+  wanderOffset: 3
+  wanderRadius: 0.8
+  wanderRate: 0.9
 --- !u!114 &427568780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -599,7 +629,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weight: 1
-  radius: 6
+  radius: 2
 --- !u!1001 &526286679
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -655,7 +685,17 @@ PrefabInstance:
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 3}
       propertyPath: maxRotation
-      value: 180
+      value: 270
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxAccel
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b07f44db1aa7651428552241d8310441, type: 3}
@@ -678,8 +718,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weight: 1
-  avoidDist: 4
-  lookaheadDist: 8
+  avoidDist: 6
+  lookaheadDist: 12
 --- !u!114 &526286683
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -696,7 +736,7 @@ MonoBehaviour:
   targetAngleRadius: 1
   slowdownAngleRadius: 10
   timeToTarget: 0.01
-  wanderOffset: 2
+  wanderOffset: 3
   wanderRadius: 1
   wanderRate: 0.75
 --- !u!114 &526286688
@@ -770,6 +810,16 @@ PrefabInstance:
       propertyPath: maxRotation
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxAccel
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b07f44db1aa7651428552241d8310441, type: 3}
 --- !u!1 &633826241 stripped
@@ -807,9 +857,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 1
   targetAngleRadius: 1
-  slowdownAngleRadius: 10
-  timeToTarget: 0.01
-  wanderOffset: 2
+  slowdownAngleRadius: 5
+  timeToTarget: 0.1
+  wanderOffset: 4
   wanderRadius: 1
   wanderRate: 0.75
 --- !u!114 &633826249
@@ -881,7 +931,17 @@ PrefabInstance:
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 3}
       propertyPath: maxRotation
-      value: 180
+      value: 270
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxAccel
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b07f44db1aa7651428552241d8310441, type: 3}
@@ -904,8 +964,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weight: 1
-  avoidDist: 4
-  lookaheadDist: 8
+  avoidDist: 6
+  lookaheadDist: 12
 --- !u!114 &830567500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -922,9 +982,9 @@ MonoBehaviour:
   targetAngleRadius: 1
   slowdownAngleRadius: 10
   timeToTarget: 0.01
-  wanderOffset: 2
-  wanderRadius: 1
-  wanderRate: 0.75
+  wanderOffset: 3
+  wanderRadius: 0.8
+  wanderRate: 0.9
 --- !u!114 &830567505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -992,6 +1052,16 @@ PrefabInstance:
       propertyPath: maxRotation
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxAccel
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 15
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b07f44db1aa7651428552241d8310441, type: 3}
 --- !u!1 &947219969 stripped
@@ -1029,11 +1099,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 1
   targetAngleRadius: 1
-  slowdownAngleRadius: 10
-  timeToTarget: 0.01
-  wanderOffset: 2
+  slowdownAngleRadius: 5
+  timeToTarget: 0.1
+  wanderOffset: 4
   wanderRadius: 1
-  wanderRate: 0.75
+  wanderRate: 0.9
 --- !u!114 &947219977
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1047,7 +1117,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weight: 1
-  radius: 6
+  radius: 12
 --- !u!1001 &1115962951
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1105,6 +1175,16 @@ PrefabInstance:
       propertyPath: maxRotation
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxAccel
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b07f44db1aa7651428552241d8310441, type: 3}
 --- !u!1 &1115962952 stripped
@@ -1142,11 +1222,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 1
   targetAngleRadius: 1
-  slowdownAngleRadius: 10
-  timeToTarget: 0.01
-  wanderOffset: 2
+  slowdownAngleRadius: 5
+  timeToTarget: 0.1
+  wanderOffset: 4
   wanderRadius: 1
-  wanderRate: 0.75
+  wanderRate: 0.9
 --- !u!114 &1115962960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1417,6 +1497,16 @@ PrefabInstance:
       propertyPath: maxRotation
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxAccel
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 15
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b07f44db1aa7651428552241d8310441, type: 3}
 --- !u!1 &1731087624 stripped
@@ -1456,8 +1546,8 @@ MonoBehaviour:
   targetAngleRadius: 1
   slowdownAngleRadius: 10
   timeToTarget: 0.01
-  wanderOffset: 2
-  wanderRadius: 1
+  wanderOffset: 3
+  wanderRadius: 0.8
   wanderRate: 0.75
 --- !u!114 &1731087632
 MonoBehaviour:

@@ -326,10 +326,10 @@ MonoBehaviour:
   weight: 1
   targetAngleRadius: 1
   slowdownAngleRadius: 15
-  timeToTarget: 0.01
-  wanderOffset: 2
-  wanderRadius: 2
-  wanderRate: 0.9
+  timeToTarget: 0.1
+  wanderOffset: 4
+  wanderRadius: 1.1
+  wanderRate: 1
 --- !u!4 &1326750659 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441,

@@ -18,6 +18,17 @@ public class PathFollowingBehaviour : SeekBehaviour
     // Current distance along path
     private float currentParam = 0;
 
+    // A fake target to aid in the movement decision
+    private GameObject fakeTarget;
+
+    // Use Awake() to initialize a fake target
+    private void Awake()
+    {
+        fakeTarget = new GameObject();
+        fakeTarget.hideFlags = HideFlags.HideInHierarchy;
+        fakeTarget.transform.eulerAngles = Vector3.zero;
+    }
+
     // Get the path object
     protected override void Start()
     {
@@ -45,14 +56,12 @@ public class PathFollowingBehaviour : SeekBehaviour
             currentParam += pathOffset;
             targetPosition = path.GetPosition(currentParam);
 
-            // Create temporary target with determined position
-            target = CreateTarget(targetPosition, 0f);
+            // Set fake target position
+            fakeTarget.transform.position = targetPosition;
 
             // Use seek to obtain desired steering
-            steeringOutput = base.GetSteering(target);
+            steeringOutput = base.GetSteering(fakeTarget);
 
-            // Destroy temporary game object
-            Destroy(target);
         }
         else
         {
