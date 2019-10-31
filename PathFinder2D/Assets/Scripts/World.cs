@@ -24,7 +24,7 @@ public class World : MonoBehaviour
     private bool goalReached = false;
 
     // Current path
-    private IEnumerable<IConnection> path;
+    private IEnumerable<IConnection> path = null;
 
     // Matrix of game world state
     private TileTypeBehaviour[,] world;
@@ -276,6 +276,29 @@ public class World : MonoBehaviour
         Gizmos.DrawWireCube(goal.transform.position, new Vector3(1, 1, 1));
 
         // Path gizmo
+        Gizmos.color = Color.red;
+        if (path != null)
+        {
+            bool first = true;
+            foreach (IConnection conn in path)
+            {
+                // Don't draw first connection, it doesn't look very nice
+                if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    Vector2Int start = Ind2Vec(conn.FromNode, world.GetLength(0));
+                    Vector2Int end = Ind2Vec(conn.ToNode, world.GetLength(0));
+                    Vector3 startPos = new Vector3(
+                        start.x - offset.x, start.y - offset.y, -3);
+                    Vector3 endPos = new Vector3(
+                        end.x - offset.x, end.y - offset.y, -3);
+                    Gizmos.DrawLine(startPos, endPos);
+                }
+            }
+        }
     }
 
     private static Vector2Int Ind2Vec(int index, int xdim) =>
