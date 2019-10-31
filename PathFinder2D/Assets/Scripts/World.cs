@@ -10,8 +10,11 @@ public class World : MonoBehaviour
     [SerializeField] private GameObject player = null;
     [SerializeField] private GameObject goal = null;
 
-    [SerializeField] private Vector2Int wSize = new Vector2Int(10, 10);
+    [SerializeField] private Vector2Int worldSize = new Vector2Int(10, 10);
     [SerializeField] [Range(0f, 1f)] private float passageRatio = 0.1f;
+
+    // How long between each movement
+    [SerializeField] private float moveDuration = 0.5f;
 
     // Player and goal positions
     private Vector2Int playerPos;
@@ -20,46 +23,47 @@ public class World : MonoBehaviour
     // Goal reached?
     private bool goalReached = false;
 
-    // How long between each movement
-    private float gameStep = 0.5f;
+    // Current path
+    private IEnumerable<IConnection> path;
 
     // Matrix of game world state
-    GameObject[,] worldObjects;
+    private TileTypeBehaviour[,] world;
+
+    // Offset for all tiles
+    private Vector2 offset;
 
     private void Awake()
     {
-        // Offset for all tiles
-        Vector2 offset;
 
         // Array of game objects to clone for each column
-        GameObject[] columnToClone = new GameObject[wSize.y];
+        GameObject[] columnToClone = new GameObject[worldSize.y];
 
         // References to camera game object and camera component
         GameObject cameraGameObj = GameObject.FindWithTag("MainCamera");
         Camera cameraComponent = cameraGameObj.GetComponent<Camera>();
 
         // Width must be odd
-        if (wSize.x % 2 == 0) wSize.x++;
+        if (worldSize.x % 2 == 0) worldSize.x++;
 
         // Adjust camera to game world
-        cameraComponent.orthographicSize = Mathf.Max(wSize.x, wSize.y) / 2;
+        cameraComponent.orthographicSize = Mathf.Max(worldSize.x, worldSize.y) / 2;
 
         // Initialize matrix of game world elements (by default will be
         // all empties)
-        worldObjects = new GameObject[wSize.x, wSize.y];
+        world = new TileTypeBehaviour[worldSize.x, worldSize.y];
 
         // Determine tile offsets
-        offset = new Vector2(wSize.x / 2f - 0.5f, wSize.y / 2f - 0.5f);
+        offset = new Vector2(worldSize.x / 2f - 0.5f, worldSize.y / 2f - 0.5f);
 
         // Cycle through columns
-        for (int i = 0; i < wSize.x; i++)
+        for (int i = 0; i < worldSize.x; i++)
         {
             // Number of passages in current column (by default all)
-            int numEmpty = wSize.y;
+            int numEmpty = worldSize.y;
 
             // For current column determine which tiles are empty and which are
             // blocked
-            for (int j = 0; j < wSize.y; j++)
+            for (int j = 0; j < worldSize.y; j++)
             {
                 // By default, current position in column is empty
                 columnToClone[j] = emptyTile;
@@ -83,15 +87,16 @@ public class World : MonoBehaviour
             if (numEmpty == 0)
             {
                 // If not, then randomly define one empty tile
-                columnToClone[Random.Range(0, wSize.y)] = emptyTile;
+                columnToClone[Random.Range(0, worldSize.y)] = emptyTile;
             }
 
             // Instantiate tiles for current column
-            for (int j = 0; j < wSize.y; j++)
+            for (int j = 0; j < worldSize.y; j++)
             {
-                worldObjects[i, j] = Instantiate(columnToClone[j], transform);
-                worldObjects[i, j].transform.position =
+                GameObject tile = Instantiate(columnToClone[j], transform);
+                tile.transform.position =
                     new Vector3(i - offset.x, j - offset.y, 0);
+                world[i, j] = tile.GetComponent<TileTypeBehaviour>();
             }
         }
 
@@ -99,12 +104,12 @@ public class World : MonoBehaviour
         while (true)
         {
             playerPos = new Vector2Int(
-                Random.Range(0, wSize.x), Random.Range(0, wSize.y));
-            if (worldObjects[playerPos.x, playerPos.y].tag == "Empty")
+                Random.Range(0, worldSize.x), Random.Range(0, worldSize.y));
+            if (world[playerPos.x, playerPos.y].TileType == TileTypeEnum.Empty)
             {
                 player = Instantiate(player);
                 player.transform.position = new Vector3(
-                    playerPos.x - offset.x, playerPos.y - offset.y, -1);
+                    playerPos.x - offset.x, playerPos.y - offset.y, -2);
                 break;
             }
         }
@@ -115,8 +120,8 @@ public class World : MonoBehaviour
         while (true)
         {
             goalPos = new Vector2Int(
-                Random.Range(0, wSize.x), Random.Range(0, wSize.y));
-            if (worldObjects[goalPos.x, goalPos.y].tag == "Empty")
+                Random.Range(0, worldSize.x), Random.Range(0, worldSize.y));
+            if (world[goalPos.x, goalPos.y].TileType == TileTypeEnum.Empty)
             {
                 goal = Instantiate(goal);
                 goal.transform.position = new Vector3(
@@ -131,48 +136,88 @@ public class World : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        // Pre-alocate array of nodes (to maximum possible)
-        Vector2Int[] nodesPosition = new Vector2Int[wSize.x * wSize.y];
-
-        // Pre-alocate adjacency list for path finding
-        IList<IEnumerable<IConnection>> nodes =
-            new List<IEnumerable<IConnection>>(wSize.x * wSize.y);
-
-        // Begin player movement steps
-        StartCoroutine(MovementStep());
+        StartCoroutine(FindPath());
     }
 
-    // Update is called once per frame
-    private void Update()
+    private class TileWorldGraph : IGraph
     {
-        //
+        private TileTypeBehaviour[,] world;
+        public IEnumerable<IConnection> GetConnections(int fromNode)
+        {
+            Vector2Int node = Ind2Vec(fromNode, world.GetLength(0));
+            if (world[node.x, node.y].TileType != TileTypeEnum.Blocked)
+            {
+                Vector2Int up, down, left, right;
+                int xdim = world.GetLength(0);
+
+                up = node + Vector2Int.up;
+                if (up.y < world.GetLength(1)
+                        && world[up.x, up.y].TileType != TileTypeEnum.Blocked)
+                {
+                    yield return new Connection(1f, fromNode, Vec2Ind(up, xdim));
+                }
+
+                down = node + Vector2Int.down;
+                if (down.y >= 0
+                        && world[down.x, down.y].TileType != TileTypeEnum.Blocked)
+                {
+                    yield return new Connection(1f, fromNode, Vec2Ind(down, xdim));
+                }
+
+                left = node + Vector2Int.left;
+                if (left.x >= 0
+                        && world[left.x, left.y].TileType != TileTypeEnum.Blocked)
+                {
+                    yield return new Connection(1f, fromNode, Vec2Ind(left, xdim));
+                }
+
+                right = node + Vector2Int.right;
+                if (right.x < world.GetLength(0)
+                        && world[right.x, right.y].TileType != TileTypeEnum.Blocked)
+                {
+                    yield return new Connection(1f, fromNode, Vec2Ind(right, xdim));
+                }
+            }
+        }
+
+        public TileWorldGraph(TileTypeBehaviour[,] world)
+        {
+            this.world = world;
+        }
     }
 
-    // This co-routine implements the player movement steps
-    private IEnumerator MovementStep()
+    // This co-routine performs the path finding and invokes another coroutine
+    // to perform player movement animation
+    private IEnumerator FindPath()
     {
-        // Coroutine will be called again in gameStep seconds
-        YieldInstruction wfs = new WaitForSeconds(gameStep);
+        // Coroutine will be called again in moveDuration seconds
+        YieldInstruction wfs = new WaitForSeconds(moveDuration);
 
-        // Node number
-        int node = 0;
+        // The graph representation of our tile world
+        TileWorldGraph graph = new TileWorldGraph(world);
 
         // Start player movement loop
         while (playerPos != goalPos)
         {
-            // Convert level into a graph
-            for (int i = 0; i < wSize.x; i++)
-            {
-                for (int j = 0; i < wSize.y; i++)
-                {
-                    if (worldObjects[i, j].tag == "Empty")
-                    {
-                        //nodesPosition[node] = new Vector2Int(i, j);
+            // Perform path finding
+            path = Dijkstra.GetShortestPath(
+                graph,
+                Vec2Ind(playerPos, world.GetLength(0)),
+                Vec2Ind(goalPos, world.GetLength(0)));
 
-                    }
+            // Get an enumerator for the connection enumerable (it must be
+            // disposed of, as such we put it in a using block)
+            using (IEnumerator<IConnection> conns = path.GetEnumerator())
+            {
+                // Did the path finder return any connection at all?
+                if (conns.MoveNext())
+                {
+                    // If so, move player towards the destination node in the
+                    // first connection
+                    StartCoroutine(MovePlayer(
+                        conns.Current.ToNode, moveDuration / 2));
                 }
             }
-            // Perform path finding
 
             // Return again after some fixed amount of time
             yield return wfs;
@@ -180,6 +225,33 @@ public class World : MonoBehaviour
 
         // If we got here, it means the goal was reached!
         goalReached = true;
+    }
+
+    // Co-routine that performs the player movement animation
+    private IEnumerator MovePlayer(int toNode, float duration)
+    {
+        Vector3 finalPos;
+        Vector3 initPos = player.transform.position;
+        float startTime = Time.time;
+        float endTime = startTime + duration;
+
+        playerPos = Ind2Vec(toNode, world.GetLength(0));
+
+        finalPos = new Vector3(
+            playerPos.x - offset.x,
+            playerPos.y - offset.y,
+            player.transform.position.z);
+
+        while (Time.time < endTime)
+        {
+            float currTime = Time.time;
+            float toMove = Mathf.InverseLerp(startTime, endTime, currTime);
+            Vector3 newPos = Vector3.Lerp(initPos, finalPos, toMove);
+            player.transform.position = newPos;
+            yield return null;
+        }
+
+        player.transform.position = finalPos;
     }
 
     // Draw a message when the goal is reached
@@ -205,4 +277,10 @@ public class World : MonoBehaviour
 
         // Path gizmo
     }
+
+    private static Vector2Int Ind2Vec(int index, int xdim) =>
+        new Vector2Int(index % xdim, index / xdim);
+    private static int Vec2Ind(Vector2Int vec, int xdim) =>
+        vec.y * xdim + vec.x;
+
 }
