@@ -51,12 +51,13 @@ namespace LibGameAI.PathFinding
         /// a path from start to goal.
         /// </returns>
         public static IEnumerable<IConnection> GetPath(
-            IGraph graph, int start, int goal, float[] heuristics)
+            IGraph graph, int start, int goal, IList<float> heuristics)
         {
 
             int current;
             List<NodeRecord> open, closed;
-            NodeRecord[] nodeRecords = new NodeRecord[graph.NumberOfNodes];
+            IDictionary<int, NodeRecord> nodeRecords =
+                new Dictionary<int, NodeRecord>();
 
             // Initialize the record for the start node
             nodeRecords[start] = new NodeRecord(start);

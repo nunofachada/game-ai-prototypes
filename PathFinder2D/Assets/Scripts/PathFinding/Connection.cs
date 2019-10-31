@@ -7,7 +7,7 @@
 
 namespace LibGameAI.PathFinding
 {
-    public class Connection : IConnection
+    public struct Connection : IConnection
     {
         public float Cost { get; }
         public int FromNode { get; }

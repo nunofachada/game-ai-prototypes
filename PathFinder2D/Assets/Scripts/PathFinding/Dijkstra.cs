@@ -52,7 +52,8 @@ namespace LibGameAI.PathFinding
 
             int current;
             List<NodeRecord> open, closed;
-            NodeRecord[] nodeRecords = new NodeRecord[graph.NumberOfNodes];
+            IDictionary<int, NodeRecord> nodeRecords =
+                new Dictionary<int, NodeRecord>();
 
             // Initialize the record for the start node
             nodeRecords[start] = new NodeRecord(start);

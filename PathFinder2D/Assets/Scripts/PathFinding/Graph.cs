@@ -16,11 +16,6 @@ namespace LibGameAI.PathFinding
         private IList<IEnumerable<IConnection>> connections;
 
         /// <summary>
-        /// Number of nodes in this graph.
-        /// </summary>
-        public int NumberOfNodes { get => connections.Count; }
-
-        /// <summary>
         /// Create new graph using an adjacency list.
         /// </summary>
         /// <param name="connections">Adjacency list with which to create
