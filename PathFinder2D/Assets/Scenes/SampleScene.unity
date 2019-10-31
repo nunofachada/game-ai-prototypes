@@ -155,8 +155,10 @@ MonoBehaviour:
     type: 3}
   player: {fileID: 3970293892993507800, guid: 42b0ddb18080f09fbac1be389f562a06, type: 3}
   goal: {fileID: 1265708573424894461, guid: f4b3e4cb5344269f791f558d94ae4438, type: 3}
-  wSize: {x: 20, y: 20}
+  worldSize: {x: 20, y: 20}
   passageRatio: 0.483
+  moveDuration: 0.5
+  pathFindingType: 1
 --- !u!4 &483100505
 Transform:
   m_ObjectHideFlags: 0

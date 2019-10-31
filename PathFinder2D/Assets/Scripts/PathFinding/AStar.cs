@@ -51,7 +51,7 @@ namespace LibGameAI.PathFinding
         /// a path from start to goal.
         /// </returns>
         public static IEnumerable<IConnection> GetPath(
-            IGraph graph, int start, int goal, IList<float> heuristics)
+            IGraph graph, int start, int goal, Func<int, float> heuristics)
         {
 
             int current;
@@ -61,7 +61,7 @@ namespace LibGameAI.PathFinding
 
             // Initialize the record for the start node
             nodeRecords[start] = new NodeRecord(start);
-            nodeRecords[start].EstimatedTotalCost = heuristics[start];
+            nodeRecords[start].EstimatedTotalCost = heuristics(start);
 
             // "Current" node is start node
             current = start;
@@ -124,7 +124,7 @@ namespace LibGameAI.PathFinding
                     nodeRecords[conn.ToNode].CostSoFar = toNodeCost;
                     nodeRecords[conn.ToNode].Connection = conn;
                     nodeRecords[conn.ToNode].EstimatedTotalCost =
-                        toNodeCost + heuristics[conn.ToNode];
+                        toNodeCost + heuristics(conn.ToNode);
 
                     // Add node to the open list if it's not already there
                     if ((nrIndex = open.FindIndex(findNodePred)) < 0)

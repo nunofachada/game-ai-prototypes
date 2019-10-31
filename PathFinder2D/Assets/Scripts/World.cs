@@ -16,6 +16,10 @@ public class World : MonoBehaviour
     // How long between each movement
     [SerializeField] private float moveDuration = 0.5f;
 
+    [SerializeField] private PathFindingType pathFindingType = default;
+
+    private enum PathFindingType { Dijkstra, AStar }
+
     // Player and goal positions
     private Vector2Int playerPos;
     private Vector2Int goalPos;
@@ -186,6 +190,15 @@ public class World : MonoBehaviour
         }
     }
 
+    // This method is used as an heuristic for A*
+    // It's the euclidean distance heuristic
+    private float HeuristicForAStar(int node)
+    {
+        Vector2 nodeVec = (Vector2)Ind2Vec(node, world.GetLength(0));
+        Vector2 destVec = (Vector2)goalPos;
+        return Vector2.Distance(nodeVec, destVec);
+    }
+
     // This co-routine performs the path finding and invokes another coroutine
     // to perform player movement animation
     private IEnumerator FindPath()
@@ -200,10 +213,23 @@ public class World : MonoBehaviour
         while (playerPos != goalPos)
         {
             // Perform path finding
-            path = Dijkstra.GetShortestPath(
-                graph,
-                Vec2Ind(playerPos, world.GetLength(0)),
-                Vec2Ind(goalPos, world.GetLength(0)));
+            if (pathFindingType == PathFindingType.Dijkstra)
+            {
+                // Use Dijkstra algorithm
+                path = Dijkstra.GetShortestPath(
+                    graph,
+                    Vec2Ind(playerPos, world.GetLength(0)),
+                    Vec2Ind(goalPos, world.GetLength(0)));
+            }
+            else
+            {
+                // Use AStar algorithm
+                path = AStar.GetPath(
+                    graph,
+                    Vec2Ind(playerPos, world.GetLength(0)),
+                    Vec2Ind(goalPos, world.GetLength(0)),
+                    HeuristicForAStar);
+            }
 
             // Get an enumerator for the connection enumerable (it must be
             // disposed of, as such we put it in a using block)
