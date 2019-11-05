@@ -5,19 +5,25 @@ using LibGameAI.PathFinding;
 
 public class World : MonoBehaviour
 {
+    // These should contain the prefabs that represent the game objects
     [SerializeField] private GameObject emptyTile = null;
     [SerializeField] private GameObject blockedTile = null;
     [SerializeField] private GameObject player = null;
     [SerializeField] private GameObject goal = null;
 
+    // The world size
     [SerializeField] private Vector2Int worldSize = new Vector2Int(10, 10);
+
+    // Ratio of passages in each column
     [SerializeField] [Range(0f, 1f)] private float passageRatio = 0.1f;
 
     // How long between each movement
     [SerializeField] private float moveDuration = 0.5f;
 
+    // Path finding algorithm to use
     [SerializeField] private PathFindingType pathFindingType = default;
 
+    // Enumeration that represents the differerent path finding strategies
     private enum PathFindingType { Dijkstra, AStar }
 
     // Player and goal positions
@@ -36,9 +42,10 @@ public class World : MonoBehaviour
     // Offset for all tiles
     private Vector2 offset;
 
+    // Awake is called when the script instance is being loaded
+    // We use it to procedurally generate the level
     private void Awake()
     {
-
         // Array of game objects to clone for each column
         GameObject[] columnToClone = new GameObject[worldSize.y];
 
@@ -50,7 +57,8 @@ public class World : MonoBehaviour
         if (worldSize.x % 2 == 0) worldSize.x++;
 
         // Adjust camera to game world
-        cameraComponent.orthographicSize = Mathf.Max(worldSize.x, worldSize.y) / 2;
+        cameraComponent.orthographicSize =
+            Mathf.Max(worldSize.x, worldSize.y) / 2;
 
         // Initialize matrix of game world elements (by default will be
         // all empties)
@@ -143,53 +151,6 @@ public class World : MonoBehaviour
         StartCoroutine(FindPath());
     }
 
-    private class TileWorldGraph : IGraph
-    {
-        private TileTypeBehaviour[,] world;
-        public IEnumerable<IConnection> GetConnections(int fromNode)
-        {
-            Vector2Int node = Ind2Vec(fromNode, world.GetLength(0));
-            if (world[node.x, node.y].TileType != TileTypeEnum.Blocked)
-            {
-                Vector2Int up, down, left, right;
-                int xdim = world.GetLength(0);
-
-                up = node + Vector2Int.up;
-                if (up.y < world.GetLength(1)
-                        && world[up.x, up.y].TileType != TileTypeEnum.Blocked)
-                {
-                    yield return new Connection(1f, fromNode, Vec2Ind(up, xdim));
-                }
-
-                down = node + Vector2Int.down;
-                if (down.y >= 0
-                        && world[down.x, down.y].TileType != TileTypeEnum.Blocked)
-                {
-                    yield return new Connection(1f, fromNode, Vec2Ind(down, xdim));
-                }
-
-                left = node + Vector2Int.left;
-                if (left.x >= 0
-                        && world[left.x, left.y].TileType != TileTypeEnum.Blocked)
-                {
-                    yield return new Connection(1f, fromNode, Vec2Ind(left, xdim));
-                }
-
-                right = node + Vector2Int.right;
-                if (right.x < world.GetLength(0)
-                        && world[right.x, right.y].TileType != TileTypeEnum.Blocked)
-                {
-                    yield return new Connection(1f, fromNode, Vec2Ind(right, xdim));
-                }
-            }
-        }
-
-        public TileWorldGraph(TileTypeBehaviour[,] world)
-        {
-            this.world = world;
-        }
-    }
-
     // This method is used as an heuristic for A*
     // It's the euclidean distance heuristic
     private float HeuristicForAStar(int node)
@@ -256,37 +217,64 @@ public class World : MonoBehaviour
     // Co-routine that performs the player movement animation
     private IEnumerator MovePlayer(int toNode, float duration)
     {
+        // Final position of player sprite
         Vector3 finalPos;
+        // Initial position of player sprite
         Vector3 initPos = player.transform.position;
+        // Animation start time
         float startTime = Time.time;
+        // Animation end time
         float endTime = startTime + duration;
 
+        // Set player tile position to its final position
         playerPos = Ind2Vec(toNode, world.GetLength(0));
 
+        // Determine player sprite final position
         finalPos = new Vector3(
             playerPos.x - offset.x,
             playerPos.y - offset.y,
             player.transform.position.z);
 
+        // Perform animation
         while (Time.time < endTime)
         {
+            // Get current time
             float currTime = Time.time;
+            // Determine movement length
             float toMove = Mathf.InverseLerp(startTime, endTime, currTime);
+            // Determine new sprite position for current frame
             Vector3 newPos = Vector3.Lerp(initPos, finalPos, toMove);
+            // Move player sprite to new position
             player.transform.position = newPos;
+            // Give control back to main loop, this loop will continue on the
+            // next frame
             yield return null;
         }
 
+        // Make sure player sprite ends up in the final position
         player.transform.position = finalPos;
     }
 
     // Draw a message when the goal is reached
     private void OnGUI()
     {
+        // If goal is reached, show message
         if (goalReached)
         {
-            GUI.contentColor = Color.yellow;
-            GUI.Label(new Rect(20, 20, 200, 50), "Path found!");
+            // Define message style
+            GUIStyle style = GUIStyle.none;
+
+            style.fontSize = 30;
+            style.fontStyle = FontStyle.Bold;
+            style.normal.textColor = Color.red;
+
+            // Set this GUI rendering to foreground
+            GUI.depth = 0;
+
+            // Show message
+            GUI.Label(
+                new Rect(Screen.width / 2 - 100, Screen.height / 2 - 50, 500, 200),
+                "Goal reached!", style);
         }
     }
 
@@ -306,6 +294,7 @@ public class World : MonoBehaviour
         if (path != null)
         {
             bool first = true;
+            // Cycle through all connections
             foreach (IConnection conn in path)
             {
                 // Don't draw first connection, it doesn't look very nice
@@ -315,21 +304,26 @@ public class World : MonoBehaviour
                 }
                 else
                 {
+                    // Get start tile for current connection
                     Vector2Int start = Ind2Vec(conn.FromNode, world.GetLength(0));
+                    // Get end tile for current connection
                     Vector2Int end = Ind2Vec(conn.ToNode, world.GetLength(0));
+                    // Get on-screen position for start of current connection
                     Vector3 startPos = new Vector3(
                         start.x - offset.x, start.y - offset.y, -3);
+                    // Get on-screen position for end of current connection
                     Vector3 endPos = new Vector3(
                         end.x - offset.x, end.y - offset.y, -3);
+                    // Draw line for current connection
                     Gizmos.DrawLine(startPos, endPos);
                 }
             }
         }
     }
 
-    private static Vector2Int Ind2Vec(int index, int xdim) =>
+    public static Vector2Int Ind2Vec(int index, int xdim) =>
         new Vector2Int(index % xdim, index / xdim);
-    private static int Vec2Ind(Vector2Int vec, int xdim) =>
+    public static int Vec2Ind(Vector2Int vec, int xdim) =>
         vec.y * xdim + vec.x;
 
 }
