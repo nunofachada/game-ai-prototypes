@@ -5,6 +5,10 @@ using LibGameAI.PathFinding;
 
 public class World : MonoBehaviour
 {
+
+    // Goal reached?
+    public bool GoalReached { get; private set; }
+
     // These should contain the prefabs that represent the game objects
     [SerializeField] private GameObject emptyTile = null;
     [SerializeField] private GameObject blockedTile = null;
@@ -29,9 +33,6 @@ public class World : MonoBehaviour
     // Player and goal positions
     private Vector2Int playerPos;
     private Vector2Int goalPos;
-
-    // Goal reached?
-    private bool goalReached;
 
     // Current path
     private IEnumerable<IConnection> path = null;
@@ -68,7 +69,7 @@ public class World : MonoBehaviour
     private void Start()
     {
         // Goal hasn't been reached yet
-        goalReached = false;
+        GoalReached = false;
 
         // Generate level
         GenerateLevel();
@@ -78,7 +79,7 @@ public class World : MonoBehaviour
     }
 
     // Restart path finding
-    private void Restart()
+    internal void Restart()
     {
         // Delete world tiles
         for (int i = 0; i < worldSize.x; i++)
@@ -241,7 +242,7 @@ public class World : MonoBehaviour
         }
 
         // If we got here, it means the goal was reached!
-        goalReached = true;
+        GoalReached = true;
     }
 
     // Co-routine that performs the player movement animation
@@ -283,35 +284,6 @@ public class World : MonoBehaviour
 
         // Make sure player sprite ends up in the final position
         player.transform.position = finalPos;
-    }
-
-    // Draw a message when the goal is reached
-    private void OnGUI()
-    {
-        // If goal is reached, draw window with restart button
-        if (goalReached)
-        {
-            // Place and draw restart window
-            GUI.Window(0,
-                new Rect(Screen.width / 2 - 100, Screen.height / 2 - 50, 200, 100),
-                DrawRestartWindow,
-                "Goal reached!");
-        }
-    }
-
-    // Draw window contents
-    private void DrawRestartWindow(int id)
-    {
-        // Is this the correct window?
-        if (id == 0)
-        {
-            // Draw restart button
-            if (GUI.Button(new Rect(50, 40, 100, 30), "Restart"))
-            {
-                // If button is clicked, restart
-                Restart();
-            }
-        }
     }
 
     // Draw gizmos around player, goal and along found path
