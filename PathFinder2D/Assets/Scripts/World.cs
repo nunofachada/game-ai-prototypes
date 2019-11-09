@@ -31,7 +31,7 @@ public class World : MonoBehaviour
     private Vector2Int goalPos;
 
     // Goal reached?
-    private bool goalReached = false;
+    private bool goalReached;
 
     // Current path
     private IEnumerable<IConnection> path = null;
@@ -43,12 +43,8 @@ public class World : MonoBehaviour
     private Vector2 offset;
 
     // Awake is called when the script instance is being loaded
-    // We use it to procedurally generate the level
     private void Awake()
     {
-        // Array of game objects to clone for each column
-        GameObject[] columnToClone = new GameObject[worldSize.y];
-
         // References to camera game object and camera component
         GameObject cameraGameObj = GameObject.FindWithTag("MainCamera");
         Camera cameraComponent = cameraGameObj.GetComponent<Camera>();
@@ -66,6 +62,45 @@ public class World : MonoBehaviour
 
         // Determine tile offsets
         offset = new Vector2(worldSize.x / 2f - 0.5f, worldSize.y / 2f - 0.5f);
+    }
+
+    // Start is called before the first frame update
+    private void Start()
+    {
+        // Goal hasn't been reached yet
+        goalReached = false;
+
+        // Generate level
+        GenerateLevel();
+
+        // Start path finding process
+        StartCoroutine(FindPath());
+    }
+
+    // Restart path finding
+    private void Restart()
+    {
+        // Delete world tiles
+        for (int i = 0; i < worldSize.x; i++)
+        {
+            for (int j = 0; j < worldSize.y; j++)
+            {
+                Destroy(world[i, j].gameObject);
+            }
+        }
+        // Delete player and goal
+        Destroy(player);
+        Destroy(goal);
+
+        // Start again
+        Start();
+    }
+
+    // Procedurally generate level
+    private void GenerateLevel()
+    {
+        // Array of game objects to clone for each column
+        GameObject[] columnToClone = new GameObject[worldSize.y];
 
         // Cycle through columns
         for (int i = 0; i < worldSize.x; i++)
@@ -143,12 +178,7 @@ public class World : MonoBehaviour
         }
 
         Debug.Log($"Goal placed at {goalPos}");
-    }
 
-    // Start is called before the first frame update
-    private void Start()
-    {
-        StartCoroutine(FindPath());
     }
 
     // This method is used as an heuristic for A*
@@ -212,6 +242,8 @@ public class World : MonoBehaviour
 
         // If we got here, it means the goal was reached!
         goalReached = true;
+
+        Invoke("Restart", 2.0f);
     }
 
     // Co-routine that performs the player movement animation
