@@ -321,8 +321,10 @@ public class World : MonoBehaviour
         }
     }
 
+    // Convert index (graph bode) to int vector (world position)
     public static Vector2Int Ind2Vec(int index, int xdim) =>
         new Vector2Int(index % xdim, index / xdim);
+    // Convert int vector (world position) to index (graph bode)
     public static int Vec2Ind(Vector2Int vec, int xdim) =>
         vec.y * xdim + vec.x;
 
