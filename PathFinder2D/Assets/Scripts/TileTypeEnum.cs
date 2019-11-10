@@ -4,9 +4,5 @@ public enum TileTypeEnum
     // Empty tile
     Empty,
     // Blocked tile
-    Blocked,
-    // Player tile
-    Player,
-    // Goal tile
-    Goal
+    Blocked
 }

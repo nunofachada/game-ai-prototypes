@@ -8,7 +8,7 @@ using static World;
 public class TileWorldGraph : IGraph
 {
     // The tile-based world
-    private TileTypeBehaviour[,] world;
+    private TileBehaviour[,] world;
 
     // Get outgoing connections from given node
     public IEnumerable<IConnection> GetConnections(int fromNode)
@@ -69,7 +69,7 @@ public class TileWorldGraph : IGraph
     }
 
     // Constructor
-    public TileWorldGraph(TileTypeBehaviour[,] world)
+    public TileWorldGraph(TileBehaviour[,] world)
     {
         this.world = world;
     }

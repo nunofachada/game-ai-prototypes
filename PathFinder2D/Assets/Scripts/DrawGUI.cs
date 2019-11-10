@@ -25,6 +25,25 @@ public class DrawGUI : MonoBehaviour
                 DrawRestartWindow,
                 "Goal reached!");
         }
+
+        // If no path currently exists, say so
+        if (!world.ValidPath)
+        {
+            // Define message style
+            GUIStyle style = GUIStyle.none;
+
+            style.fontSize = 30;
+            style.fontStyle = FontStyle.Bold;
+            style.normal.textColor = Color.red;
+
+            // Set this GUI rendering to foreground
+            GUI.depth = 0;
+
+            // Show message
+            GUI.Label(
+                new Rect(Screen.width / 2 - 130, Screen.height / 2 - 50, 260, 100),
+                "No valid path found!", style);
+        }
     }
 
     // Draw window contents

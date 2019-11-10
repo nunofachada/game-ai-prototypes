@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 35728392f3a6d002289fd7707f9db9dc
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - blocked: {fileID: 21300000, guid: d7e82d522f60bd3e88bf7ed18e3b2d5f, type: 3}
+  - empty: {fileID: 21300000, guid: 80b1be3e30e9b2ff4b5b872051496959, type: 3}
+  - player: {fileID: 21300000, guid: c2b90afb508d7da7697d9a7df1008247, type: 3}
+  - goal: {fileID: 21300000, guid: c86a561b653fefe45a9da09c3e413881, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
