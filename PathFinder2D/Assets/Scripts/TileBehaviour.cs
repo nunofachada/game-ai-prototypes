@@ -18,6 +18,10 @@ public class TileBehaviour : MonoBehaviour
     // Property that returns the tile type
     public TileTypeEnum TileType => tileType;
 
+    // Property that returns true if mouse actions can be performed on a tile
+    private bool ActOnMouse =>
+        Pos != world.PlayerPos && Pos != world.GoalPos && !world.GoalReached;
+
     // Position of this tile in the world
     internal Vector2Int Pos { get; set; }
 
@@ -28,6 +32,15 @@ public class TileBehaviour : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         // Get reference to the world script
         world = GameObject.Find("World").GetComponent<World>();
+    }
+
+    // Make sure there is no highlight when goal is reached
+    private void Update()
+    {
+        if (world.GoalReached)
+        {
+            spriteRenderer.color = Color.white;
+        }
     }
 
     // Set tile as empty or blocked
@@ -48,7 +61,7 @@ public class TileBehaviour : MonoBehaviour
     // Swap tile type between blocked and empty
     private void OnMouseDown()
     {
-        if (Pos != world.PlayerPos && Pos != world.GoalPos)
+        if (ActOnMouse)
         {
             if (tileType == TileTypeEnum.Empty)
                 SetAs(TileTypeEnum.Blocked);
@@ -57,4 +70,21 @@ public class TileBehaviour : MonoBehaviour
         }
     }
 
+    // Highlight tile when mouse enters tile
+    private void OnMouseEnter()
+    {
+        if (ActOnMouse)
+        {
+            spriteRenderer.color = Color.yellow;
+        }
+    }
+
+    // Remove tile highlight when mouse leaves tile
+    private void OnMouseExit()
+    {
+        if (ActOnMouse)
+        {
+            spriteRenderer.color = Color.white;
+        }
+    }
 }
