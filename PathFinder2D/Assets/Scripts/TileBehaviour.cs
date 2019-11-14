@@ -82,9 +82,6 @@ public class TileBehaviour : MonoBehaviour
     // Remove tile highlight when mouse leaves tile
     private void OnMouseExit()
     {
-        if (ActOnMouse)
-        {
-            spriteRenderer.color = Color.white;
-        }
+        spriteRenderer.color = Color.white;
     }
 }
