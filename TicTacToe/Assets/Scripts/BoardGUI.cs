@@ -22,7 +22,16 @@ public class BoardGUI : MonoBehaviour
 
     private void OnGUI()
     {
+        string turnLabel = game.Status == null
+            ? (game.IsHumanTurn
+                ? game.Turn + " : " + "It's the weak human turn"
+                : game.Turn + " : " + "It's the awesome IA turn")
+            : "Game Over: " + game.Status;
         Vector2Int currPos = topLeftCellPos;
+
+        GUI.color = Color.white;
+        GUI.backgroundColor = Color.black;
+
         for (int x = 0; x < 3; x++)
         {
             currPos.y = topLeftCellPos.y;
@@ -42,7 +51,7 @@ public class BoardGUI : MonoBehaviour
                         new Rect(currPos.x, currPos.y, cellSize, cellSize),
                         "O");
                 }
-                else
+                else if (game.IsHumanTurn && game.Status == null)
                 {
                     if (GUI.Button(
                         new Rect(currPos.x, currPos.y, cellSize, cellSize), ""))
@@ -54,5 +63,8 @@ public class BoardGUI : MonoBehaviour
             }
             currPos.x += cellSize + cellSpacing;
         }
+
+        GUI.color = Color.yellow;
+        GUI.Label(new Rect(10, 10, 200, 20), turnLabel);
     }
 }

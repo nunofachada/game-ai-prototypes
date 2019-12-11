@@ -4,7 +4,21 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+    [SerializeField] private PlayerType playerX = default;
+    [SerializeField] private PlayerType playerO = default;
+
     public CellState Turn { get; private set; }
+
+    public PlayerType PlayerX => playerX;
+    public PlayerType PlayerO => playerO;
+
+    public CellState? Status => gameBoard.Status();
+
+    private ITicTacToeIA iA;
+
+    public bool IsHumanTurn =>
+        (Turn == CellState.X && playerX == PlayerType.Human) ||
+        (Turn == CellState.O && playerO == PlayerType.Human);
 
     private Board gameBoard = null;
 
@@ -13,13 +27,27 @@ public class GameController : MonoBehaviour
     private void Awake()
     {
         gameBoard = new Board();
+        iA = GetComponent<ITicTacToeIA>();
     }
 
-    // Start is called before the first frame update
     private void Start()
     {
         Turn = CellState.X;
         gameBoard.Reset();
+    }
+
+    private void Update()
+    {
+        if (!IsHumanTurn && !IsInvoking("IAPlay") && Status == null)
+        {
+            Invoke("IAPlay", 1f);
+        }
+    }
+
+    private void IAPlay()
+    {
+        Vector2Int iaMove = iA.Play(gameBoard, Turn);
+        PlayTurn(iaMove);
     }
 
     public void PlayTurn(Vector2Int pos)
@@ -27,4 +55,5 @@ public class GameController : MonoBehaviour
         gameBoard.SetStateAt(pos, Turn);
         Turn = Turn == CellState.X ? CellState.O : CellState.X;
     }
+
 }
