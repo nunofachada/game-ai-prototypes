@@ -30,8 +30,21 @@ public class BoardGUI : MonoBehaviour
     // Is a game occurring?
     private bool inGame;
 
-    // A list of playable IAs
-    private IList<Type> playableIAs;
+    // Expand dropdown menu for X player selection?
+    private bool expandDropdownX = false;
+    // The index of X player type
+    private int indexPlayerX = 0;
+
+    // Expand dropdown menu for O player selection?
+    private bool expandDropdownO = false;
+    // The index of O player type
+    private int indexPlayerO = 0;
+
+    // An array of playable IAs
+    private Type[] playableIAs;
+
+    // GUI style for label text centering purposes
+    private GUIStyle centerLabelTextStyle = null;
 
     // Initialization done here
     private void Awake()
@@ -58,11 +71,11 @@ public class BoardGUI : MonoBehaviour
     // Draw GUI
     private void OnGUI()
     {
-        if (inGame)
-            GameGUI();
+        if (inGame) GameGUI();
         else MenuGUI();
     }
 
+    // Game UI
     private void GameGUI()
     {
         // Determine what label to show
@@ -79,8 +92,11 @@ public class BoardGUI : MonoBehaviour
         Vector2Int currPos = topLeftCellPos;
 
         // Configure a GUI style for label text centering purposes
-        GUIStyle centerLabelTextStyle = new GUIStyle(GUI.skin.label);
-        centerLabelTextStyle.alignment = TextAnchor.MiddleCenter;
+        if (centerLabelTextStyle == null)
+        {
+            centerLabelTextStyle = new GUIStyle(GUI.skin.label);
+            centerLabelTextStyle.alignment = TextAnchor.MiddleCenter;
+        }
 
         // Set text color for moves
         GUI.color = Color.white;
@@ -161,10 +177,34 @@ public class BoardGUI : MonoBehaviour
     }
 
 
+    // Menu UI
     private void MenuGUI()
     {
+        int buttonWidth = Screen.width / 7;
+        int buttonHeight = Screen.height / 16;
+
         // Player X
+        DropdownMenu(
+            new Rect(
+                Screen.width / 8,
+                Screen.height / 5,
+                buttonWidth,
+                buttonHeight),
+            playableIAs,
+            ref expandDropdownX,
+            ref indexPlayerX);
+
         // Player O
+        DropdownMenu(
+            new Rect(
+                7 * Screen.width / 8 - buttonWidth,
+                Screen.height / 5,
+                buttonWidth,
+                buttonHeight),
+            playableIAs,
+            ref expandDropdownO,
+            ref indexPlayerO);
+
         // Start
         if (GUI.Button(
             new Rect(
@@ -179,8 +219,47 @@ public class BoardGUI : MonoBehaviour
         }
     }
 
-    // private int DropdownMenu()
-    // {
-    //     return 0;
-    // }
+    private void DropdownMenu(
+        Rect rect, IList<object> options, ref bool show, ref int index,
+        string selString = "Select")
+    {
+        Vector2 scrollViewVector = Vector2.zero;
+        GUIStyle italicTextStyle = new GUIStyle(GUI.skin.button);
+        italicTextStyle.fontStyle = FontStyle.Italic;
+
+        if(GUI.Button(
+            new Rect(rect.x, rect.y, rect.width, rect.height),
+            show ? selString : options[index].ToString(), italicTextStyle))
+        {
+            show = !show;
+        }
+
+        if(show)
+        {
+            scrollViewVector = GUI.BeginScrollView(
+                new Rect(
+                    rect.x, rect.y + rect.height, rect.width, rect.height * options.Count),
+                scrollViewVector,
+                new Rect(
+                    0,
+                    0,
+                    rect.width,
+                    rect.height * options.Count));
+
+            GUI.Box(
+                new Rect(0, 0, rect.width, rect.height * options.Count), "");
+
+            for(int i = 0; i < options.Count; i++)
+            {
+                if(GUI.Button(
+                    new Rect(0, i * rect.height, rect.width, rect.height),  options[i].ToString()))
+                {
+                    show = false;
+                    index = i;
+                }
+            }
+
+            GUI.EndScrollView();
+        }
+    }
 }
