@@ -236,6 +236,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellSize: 30
   cellSpacing: 4
+  stuff:
+  - d
+  - dois
+  - tres
 --- !u!4 &1696284096
 Transform:
   m_ObjectHideFlags: 0
@@ -273,6 +277,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 1696284094}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8e59e6fbc4fe2a708b7b25e57c8f7dc, type: 3}
+  m_Script: {fileID: 11500000, guid: 36078d38df1ead2b7ae8499b8a03495c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

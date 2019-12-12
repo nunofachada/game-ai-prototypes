@@ -1,22 +1,34 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * Author: Nuno Fachada
+ * */
 using UnityEngine;
 using System.Collections.Generic;
 
+// Represents a TicTacToe board
 public class Board : IBoard
 {
+    // 2D array containing board
     private CellState[,] board;
 
+    // Create a new empty board
     public Board()
     {
         board = new CellState[3, 3];
     }
 
+    // Get board state at specified position
     public CellState GetStateAt(Vector2Int pos) => board[pos.x, pos.y];
 
+    // Set board state at specified position
     public void SetStateAt(Vector2Int pos, CellState state)
     {
         board[pos.x, pos.y] = state;
     }
 
+    // Reset board
     public void Reset()
     {
         for (int x = 0; x < 3; x++)
@@ -24,6 +36,16 @@ public class Board : IBoard
                 board[x, y] = CellState.Undecided;
     }
 
+    /// <summary>
+    /// Board winner status.
+    /// </summary>
+    /// <returns>
+    /// This method can return the following values:
+    /// * `null` - Game in progress
+    /// * `CellState.Undecided` - Game over, there is a draw.
+    /// * `CellState.X` - Game over, X wins
+    /// * `CellState.O` - Game over, O wins
+    /// </returns>
     public CellState? Status()
     {
         // All possible winning positions
@@ -70,5 +92,4 @@ public class Board : IBoard
         // Game is over with a draw
         return CellState.Undecided;
     }
-
 }
