@@ -46,11 +46,17 @@ public class BoardGUI : MonoBehaviour
     // GUI style for label text centering purposes
     private GUIStyle centerLabelTextStyle = null;
 
+    // Helper class for rendering a dropdown menu
+    private Dropdown dropdown;
+
     // Initialization done here
     private void Awake()
     {
         // Initially, we're not in game
         inGame = false;
+
+        // Instantiate helper class for rendering a dropdown menu
+        dropdown = new Dropdown();
 
         // Determine position in pixels of the top left cell
         topLeftCellPos = new Vector2Int(
@@ -184,7 +190,7 @@ public class BoardGUI : MonoBehaviour
         int buttonHeight = Screen.height / 16;
 
         // Player X
-        DropdownMenu(
+        dropdown.Show(
             new Rect(
                 Screen.width / 8,
                 Screen.height / 5,
@@ -195,7 +201,7 @@ public class BoardGUI : MonoBehaviour
             ref indexPlayerX);
 
         // Player O
-        DropdownMenu(
+        dropdown.Show(
             new Rect(
                 7 * Screen.width / 8 - buttonWidth,
                 Screen.height / 5,
@@ -216,50 +222,6 @@ public class BoardGUI : MonoBehaviour
         {
             game.NewGame();
             inGame = true;
-        }
-    }
-
-    private void DropdownMenu(
-        Rect rect, IList<object> options, ref bool show, ref int index,
-        string selString = "Select")
-    {
-        Vector2 scrollViewVector = Vector2.zero;
-        GUIStyle italicTextStyle = new GUIStyle(GUI.skin.button);
-        italicTextStyle.fontStyle = FontStyle.Italic;
-
-        if(GUI.Button(
-            new Rect(rect.x, rect.y, rect.width, rect.height),
-            show ? selString : options[index].ToString(), italicTextStyle))
-        {
-            show = !show;
-        }
-
-        if(show)
-        {
-            scrollViewVector = GUI.BeginScrollView(
-                new Rect(
-                    rect.x, rect.y + rect.height, rect.width, rect.height * options.Count),
-                scrollViewVector,
-                new Rect(
-                    0,
-                    0,
-                    rect.width,
-                    rect.height * options.Count));
-
-            GUI.Box(
-                new Rect(0, 0, rect.width, rect.height * options.Count), "");
-
-            for(int i = 0; i < options.Count; i++)
-            {
-                if(GUI.Button(
-                    new Rect(0, i * rect.height, rect.width, rect.height),  options[i].ToString()))
-                {
-                    show = false;
-                    index = i;
-                }
-            }
-
-            GUI.EndScrollView();
         }
     }
 }
