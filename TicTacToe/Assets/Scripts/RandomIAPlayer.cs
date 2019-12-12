@@ -7,7 +7,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class RandomTicTacToeIA : MonoBehaviour, ITicTacToeIA
+public class RandomAIPlayer : IPlayer
 {
     public Vector2Int Play(IBoard gameBoard, CellState turn)
     {

@@ -5,11 +5,11 @@
  * Author: Nuno Fachada
  * */
 
-// Type of player in a board game
-public enum PlayerType
+using UnityEngine;
+
+// A human TicTacToe player, doesn't do anything since the actual plays are
+// delegated to the UI
+public class HumanPlayer : IPlayer
 {
-    // Human player
-    Human,
-    // IA player
-    IA
+    public Vector2Int Play(IBoard gameBoard, CellState turn) { }
 }

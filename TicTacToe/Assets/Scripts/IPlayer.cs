@@ -6,8 +6,8 @@
  * */
 using UnityEngine;
 
-// Interface for a TicTacToe IA
-public interface ITicTacToeIA
+// Interface for a TicTacToe player
+public interface IPlayer
 {
     Vector2Int Play(IBoard gameBoard, CellState turn);
 }

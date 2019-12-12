@@ -4,11 +4,12 @@
  *
  * Author: Nuno Fachada
  * */
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NegamaxTicTacToeAI : MonoBehaviour, ITicTacToeIA
+public class NegamaxAIPlayer : IPlayer
 {
     struct Move
     {

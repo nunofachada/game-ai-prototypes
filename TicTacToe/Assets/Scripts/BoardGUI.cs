@@ -19,8 +19,6 @@ public class BoardGUI : MonoBehaviour
     [SerializeField] private int cellSize = 40;
     [SerializeField] private int cellSpacing = 4;
 
-    [SerializeField] private string[] stuff = { "um", "dois", "tres" };
-
     // Position in pixels of the top left cell
     private Vector2Int topLeftCellPos;
 
@@ -49,6 +47,12 @@ public class BoardGUI : MonoBehaviour
     // Helper class for rendering a dropdown menu
     private Dropdown dropdown;
 
+    // Is the current turn for a human to play?
+    private bool IsHumanTurn =>
+        (game.Turn == CellState.X && game.PlayerX is HumanPlayer)
+        ||
+        (game.Turn == CellState.O && game.PlayerO is HumanPlayer);
+
     // Initialization done here
     private void Awake()
     {
@@ -68,10 +72,25 @@ public class BoardGUI : MonoBehaviour
 
         // Search for playable IAs
         playableIAs = (from type in Assembly.GetExecutingAssembly().GetTypes()
-                       where typeof(ITicTacToeIA).IsAssignableFrom(type)
+                       where typeof(IPlayer).IsAssignableFrom(type)
                            && !type.IsInterface
                            && !type.IsAbstract
                        select type).ToArray();
+    }
+
+    // Start a game
+    private void StartGame()
+    {
+        inGame = true;
+        game.PlayerX = Activator.CreateInstance(playableIAs[indexPlayerX]);
+        game.PlayerO = Activator.CreateInstance(playableIAs[indexPlayerO]);
+        game.NewGame();
+    }
+
+    // Stop a game
+    private void StopGame()
+    {
+        inGame = false;
     }
 
     // Draw GUI
@@ -84,16 +103,6 @@ public class BoardGUI : MonoBehaviour
     // Game UI
     private void GameGUI()
     {
-        // Determine what label to show
-        string turnLabel = game.Status == null
-            ? (game.IsHumanTurn
-                ? game.Turn + " : " + "It's the weak human turn"
-                : game.Turn + " : " + "It's the awesome IA turn")
-            : ("Game Over: " +
-                (game.Status != CellState.Undecided
-                    ? game.Status + " wins"
-                    : "It's a draw"));
-
         // Position of current cell to draw
         Vector2Int currPos = topLeftCellPos;
 
@@ -136,7 +145,7 @@ public class BoardGUI : MonoBehaviour
                         "O",
                         centerLabelTextStyle);
                 }
-                else if (game.IsHumanTurn && game.Status == null)
+                else if (IsHumanTurn && game.Status == null)
                 {
                     // Nobody played this position, show a button
                     if (GUI.Button(
@@ -164,7 +173,7 @@ public class BoardGUI : MonoBehaviour
                     cellSize),
                 "Back to menu"))
             {
-                inGame = false;
+                StopGame();
             }
         }
 
@@ -178,10 +187,9 @@ public class BoardGUI : MonoBehaviour
                 Screen.height / 2 - 3 * cellSize,
                 cellSize * 6,
                 cellSize),
-            turnLabel,
+            game.ToString(),
             centerLabelTextStyle);
     }
-
 
     // Menu UI
     private void MenuGUI()
@@ -220,8 +228,7 @@ public class BoardGUI : MonoBehaviour
                 cellSize),
             "Start new game"))
         {
-            game.NewGame();
-            inGame = true;
+            StartGame();
         }
     }
 }
