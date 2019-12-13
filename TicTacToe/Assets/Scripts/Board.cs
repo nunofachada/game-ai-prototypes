@@ -4,6 +4,8 @@
  *
  * Author: Nuno Fachada
  * */
+
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -25,6 +27,10 @@ public class Board : IBoard
     // Set board state at specified position
     public void SetStateAt(Vector2Int pos, CellState state)
     {
+        if (pos.x > 2 || pos.x < 0 || pos.y > 2 || pos.y < 0)
+            throw new InvalidOperationException(
+                $"Position {pos} is invalid for TicTacToe!");
+
         board[pos.x, pos.y] = state;
     }
 

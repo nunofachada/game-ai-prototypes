@@ -47,12 +47,6 @@ public class BoardGUI : MonoBehaviour
     // Helper class for rendering a dropdown menu
     private Dropdown dropdown;
 
-    // Is the current turn for a human to play?
-    private bool IsHumanTurn =>
-        (game.Turn == CellState.X && game.PlayerX is HumanPlayer)
-        ||
-        (game.Turn == CellState.O && game.PlayerO is HumanPlayer);
-
     // Initialization done here
     private void Awake()
     {
@@ -82,15 +76,19 @@ public class BoardGUI : MonoBehaviour
     private void StartGame()
     {
         inGame = true;
-        game.PlayerX = Activator.CreateInstance(playableIAs[indexPlayerX]);
-        game.PlayerO = Activator.CreateInstance(playableIAs[indexPlayerO]);
+        game.PlayerX =
+            Activator.CreateInstance(playableIAs[indexPlayerX]) as IPlayer;
+        game.PlayerO =
+            Activator.CreateInstance(playableIAs[indexPlayerO]) as IPlayer;
         game.NewGame();
+        game.IsGameOn = true;
     }
 
     // Stop a game
     private void StopGame()
     {
         inGame = false;
+        game.IsGameOn = false;
     }
 
     // Draw GUI
@@ -145,14 +143,14 @@ public class BoardGUI : MonoBehaviour
                         "O",
                         centerLabelTextStyle);
                 }
-                else if (IsHumanTurn && game.Status == null)
+                else if (game.IsHumanTurn)
                 {
                     // Nobody played this position, show a button
                     if (GUI.Button(
                         new Rect(currPos.x, currPos.y, cellSize, cellSize), ""))
                     {
                         // If button is pressed, make the move
-                        game.PlayTurn(new Vector2Int(x, y));
+                        game.Move(new Vector2Int(x, y));
                     }
                 }
                 // Update the cell position in the y-axis

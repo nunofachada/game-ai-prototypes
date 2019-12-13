@@ -28,25 +28,29 @@ public class GameController : MonoBehaviour
     // Public property for accessing the game board
     public IBoard GameBoard => gameBoard;
 
-    // Is the game in auto play mode?
-    public bool AutoPlay { get; set; }
+    // Is a game taking place?
+    public bool IsGameOn { get; set; }
+
+    // Is it time for a human to play?
+    public bool IsHumanTurn =>
+        ((Turn == CellState.X && PlayerX is HumanPlayer)
+        ||
+        (Turn == CellState.O && PlayerO is HumanPlayer));
 
     // Initialize
     private void Awake()
     {
         // Instantiate new board
         gameBoard = new Board();
-        // Get a reference to the AI
-        iA = GetComponent<IPlayer>();
         // Reset board
         NewGame();
+        // Game not on right now
+        IsGameOn = false;
     }
 
     // Start new game
     public void NewGame()
     {
-        // Auto play is initially disabled
-        AutoPlay = false;
         // X is first to play
         Turn = CellState.X;
         // Clear the board
@@ -57,9 +61,10 @@ public class GameController : MonoBehaviour
     private void Update()
     {
         // If it's the AI turn, schedule it for play in half a second
-        if (!IsInvoking("DoAutoPlay") && Status == null && AutoPlay)
+        if (!IsInvoking("DoAutoPlay") && !IsHumanTurn && IsGameOn && Status == null)
         {
-            Invoke("DoAutoPlay", 0.5f);
+            Debug.Log("turn: " + Turn);
+            Invoke("DoAutoPlay", 1.5f);
         }
     }
 
@@ -76,7 +81,7 @@ public class GameController : MonoBehaviour
     }
 
     // Perform a move
-    private void Move(Vector2Int pos)
+    public void Move(Vector2Int pos)
     {
         gameBoard.SetStateAt(pos, Turn);
         Turn = Turn == CellState.X ? CellState.O : CellState.X;

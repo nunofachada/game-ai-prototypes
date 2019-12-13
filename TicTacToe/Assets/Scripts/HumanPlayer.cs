@@ -11,5 +11,5 @@ using UnityEngine;
 // delegated to the UI
 public class HumanPlayer : IPlayer
 {
-    public Vector2Int Play(IBoard gameBoard, CellState turn) { }
+    public Vector2Int Play(IBoard gameBoard, CellState turn) => Vector2Int.zero;
 }
