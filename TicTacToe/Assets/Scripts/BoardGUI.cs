@@ -4,6 +4,7 @@
  *
  * Author: Nuno Fachada
  * */
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,9 +25,6 @@ public class BoardGUI : MonoBehaviour
 
     // Reference to the game controller
     private GameController game;
-
-    // Is a game occurring?
-    private bool inGame;
 
     // Expand dropdown menu for X player selection?
     private bool expandDropdownX = false;
@@ -50,9 +48,6 @@ public class BoardGUI : MonoBehaviour
     // Initialization done here
     private void Awake()
     {
-        // Initially, we're not in game
-        inGame = false;
-
         // Instantiate helper class for rendering a dropdown menu
         dropdown = new Dropdown();
 
@@ -75,7 +70,6 @@ public class BoardGUI : MonoBehaviour
     // Start a game
     private void StartGame()
     {
-        inGame = true;
         game.PlayerX =
             Activator.CreateInstance(playableIAs[indexPlayerX]) as IPlayer;
         game.PlayerO =
@@ -87,14 +81,13 @@ public class BoardGUI : MonoBehaviour
     // Stop a game
     private void StopGame()
     {
-        inGame = false;
         game.IsGameOn = false;
     }
 
     // Draw GUI
     private void OnGUI()
     {
-        if (inGame) GameGUI();
+        if (game.IsGameOn) GameGUI();
         else MenuGUI();
     }
 
@@ -181,9 +174,9 @@ public class BoardGUI : MonoBehaviour
         // Show info label
         GUI.Label(
             new Rect(
-                Screen.width / 2 - 3 * cellSize,
+                Screen.width / 4,
                 Screen.height / 2 - 3 * cellSize,
-                cellSize * 6,
+                Screen.width / 2,
                 cellSize),
             game.ToString(),
             centerLabelTextStyle);

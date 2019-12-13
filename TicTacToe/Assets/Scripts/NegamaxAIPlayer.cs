@@ -9,9 +9,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Basic negamax algorithm for automatically playing TicTacToe
 public class NegamaxAIPlayer : IPlayer
 {
-    struct Move
+    // This struct is used internally for keeping tabs on possible moves
+    // and scores
+    private struct Move
     {
         public Vector2Int? Pos { get; set; }
         public int Score { get; set; }
@@ -24,50 +27,72 @@ public class NegamaxAIPlayer : IPlayer
 
     public Vector2Int Play(IBoard gameBoard, CellState turn)
     {
+        // Get the move to perform by invoking the recursive negamax function
         Move move = Negamax(gameBoard, turn);
         return move.Pos ?? Vector2Int.zero;
     }
 
+    // The recursive negamax function
     private Move Negamax(IBoard gameBoard, CellState turn)
     {
+        // Is the game over?
         if (gameBoard.Status() == null)
         {
+            // Game not over, try to find a good move
             Move bestMove = new Move(null, int.MinValue);
-            CellState proxTurn =
+
+            // Who's turn is next?
+            CellState nextTurn =
                 turn == CellState.X ? CellState.O : CellState.X;
 
-            // Jogo nao terminou
+            // Test all possible moves (this is not efficient, alpha-beta
+            // pruning is required for a proper implementation)
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
+                    // A vector with the current position to test
                     Vector2Int pos = new Vector2Int(i, j);
+
+                    // Is the position empty?
                     if (gameBoard.GetStateAt(pos) == CellState.Undecided)
                     {
+                        // If so, let's test it
                         Move move;
 
+                        // Do the move
                         gameBoard.SetStateAt(pos, turn);
 
-                        move = Negamax(gameBoard, proxTurn);
+                        // Evaluate the board with this move
+                        move = Negamax(gameBoard, nextTurn);
 
+                        // Undo the move
                         gameBoard.SetStateAt(pos, CellState.Undecided);
 
+                        // Invert the score
                         move.Score = -move.Score;
 
+                        // Is this move better than the best move so far?
                         if (move.Score > bestMove.Score)
                         {
+                            // If so, update best move so far
                             bestMove.Score = move.Score;
                             bestMove.Pos = pos;
                         }
                     }
                 }
             }
-            return bestMove;
 
+            // Return best move found
+            return bestMove;
         }
         else
         {
-            // Posição final
+            // Game is over, so this is a terminal board
+            // Return 0 if the game ended in a draw, or -10 if it ended in
+            // a victory for either side
+            // There is not move to return since this is a final board, so
+            // the move is null
             int score = gameBoard.Status().Value == CellState.Undecided
                 ? 0 : -10;
             return new Move(null, score);

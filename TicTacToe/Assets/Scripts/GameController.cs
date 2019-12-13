@@ -61,10 +61,10 @@ public class GameController : MonoBehaviour
     private void Update()
     {
         // If it's the AI turn, schedule it for play in half a second
-        if (!IsInvoking("DoAutoPlay") && !IsHumanTurn && IsGameOn && Status == null)
+        if (!IsInvoking("DoAutoPlay")
+            && !IsHumanTurn && IsGameOn && Status == null)
         {
-            Debug.Log("turn: " + Turn);
-            Invoke("DoAutoPlay", 1.5f);
+            Invoke("DoAutoPlay", 0.5f);
         }
     }
 

@@ -7,10 +7,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+// A random TicTacToe player, not very smart
 public class RandomAIPlayer : IPlayer
 {
     public Vector2Int Play(IBoard gameBoard, CellState turn)
     {
+        // Populate a list with available board positions
         IList<Vector2Int> emptyPositions = new List<Vector2Int>();
         for (int i = 0; i < 3; i++)
         {
@@ -24,6 +26,7 @@ public class RandomAIPlayer : IPlayer
             }
         }
 
+        // Return a random empty board position
         return emptyPositions[Random.Range(0, emptyPositions.Count)];
     }
 }
