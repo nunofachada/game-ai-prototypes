@@ -19,6 +19,8 @@ public class Optimizer : MonoBehaviour
     [Tooltip("Show game while optimizing? (slower!)")]
     [SerializeField] private bool showGame = false;
 
+    public bool Optimize => optimize;
+
     // Start is called before the first frame update
     private void Awake()
     {

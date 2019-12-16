@@ -41,7 +41,7 @@ public abstract class SteeringBehaviour : MonoBehaviour, ISteeringBehaviour
     protected string Tag => agent.tag;
 
     // Use this for initialization
-    protected virtual void Start()
+    protected virtual void Awake()
     {
         agent = GetComponent<DynamicAgent>();
         rb = GetComponent<Rigidbody2D>();

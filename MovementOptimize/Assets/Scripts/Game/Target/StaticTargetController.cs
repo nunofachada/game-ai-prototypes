@@ -24,13 +24,26 @@ public class StaticTargetController : MonoBehaviour
 
     public float Points { get; private set; } = 0;
 
-    // Use this for initialization
-    private void Start()
+    private void Awake()
     {
         textMesh = GameObject.Find("Points")?.GetComponent<TextMesh>();
-        UpdatePoints(0);
         gameArea = new GameArea();
+    }
+
+    private void OnEnable()
+    {
+        GameObject currentTarget = GameObject.FindWithTag("Target");
+        if (currentTarget != null)
+        {
+            Debug.Log("Found target, will destroy it!");
+            Destroy(currentTarget);
+        }
+        UpdatePoints(0);
         SpawnTarget();
+    }
+
+    private void OnDisable()
+    {
     }
 
     public void NotifyDestructionBy(Rigidbody2D destroyer)
@@ -38,7 +51,7 @@ public class StaticTargetController : MonoBehaviour
         float angleDiff = Mathf.DeltaAngle(
             SteeringBehaviour.Vec2Deg(destroyer.velocity), destroyer.rotation);
         float points = 1 - 0.9f * Mathf.Abs(angleDiff) / 180;
-        Debug.Log($"AngleDiff={angleDiff}, Points={points}");
+        //Debug.Log($"AngleDiff={angleDiff}, PoiEnalbets={points}");
         UpdatePoints(points);
         Invoke("SpawnTarget", delay);
     }
@@ -53,7 +66,10 @@ public class StaticTargetController : MonoBehaviour
     // Spawn a new target at a random location
     private void SpawnTarget()
     {
-        Vector2 pos = gameArea.RandomPosition(0.9f);
-        Instantiate(target, pos, Quaternion.identity, transform);
+        if (gameObject.activeInHierarchy)
+        {
+            Vector2 pos = gameArea.RandomPosition(0.9f);
+            Instantiate(target, pos, Quaternion.identity, transform);
+        }
     }
 }

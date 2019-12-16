@@ -13,8 +13,9 @@ public class FaceBehaviour : AlignBehaviour
     private GameObject faceFakeTarget;
 
     // Use Awake() to initialize a fake target
-    protected virtual void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         faceFakeTarget = new GameObject();
         faceFakeTarget.hideFlags = HideFlags.HideInHierarchy;
         faceFakeTarget.transform.position = Vector3.zero;

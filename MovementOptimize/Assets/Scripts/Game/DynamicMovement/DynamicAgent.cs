@@ -58,7 +58,7 @@ public class DynamicAgent : MonoBehaviour
     public Vector2 Velocity => rb.velocity;
 
     // Use this for initialization
-    private void Start()
+    private void Awake()
     {
 
         // Keep reference to rigid body

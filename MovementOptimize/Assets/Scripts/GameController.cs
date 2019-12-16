@@ -6,23 +6,34 @@ public class GameController : MonoBehaviour
 {
     private GameObject dynamicAgent;
     private GameObject targetController;
+    private Optimizer optimizer;
 
     private void Awake()
     {
         dynamicAgent = GameObject.Find("DynamicAgent");
         targetController = GameObject.Find("TargetController");
+        optimizer = GameObject.Find("Optimizer")?.GetComponent<Optimizer>();
+        Stop();
     }
 
-    // Start is called before the first frame update
+    private void Start()
+    {
+        if (!(optimizer?.Optimize ?? false))
+        {
+            Play();
+        }
+    }
+
     public void Play()
     {
-        Instantiate(dynamicAgent);
-        Instantiate(targetController);
+        dynamicAgent.transform.position = Vector3.zero;
+        dynamicAgent.SetActive(true);
+        targetController.SetActive(true);
     }
 
-    // Update is called once per frame
     public void Stop()
     {
-
+        dynamicAgent.SetActive(false);
+        targetController.SetActive(false);
     }
 }
