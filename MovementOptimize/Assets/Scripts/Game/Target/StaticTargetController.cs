@@ -35,7 +35,6 @@ public class StaticTargetController : MonoBehaviour
         GameObject currentTarget = GameObject.FindWithTag("Target");
         if (currentTarget != null)
         {
-            Debug.Log("Found target, will destroy it!");
             Destroy(currentTarget);
         }
         UpdatePoints(0);
@@ -51,7 +50,6 @@ public class StaticTargetController : MonoBehaviour
         float angleDiff = Mathf.DeltaAngle(
             SteeringBehaviour.Vec2Deg(destroyer.velocity), destroyer.rotation);
         float points = 1 - 0.9f * Mathf.Abs(angleDiff) / 180;
-        //Debug.Log($"AngleDiff={angleDiff}, PoiEnalbets={points}");
         UpdatePoints(points);
         Invoke("SpawnTarget", delay);
     }

@@ -19,11 +19,18 @@ public class Optimizer : MonoBehaviour
     [Tooltip("Show game while optimizing? (slower!)")]
     [SerializeField] private bool showGame = false;
 
-    public bool Optimize => optimize;
+    private GameObject dynamicAgent;
+    private GameObject targetController;
+    private Optimizer optimizer;
 
-    // Start is called before the first frame update
+    // Awake is called before the first frame update
     private void Awake()
     {
+        dynamicAgent = GameObject.Find("DynamicAgent");
+        targetController = GameObject.Find("TargetController");
+        optimizer = GameObject.Find("Optimizer")?.GetComponent<Optimizer>();
+        Stop();
+
         if (optimize)
         {
             Time.timeScale = timeScale;
@@ -35,25 +42,43 @@ public class Optimizer : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        if (optimize)
+        {
+            Play();
+        }
+        else
+        {
+            Play();
+        }
+    }
+
+    private void Play()
+    {
+        dynamicAgent.transform.position = Vector3.zero;
+        dynamicAgent.SetActive(true);
+        targetController.SetActive(true);
+    }
+
+    private void Stop()
+    {
+        dynamicAgent.SetActive(false);
+        targetController.SetActive(false);
+    }
+
     private void Update()
     {
         if (optimize)
         {
             if (Time.time > gameTime)
             {
-                // save any game data here
 #if UNITY_EDITOR
-                // Application.Quit() does not work in the editor so
-                // UnityEditor.EditorApplication.isPlaying need to be set to false to end the game
                 UnityEditor.EditorApplication.isPlaying = false;
 #else
                 Application.Quit();
 #endif
-
             }
-            else Debug.Log($"Time is {Time.time}");
         }
     }
-
-
 }

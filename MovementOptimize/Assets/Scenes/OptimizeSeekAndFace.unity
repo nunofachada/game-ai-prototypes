@@ -604,6 +604,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 188f13bbef0b0d21cbe4ee247191062a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dynamicAgent: {fileID: 0}
+  targetController: {fileID: 0}
+  optimizer: {fileID: 0}
 --- !u!4 &1318689999
 Transform:
   m_ObjectHideFlags: 0

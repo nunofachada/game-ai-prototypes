@@ -68,6 +68,14 @@ public class DynamicAgent : MonoBehaviour
         steeringBehaviours = GetComponents<ISteeringBehaviour>();
     }
 
+    // Reset agent when re-enabling him
+    private void OnEnable()
+    {
+        transform.position = Vector2.zero;
+        transform.rotation = Quaternion.identity;
+        rb.velocity = Vector2.zero;
+    }
+
     // This is called every physics update
     private void FixedUpdate()
     {
