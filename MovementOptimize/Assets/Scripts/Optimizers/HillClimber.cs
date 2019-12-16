@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * Author: Nuno Fachada
+ * */
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -23,13 +30,13 @@ namespace LibGameAI.Optimizers
             this.select = select;
         }
 
-        public ISolution Optimize(
+        public Result Optimize(
             int maxSteps,
             float criteria,
             Func<ISolution> initialSolution,
             int runs = 1)
         {
-
+            int evaluations = 0;
             float bestEvaluation = float.NaN;
             ISolution bestSolution = null;
 
@@ -44,6 +51,7 @@ namespace LibGameAI.Optimizers
                 // For current run, get an initial solution
                 currentSolution = initialSolution();
                 currentEvaluation = evaluate(currentSolution);
+                evaluations++;
                 bestSolutionInRun = currentSolution;
                 bestEvaluationInRun = currentEvaluation;
                 if (bestSolution == null)
@@ -60,7 +68,7 @@ namespace LibGameAI.Optimizers
 
                     // Evaluate neighbor
                     float neighborEvaluation = evaluate(neighborSolution);
-
+                    evaluations++;
                     // Select solution (either keep current solution or
                     // select neighbor solution)
                     if (select(neighborEvaluation, currentEvaluation))
@@ -87,7 +95,7 @@ namespace LibGameAI.Optimizers
                     bestEvaluation = bestEvaluationInRun;
                 }
             }
-            return bestSolution;
+            return new Result(bestSolution, bestEvaluation, evaluations);
         }
     }
 }
