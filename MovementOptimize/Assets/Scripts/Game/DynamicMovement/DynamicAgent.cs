@@ -11,9 +11,6 @@ using UnityEngine;
 public class DynamicAgent : MonoBehaviour
 {
 
-    // TODO Set target by movement (not by agent), not all movements need target
-    // TODO Implement priorities, maybe just add group ID to movements
-
     // Maximum acceleration for this agent
     [SerializeField] private float maxAccel = 1f;
 
@@ -36,16 +33,20 @@ public class DynamicAgent : MonoBehaviour
     private Rigidbody2D rb;
 
     // Maximum acceleration for this agent
-    public float MaxAccel => maxAccel;
+    public float MaxAccel {
+        get => maxAccel; set { maxAccel = value; }}
 
    // Maximum speed for this agent
-    public float MaxSpeed  => maxSpeed;
+    public float MaxSpeed {
+        get => maxSpeed; set { maxSpeed = value; }}
 
     // Maximum angular acceleration for this agent
-    public float MaxAngularAccel => maxAngularAccel;
+    public float MaxAngularAccel {
+        get => maxAngularAccel; set { maxAngularAccel = value; }}
 
     // Maximum rotation (angular velocity) for this agent
-    public float MaxRotation  => maxRotation;
+    public float MaxRotation {
+        get => maxRotation; set { maxRotation = value; }}
 
     // The tag for this agent's target
     public string TargetTag => targetTag;

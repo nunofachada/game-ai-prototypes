@@ -27,22 +27,27 @@ public class StaticTargetController : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
-        textMesh = GameObject.Find("Points").GetComponent<TextMesh>();
+        textMesh = GameObject.Find("Points")?.GetComponent<TextMesh>();
         UpdatePoints(0);
         gameArea = new GameArea();
         SpawnTarget();
     }
 
-    public void NotifyDestructionBy(Component destroyer)
+    public void NotifyDestructionBy(Rigidbody2D destroyer)
     {
-        UpdatePoints(1);
+        float angleDiff = Mathf.DeltaAngle(
+            SteeringBehaviour.Vec2Deg(destroyer.velocity), destroyer.rotation);
+        float points = 1 - 0.9f * Mathf.Abs(angleDiff) / 180;
+        Debug.Log($"AngleDiff={angleDiff}, Points={points}");
+        UpdatePoints(points);
         Invoke("SpawnTarget", delay);
     }
 
     private void UpdatePoints(float morePoints)
     {
         Points += morePoints;
-        textMesh.text = $"Points: {Points}";
+        if (textMesh != null)
+            textMesh.text = $"Points: {Points}";
     }
 
     // Spawn a new target at a random location

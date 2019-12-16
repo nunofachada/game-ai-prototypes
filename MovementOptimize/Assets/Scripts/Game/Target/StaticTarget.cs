@@ -15,7 +15,7 @@ public class StaticTarget : MonoBehaviour
     {
         StaticTargetController controller =
             GetComponentInParent<StaticTargetController>();
-        controller.NotifyDestructionBy(other);
+        controller.NotifyDestructionBy(other.attachedRigidbody);
 
         Destroy(this.gameObject);
     }
