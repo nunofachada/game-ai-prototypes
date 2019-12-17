@@ -559,7 +559,7 @@ MonoBehaviour:
   optimize: 1
   timeScale: 100
   gameTime: 60
-  maxSteps: 500
+  maxSteps: 400
   showGame: 1
 --- !u!4 &1150418082
 Transform:

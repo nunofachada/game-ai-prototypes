@@ -18,6 +18,13 @@ namespace LibGameAI.Optimizers
         private Func<float, float, bool> compare;
         private Func<float, float, bool> select;
 
+        public float BestEvaluation { get; set; }
+        public ISolution BestSolution { get; set; }
+        public float BestEvaluationInRun { get; set; }
+        public ISolution BestSolutionInRun { get; set; }
+        public float CurrentEvaluation { get; set; }
+        public ISolution CurrentSolution { get; set; }
+
         public HillClimber(
             Func<ISolution, ISolution> findNeighbor,
             Func<ISolution, float> evaluate,
@@ -34,68 +41,72 @@ namespace LibGameAI.Optimizers
             int maxSteps,
             float criteria,
             Func<ISolution> initialSolution,
-            int runs = 1)
+            int runs = 1,
+            int evalsPerSolution = 1)
         {
             int evaluations = 0;
-            float bestEvaluation = float.NaN;
-            ISolution bestSolution = null;
+            BestEvaluation = float.NaN;
+            BestSolution = null;
 
             // Perform algorithm runs
             for (int i = 0; i < runs; i++)
             {
-                float currentEvaluation;
-                ISolution currentSolution;
-                float bestEvaluationInRun;
-                ISolution bestSolutionInRun = null;
+                BestSolutionInRun = null;
 
                 // For current run, get an initial solution
-                currentSolution = initialSolution();
-                currentEvaluation = evaluate(currentSolution);
+                CurrentSolution = initialSolution();
+                CurrentEvaluation = evaluate(CurrentSolution);
                 evaluations++;
-                bestSolutionInRun = currentSolution;
-                bestEvaluationInRun = currentEvaluation;
-                if (bestSolution == null)
+                BestSolutionInRun = CurrentSolution;
+                BestEvaluationInRun = CurrentEvaluation;
+                if (BestSolution == null)
                 {
-                    bestSolution = currentSolution;
-                    bestEvaluation = currentEvaluation;
+                    BestSolution = CurrentSolution;
+                    BestEvaluation = CurrentEvaluation;
                 }
 
                 // Perform a run of the algorithm
                 for (int j = 0; j < maxSteps; j++)
                 {
                     // Find random neighbor
-                    ISolution neighborSolution = findNeighbor(currentSolution);
+                    ISolution neighborSolution = findNeighbor(CurrentSolution);
+                    float neighborEvaluation = 0;
 
                     // Evaluate neighbor
-                    float neighborEvaluation = evaluate(neighborSolution);
-                    evaluations++;
+                    for (int k = 0; k < evalsPerSolution; k++)
+                    {
+                        neighborEvaluation += evaluate(neighborSolution);
+                        evaluations++;
+                    }
+                    neighborEvaluation = neighborEvaluation / evalsPerSolution;
+
                     // Select solution (either keep current solution or
                     // select neighbor solution)
-                    if (select(neighborEvaluation, currentEvaluation))
+                    if (select(neighborEvaluation, CurrentEvaluation))
                     {
-                        currentSolution = neighborSolution;
-                        currentEvaluation = neighborEvaluation;
+                        CurrentSolution = neighborSolution;
+                        CurrentEvaluation = neighborEvaluation;
 
-                        if (compare(currentEvaluation, bestEvaluationInRun))
+                        if (compare(CurrentEvaluation, BestEvaluationInRun))
                         {
-                            bestSolutionInRun = currentSolution;
-                            bestEvaluationInRun = currentEvaluation;
+                            BestSolutionInRun = CurrentSolution;
+                            BestEvaluationInRun = CurrentEvaluation;
                         }
                     }
 
                     // If we reached the criteria, break loop
-                    if (compare(currentEvaluation, criteria)) break;
+                    if (compare(CurrentEvaluation, criteria)) break;
                 }
 
                 // Is last run's best solution better than the best solution
                 // found so far in all runs?
-                if (compare(bestEvaluationInRun, bestEvaluation))
+                if (compare(BestEvaluationInRun, BestEvaluation))
                 {
-                    bestSolution = bestSolutionInRun;
-                    bestEvaluation = bestEvaluationInRun;
+                    BestSolution = BestSolutionInRun;
+                    BestEvaluation = BestEvaluationInRun;
                 }
             }
-            return new Result(bestSolution, bestEvaluation, evaluations);
+            return new Result(BestSolution, BestEvaluation, evaluations);
         }
     }
 }

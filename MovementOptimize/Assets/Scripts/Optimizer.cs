@@ -65,13 +65,15 @@ public class Optimizer : MonoBehaviour
         SRandom sysRand = new SRandom();
         Result r = hc.Optimize(
             maxSteps,
-            100,
+            120, // Criteria
             () => new Solution(
-                (float)(sysRand.NextDouble() * 100),
-                (float)(sysRand.NextDouble() * 100),
-                (float)(sysRand.NextDouble() * 100),
-                (float)(sysRand.NextDouble() * 100)),
-            1);
+                (float)(sysRand.NextDouble() * 250),
+                (float)(sysRand.NextDouble() * 250),
+                (float)(sysRand.NextDouble() * 900),
+                (float)(sysRand.NextDouble() * 900)),
+            10, // Runs
+            4  // Evals per solution
+        );
         Debug.Log(r);
     }
 
@@ -87,7 +89,10 @@ public class Optimizer : MonoBehaviour
                 FindNeighbor,
                 s => { solutionsQueue.Add(s); return evaluationsQueue.Take(); },
                 (a, b) => a > b,
-                (a, b) => a > b);
+                (a, b) => {
+                    if (a > b) return true;
+                    float p = 1 / (1 + Mathf.Exp((b - a) / (0.25f * b)));
+                    return threadRnd.NextDouble() < p; } );
             optimizationThread = new Thread(Optimize);
             optimizationThread.Start();
             sol = (Solution)solutionsQueue.Take();
@@ -100,20 +105,22 @@ public class Optimizer : MonoBehaviour
         currentGameStartTime = Time.time;
     }
 
+    private float RandBinom() =>
+        (float)(threadRnd.NextDouble() - threadRnd.NextDouble());
+
     private ISolution FindNeighbor(ISolution solution)
     {
         Solution s = (Solution)solution;
-        float dMaxAccel = (float)threadRnd.NextDouble() * 2 - 1;
-        float dMaxSpeed = (float)threadRnd.NextDouble() * 2 - 1;
-        float dMaxAngularAccel = (float)threadRnd.NextDouble() * 2 - 1;
-        float dMaxRotation = (float)threadRnd.NextDouble() * 2 - 1;
+        float dMaxAccel = RandBinom() * 25;
+        float dMaxSpeed = RandBinom() * 25;
+        float dMaxAngularAccel = RandBinom() * 60;
+        float dMaxRotation = RandBinom() * 60;
         return new Solution(
             Mathf.Max(0, s.MaxAccel + dMaxAccel),
             Mathf.Max(0, s.MaxSpeed + dMaxSpeed),
             Mathf.Max(0, s.MaxAngularAccel + dMaxAngularAccel),
             Mathf.Max(0, s.MaxRotation + dMaxRotation));
     }
-
 
     private void Play()
     {
@@ -140,9 +147,12 @@ public class Optimizer : MonoBehaviour
                 Application.Quit();
 #endif
             }
-            if (Time.time > currentGameStartTime + gameTime)
+            else if (Time.time > currentGameStartTime + gameTime)
             {
-                Debug.Log($"Run {run++} scored {stcComp.Points}");
+                Debug.Log($"Run {run++} scored {stcComp.Points} " +
+                    $"(current is = {hc.CurrentEvaluation}, " +
+                    $"best in run = {hc.BestEvaluationInRun}, " +
+                    $"best all runs = {hc.BestEvaluation})");
                 ISolution s;
                 Stop();
                 evaluationsQueue.Add(stcComp.Points);
