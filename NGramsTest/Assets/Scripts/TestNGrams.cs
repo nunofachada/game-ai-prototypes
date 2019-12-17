@@ -25,7 +25,7 @@ public class TestNGrams : MonoBehaviour
     [SerializeField] private bool useHierarchicalNGram = true;
 
     [Tooltip("How many times a sequence has to be seen in order to " +
-        "make a prediciton (hierarchical N-Grams only)")]
+        "make a prediction (hierarchical N-Grams only)")]
     [Range(1, 12)]
     [SerializeField] private int threshold = 3;
 
