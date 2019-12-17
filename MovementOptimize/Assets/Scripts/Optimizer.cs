@@ -1,6 +1,10 @@
-﻿using System.Collections;
+﻿using SRandom = System.Random;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Threading;
 using UnityEngine;
+using LibGameAI.Optimizers;
 
 public class Optimizer : MonoBehaviour
 {
@@ -21,14 +25,23 @@ public class Optimizer : MonoBehaviour
 
     private GameObject dynamicAgent;
     private GameObject targetController;
+    private StaticTargetController stcComp;
+    private DynamicAgent dynAgComp;
     private Optimizer optimizer;
+    private BlockingCollection<ISolution> solutionsQueue;
+    private BlockingCollection<float> evaluationsQueue;
+    private HillClimber hc;
+    private Thread optimizationThread;
+    private float currentGameStartTime;
 
     // Awake is called before the first frame update
     private void Awake()
     {
         dynamicAgent = GameObject.Find("DynamicAgent");
+        dynAgComp = dynamicAgent.GetComponent<DynamicAgent>();
         targetController = GameObject.Find("TargetController");
-        optimizer = GameObject.Find("Optimizer")?.GetComponent<Optimizer>();
+        stcComp = targetController.GetComponent<StaticTargetController>();
+
         Stop();
 
         if (optimize)
@@ -42,17 +55,59 @@ public class Optimizer : MonoBehaviour
         }
     }
 
+    private void Optimize()
+    {
+        SRandom sysRand = new SRandom();
+        Result r = hc.Optimize(
+            10000,
+            100,
+            () => new Solution(
+                (float)(sysRand.NextDouble() * 100),
+                (float)(sysRand.NextDouble() * 100),
+                (float)(sysRand.NextDouble() * 100),
+                (float)(sysRand.NextDouble() * 100)),
+            1);
+        Debug.Log(r);
+    }
+
     private void Start()
     {
         if (optimize)
         {
-            Play();
+            Solution sol;
+            solutionsQueue = new BlockingCollection<ISolution>();
+            evaluationsQueue = new BlockingCollection<float>();
+            hc = new HillClimber(
+                FindNeighbor,
+                s => { solutionsQueue.Add(s); return evaluationsQueue.Take(); },
+                (a, b) => a > b,
+                (a, b) => a > b);
+            optimizationThread = new Thread(Optimize);
+            optimizationThread.Start();
+            sol = (Solution)solutionsQueue.Take();
+            dynAgComp.MaxAccel = sol.MaxAccel;
+            dynAgComp.MaxSpeed = sol.MaxSpeed;
+            dynAgComp.MaxAngularAccel = sol.MaxAngularAccel;
+            dynAgComp.MaxRotation = sol.MaxRotation;
         }
-        else
-        {
-            Play();
-        }
+        Play();
+        currentGameStartTime = Time.time;
     }
+
+    private static ISolution FindNeighbor(ISolution solution)
+    {
+        Solution s = (Solution)solution;
+        float dMaxAccel = Random.Range(-1f, 1f);
+        float dMaxSpeed = Random.Range(-1f, 1f);
+        float dMaxAngularAccel = Random.Range(-1f, 1f);
+        float dMaxRotation = Random.Range(-1f, 1f);
+        return new Solution(
+            Mathf.Max(0, s.MaxAccel + dMaxAccel),
+            Mathf.Max(0, s.MaxSpeed + dMaxSpeed),
+            Mathf.Max(0, s.MaxAngularAccel + dMaxAngularAccel),
+            Mathf.Max(0, s.MaxRotation + dMaxRotation));
+    }
+
 
     private void Play()
     {
@@ -71,13 +126,25 @@ public class Optimizer : MonoBehaviour
     {
         if (optimize)
         {
-            if (Time.time > gameTime)
+            if (!optimizationThread.IsAlive)
             {
 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
 #else
                 Application.Quit();
 #endif
+            }
+            if (Time.time > currentGameStartTime + gameTime)
+            {
+                Solution s;
+                Stop();
+                evaluationsQueue.Add(stcComp.Points);
+                s = (Solution)solutionsQueue.Take();
+                dynAgComp.MaxAccel = s.MaxAccel;
+                dynAgComp.MaxSpeed = s.MaxSpeed;
+                dynAgComp.MaxAngularAccel = s.MaxAngularAccel;
+                dynAgComp.MaxRotation = s.MaxRotation;
+                Play();
             }
         }
     }
