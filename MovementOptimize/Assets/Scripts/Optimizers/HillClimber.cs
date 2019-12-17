@@ -59,11 +59,6 @@ namespace LibGameAI.Optimizers
                 evaluations++;
                 BestSolutionInRun = CurrentSolution;
                 BestEvaluationInRun = CurrentEvaluation;
-                if (BestSolution == null)
-                {
-                    BestSolution = CurrentSolution;
-                    BestEvaluation = CurrentEvaluation;
-                }
 
                 // Perform a run of the algorithm
                 for (int j = 0; j < maxSteps; j++)
@@ -100,7 +95,8 @@ namespace LibGameAI.Optimizers
 
                 // Is last run's best solution better than the best solution
                 // found so far in all runs?
-                if (compare(BestEvaluationInRun, BestEvaluation))
+                if (compare(BestEvaluationInRun, BestEvaluation)
+                    || BestSolution == null)
                 {
                     BestSolution = BestSolutionInRun;
                     BestEvaluation = BestEvaluationInRun;
