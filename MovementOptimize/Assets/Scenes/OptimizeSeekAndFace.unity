@@ -557,9 +557,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   optimize: 1
-  timeScale: 8
+  timeScale: 100
   gameTime: 60
-  maxSteps: 10000
+  maxSteps: 500
   showGame: 1
 --- !u!4 &1150418082
 Transform:

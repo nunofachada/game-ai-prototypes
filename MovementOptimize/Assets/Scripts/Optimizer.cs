@@ -18,7 +18,7 @@ public class Optimizer : MonoBehaviour
     [SerializeField] private float gameTime = 60;
 
     [Tooltip("Maximum optimization steps to perform?")]
-    [SerializeField] private float maxSteps = 10000;
+    [SerializeField] private int maxSteps = 10000;
 
     [Tooltip("Show game while optimizing? (slower!)")]
     [SerializeField] private bool showGame = false;
@@ -33,6 +33,10 @@ public class Optimizer : MonoBehaviour
     private HillClimber hc;
     private Thread optimizationThread;
     private float currentGameStartTime;
+
+    private SRandom threadRnd;
+
+    private int run;
 
     // Awake is called before the first frame update
     private void Awake()
@@ -52,6 +56,7 @@ public class Optimizer : MonoBehaviour
                 GameObject goCam = GameObject.Find("Main Camera");
                 goCam.SetActive(false);
             }
+            threadRnd = new SRandom();
         }
     }
 
@@ -59,7 +64,7 @@ public class Optimizer : MonoBehaviour
     {
         SRandom sysRand = new SRandom();
         Result r = hc.Optimize(
-            10000,
+            maxSteps,
             100,
             () => new Solution(
                 (float)(sysRand.NextDouble() * 100),
@@ -75,6 +80,7 @@ public class Optimizer : MonoBehaviour
         if (optimize)
         {
             Solution sol;
+            run = 0;
             solutionsQueue = new BlockingCollection<ISolution>();
             evaluationsQueue = new BlockingCollection<float>();
             hc = new HillClimber(
@@ -94,13 +100,13 @@ public class Optimizer : MonoBehaviour
         currentGameStartTime = Time.time;
     }
 
-    private static ISolution FindNeighbor(ISolution solution)
+    private ISolution FindNeighbor(ISolution solution)
     {
         Solution s = (Solution)solution;
-        float dMaxAccel = Random.Range(-1f, 1f);
-        float dMaxSpeed = Random.Range(-1f, 1f);
-        float dMaxAngularAccel = Random.Range(-1f, 1f);
-        float dMaxRotation = Random.Range(-1f, 1f);
+        float dMaxAccel = (float)threadRnd.NextDouble() * 2 - 1;
+        float dMaxSpeed = (float)threadRnd.NextDouble() * 2 - 1;
+        float dMaxAngularAccel = (float)threadRnd.NextDouble() * 2 - 1;
+        float dMaxRotation = (float)threadRnd.NextDouble() * 2 - 1;
         return new Solution(
             Mathf.Max(0, s.MaxAccel + dMaxAccel),
             Mathf.Max(0, s.MaxSpeed + dMaxSpeed),
@@ -136,15 +142,21 @@ public class Optimizer : MonoBehaviour
             }
             if (Time.time > currentGameStartTime + gameTime)
             {
-                Solution s;
+                Debug.Log($"Run {run++} scored {stcComp.Points}");
+                ISolution s;
                 Stop();
                 evaluationsQueue.Add(stcComp.Points);
-                s = (Solution)solutionsQueue.Take();
-                dynAgComp.MaxAccel = s.MaxAccel;
-                dynAgComp.MaxSpeed = s.MaxSpeed;
-                dynAgComp.MaxAngularAccel = s.MaxAngularAccel;
-                dynAgComp.MaxRotation = s.MaxRotation;
+                if (!solutionsQueue.TryTake(out s, 1500))
+                {
+                    UnityEditor.EditorApplication.isPlaying = false;
+                    return;
+                }
+                dynAgComp.MaxAccel = ((Solution)s).MaxAccel;
+                dynAgComp.MaxSpeed = ((Solution)s).MaxSpeed;
+                dynAgComp.MaxAngularAccel = ((Solution)s).MaxAngularAccel;
+                dynAgComp.MaxRotation = ((Solution)s).MaxRotation;
                 Play();
+                currentGameStartTime = Time.time;
             }
         }
     }

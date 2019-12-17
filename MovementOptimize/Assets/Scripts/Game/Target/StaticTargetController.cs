@@ -37,7 +37,7 @@ public class StaticTargetController : MonoBehaviour
         {
             Destroy(currentTarget);
         }
-        UpdatePoints(0);
+        Points = 0;
         SpawnTarget();
     }
 
