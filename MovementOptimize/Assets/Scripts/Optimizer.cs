@@ -8,17 +8,23 @@ using LibGameAI.Optimizers;
 
 public class Optimizer : MonoBehaviour
 {
+    [Tooltip("How long should the game run for each optimization step?")]
+    [SerializeField] private float gameTime = 60;
+
     [Tooltip("Perform optimization?")]
     [SerializeField] private bool optimize = false;
 
     [Tooltip("The higher it is, the faster the game runs")]
     [SerializeField] private float timeScale = 200;
 
-    [Tooltip("How long should the game run for each optimization step?")]
-    [SerializeField] private float gameTime = 60;
+    [Tooltip("How many times do we evaluate each solution?")]
+    [SerializeField] private int evalsPerSolution = 2;
 
-    [Tooltip("Maximum optimization steps to perform?")]
+    [Tooltip("Maximum optimization steps to perform per run?")]
     [SerializeField] private int maxSteps = 10000;
+
+    [Tooltip("How many runs to perform?")]
+    [SerializeField] private int numRuns = 4;
 
     [Tooltip("Show game while optimizing? (slower!)")]
     [SerializeField] private bool showGame = false;
@@ -71,8 +77,8 @@ public class Optimizer : MonoBehaviour
                 (float)(sysRand.NextDouble() * 250),
                 (float)(sysRand.NextDouble() * 900),
                 (float)(sysRand.NextDouble() * 900)),
-            10, // Runs
-            4  // Evals per solution
+            numRuns,
+            evalsPerSolution
         );
         Debug.Log(r);
     }
@@ -168,6 +174,15 @@ public class Optimizer : MonoBehaviour
                 Play();
                 currentGameStartTime = Time.time;
             }
+        }
+        else if (Time.time > currentGameStartTime + gameTime)
+        {
+            Debug.Log($"Score after {gameTime}s is {stcComp.Points}");
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
         }
     }
 }

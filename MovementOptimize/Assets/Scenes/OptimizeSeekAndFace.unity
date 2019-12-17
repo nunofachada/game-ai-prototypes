@@ -556,10 +556,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12ac2b4b8d9c8d6f58aba8996c690b74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  optimize: 1
-  timeScale: 100
   gameTime: 60
-  maxSteps: 400
+  optimize: 0
+  timeScale: 100
+  evalsPerSolution: 2
+  maxSteps: 200
+  numRuns: 4
   showGame: 1
 --- !u!4 &1150418082
 Transform:
