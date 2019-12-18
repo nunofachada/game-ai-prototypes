@@ -559,10 +559,10 @@ MonoBehaviour:
   gameTime: 60
   optimize: 0
   timeScale: 100
-  evalsPerSolution: 2
-  maxSteps: 200
-  numRuns: 4
-  showGame: 1
+  evalsPerSolution: 1
+  maxSteps: 100
+  numRuns: 5
+  showGame: 0
 --- !u!4 &1150418082
 Transform:
   m_ObjectHideFlags: 0

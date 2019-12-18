@@ -41,6 +41,7 @@ public class Optimizer : MonoBehaviour
     private float currentGameStartTime;
 
     private SRandom threadRnd;
+    private bool playing;
 
     private int run;
 
@@ -130,6 +131,7 @@ public class Optimizer : MonoBehaviour
 
     private void Play()
     {
+        playing = true;
         dynamicAgent.transform.position = Vector3.zero;
         dynamicAgent.SetActive(true);
         targetController.SetActive(true);
@@ -137,6 +139,7 @@ public class Optimizer : MonoBehaviour
 
     private void Stop()
     {
+        playing = false;
         dynamicAgent.SetActive(false);
         targetController.SetActive(false);
     }
@@ -153,7 +156,7 @@ public class Optimizer : MonoBehaviour
                 Application.Quit();
 #endif
             }
-            else if (Time.time > currentGameStartTime + gameTime)
+            else if (playing && Time.time > currentGameStartTime + gameTime)
             {
                 Debug.Log($"Run {run++} scored {stcComp.Points} " +
                     $"(current is = {hc.CurrentEvaluation}, " +
@@ -171,6 +174,8 @@ public class Optimizer : MonoBehaviour
                 dynAgComp.MaxSpeed = ((Solution)s).MaxSpeed;
                 dynAgComp.MaxAngularAccel = ((Solution)s).MaxAngularAccel;
                 dynAgComp.MaxRotation = ((Solution)s).MaxRotation;
+            } else if  (!playing && Time.time > currentGameStartTime + gameTime)
+            {
                 Play();
                 currentGameStartTime = Time.time;
             }
