@@ -10,8 +10,9 @@ using UnityEngine;
 // Defines a static target
 public class StaticTarget : MonoBehaviour
 {
+
     // Target is destroyed if someone collides with it
-    void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         StaticTargetController controller =
             GetComponentInParent<StaticTargetController>();

@@ -32,5 +32,4 @@ public class SeekBehaviour : SteeringBehaviour
         // Output the steering
         return new SteeringOutput(linear, angular);
     }
-
 }
