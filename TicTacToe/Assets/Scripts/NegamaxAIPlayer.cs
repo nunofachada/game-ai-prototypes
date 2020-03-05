@@ -93,8 +93,13 @@ public class NegamaxAIPlayer : IPlayer
             // a victory for either side
             // There is not move to return since this is a final board, so
             // the move is null
-            int score = gameBoard.Status().Value == CellState.Undecided
-                ? 0 : -10;
+            int score;
+            if (gameBoard.Status().Value == CellState.Undecided)
+                score = 0;
+            else if (gameBoard.Status().Value == turn)
+                score = 10;
+            else
+                score = -10;
             return new Move(null, score);
         }
     }
