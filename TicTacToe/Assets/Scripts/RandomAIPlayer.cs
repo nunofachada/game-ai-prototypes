@@ -10,7 +10,7 @@ using System.Collections.Generic;
 // A random TicTacToe player, not very smart
 public class RandomAIPlayer : IPlayer
 {
-    public Vector2Int Play(IBoard gameBoard, CellState turn)
+    public Vector2Int Play(Board gameBoard, CellState turn)
     {
         // Populate a list with available board positions
         IList<Vector2Int> emptyPositions = new List<Vector2Int>();

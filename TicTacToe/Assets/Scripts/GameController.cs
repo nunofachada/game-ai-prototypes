@@ -26,7 +26,7 @@ public class GameController : MonoBehaviour
     private Board gameBoard = null;
 
     // Public property for accessing the game board
-    public IBoard GameBoard => gameBoard;
+    public Board GameBoard => gameBoard;
 
     // Is a game taking place?
     public bool IsGameOn { get; set; }
@@ -84,7 +84,7 @@ public class GameController : MonoBehaviour
     public void Move(Vector2Int pos)
     {
         gameBoard.SetStateAt(pos, Turn);
-        Turn = Turn == CellState.X ? CellState.O : CellState.X;
+        Turn = Turn.Other();
     }
 
     // Returns a string describing the state of the game

@@ -9,9 +9,9 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// A simple Negamax AI player.
+/// Negamax AI with alpha-beta pruning.
 /// </summary>
-public class NegamaxAIPlayer : IPlayer
+public class ABNegamaxAIPlayer : IPlayer
 {
     // Maximum depth
     private int maxDepth;
@@ -24,7 +24,7 @@ public class NegamaxAIPlayer : IPlayer
 
     // Initialize the AI
     // Edit the values inside to configure the AI
-    public NegamaxAIPlayer()
+    public ABNegamaxAIPlayer()
     {
         maxDepth = 3000;
         heuristic = new AvailableLinesHeuristic();
@@ -33,18 +33,19 @@ public class NegamaxAIPlayer : IPlayer
     // Play a turn
     public Vector2Int Play(Board gameBoard, CellState turn)
     {
-        // Number of evaluations (recursive Negamax calls) starts at zero
+        // Number of evaluations (recursive ABNegamax calls) starts at zero
         numEvals = 0;
 
         // Keep start time
         DateTime startTime = DateTime.Now;
 
-        // Call Negamax at root board
-        (float score, Vector2Int move) decision = Negamax(gameBoard, turn, 0);
+        // Call ABNegamax at root board
+        (float score, Vector2Int move) decision = ABNegamax(
+            gameBoard, turn, 0, float.NegativeInfinity, float.PositiveInfinity);
 
         // Provide debug information
         Debug.Log(string.Format(
-            "Negamax called {0} times, took {0} ms",
+            "AlphaBetaNegamax called {0} times, took {0} ms",
             numEvals,
             (DateTime.Now - startTime).TotalMilliseconds));
 
@@ -53,8 +54,8 @@ public class NegamaxAIPlayer : IPlayer
     }
 
     // Process given board with ABNegamax
-    private (float score, Vector2Int move) Negamax(
-        Board board, CellState turn, int depth)
+    private (float score, Vector2Int move) ABNegamax(
+        Board board, CellState turn, int depth, float alpha, float beta)
     {
         // Increment number of evaluations (recursive ABNegamax calls)
         numEvals++;
@@ -84,16 +85,16 @@ public class NegamaxAIPlayer : IPlayer
         {
             // We reached the max depth, return the heuristic value for this
             // board
-            return (heuristic.Evaluate(board, turn), Vector2Int.zero);
+            return (heuristic.Evaluate(board, turn), board.NoMove);
         }
         else
         {
             // Game is not over and we haven't reached maximum depth, so let's
-            // recursively call Negamax on all possible moves
+            // recursively call ABNegamax on all possible moves
 
             // Declare best move, which for now is no move at all
             (float score, Vector2Int move) bestMove =
-                (float.NegativeInfinity, Vector2Int.zero);
+                (float.NegativeInfinity, board.NoMove);
 
             // Try to play on all board positions
             for (int i = 0; i < 3; i++)
@@ -114,7 +115,9 @@ public class NegamaxAIPlayer : IPlayer
                         board.SetStateAt(pos, turn);
 
                         // Get score for this move
-                        score = -Negamax(board, turn.Other(), depth + 1).score;
+                        score =-ABNegamax(
+                                board, turn.Other(), depth + 1, -beta, -alpha)
+                            .score;
 
                         // Undo the move we just evaluated
                         board.SetStateAt(pos, CellState.Undecided);
@@ -122,12 +125,25 @@ public class NegamaxAIPlayer : IPlayer
                         // Is this the best move so far?
                         if (score > bestMove.score)
                         {
-                            // If so, keep it
+                            // If so, update alpha
+                            alpha = score;
+
+                            // Keep the best move
                             bestMove = (score, pos);
+
+                            // Is alpha higher than beta?
+                            if (alpha >= beta)
+                            {
+                                // If so, make alpha-beta cut and return the
+                                // best move so far
+                                return bestMove;
+                            }
                         }
                     }
                 }
             }
+
+            // If we get here, it means no alpha-beta pruning occurred
             // Return the best move found among all the tested moves
             return bestMove;
         }

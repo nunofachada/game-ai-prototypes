@@ -9,5 +9,5 @@ using UnityEngine;
 // Interface for a TicTacToe player
 public interface IPlayer
 {
-    Vector2Int Play(IBoard gameBoard, CellState turn);
+    Vector2Int Play(Board gameBoard, CellState turn);
 }
