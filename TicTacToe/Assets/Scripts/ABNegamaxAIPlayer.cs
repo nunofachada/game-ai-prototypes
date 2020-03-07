@@ -45,7 +45,7 @@ public class ABNegamaxAIPlayer : IPlayer
 
         // Provide debug information
         Debug.Log(string.Format(
-            "AlphaBetaNegamax called {0} times, took {0} ms",
+            "AlphaBetaNegamax called {0} times, took {1} ms",
             numEvals,
             (DateTime.Now - startTime).TotalMilliseconds));
 

@@ -44,7 +44,7 @@ public class NegamaxAIPlayer : IPlayer
 
         // Provide debug information
         Debug.Log(string.Format(
-            "Negamax called {0} times, took {0} ms",
+            "Negamax called {0} times, took {1} ms",
             numEvals,
             (DateTime.Now - startTime).TotalMilliseconds));
 
