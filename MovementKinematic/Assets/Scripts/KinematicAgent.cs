@@ -14,21 +14,23 @@ public class KinematicAgent : MonoBehaviour
 {
 
     // Maximum speed for this agent
-    [SerializeField] private float maxSpeed;
+    [SerializeField] private float maxSpeed = 10;
 
     // The tag for this agent's target
-    [SerializeField] private string targetTag;
+    [SerializeField] private string targetTag = null;
 
     // Agent behaviours, selectable in Unity editor
-    [SerializeField] private KinematicSteeringBehaviour steeringBehaviour;
-    [SerializeField] private KinematicWallBumpBehaviour wallBumpBehaviour;
+    [SerializeField] private KinematicSteeringBehaviour steeringBehaviour =
+        KinematicSteeringBehaviour.Seek;
+    [SerializeField] private KinematicWallBumpBehaviour wallBumpBehaviour =
+        KinematicWallBumpBehaviour.AppearOnOtherSide;
 
     // These are only valid for SeekWithArrive behaviour
-    [SerializeField] private float satisfactionRadius;
-    [SerializeField] private float timeToTarget;
+    [SerializeField] private float satisfactionRadius = 0.5f;
+    [SerializeField] private float timeToTarget = 1f;
 
     // Maximum angular velocity for wander behaviour
-    [SerializeField] private float maxAngularVelocity;
+    [SerializeField] private float maxAngularVelocity = 10;
 
     // Actual functions defining agent behaviour
     private Func<GameObject, SteeringOutput> steer;
