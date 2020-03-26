@@ -223,8 +223,8 @@ public class KinematicAgent : MonoBehaviour
             }
             else
             {
-                // We need to move to our target, we'd like to there in timeToTarget
-                // seconds
+                // We need to move to our target, we'd like to there in
+                // timeToTarget seconds
                 linear = linear / timeToTarget;
 
                 // If this is too fast, clip it to the max speed
@@ -237,7 +237,8 @@ public class KinematicAgent : MonoBehaviour
                 rb.MoveRotation(GetNewOrientation(rb.rotation, linear));
             }
 
-            // Angular velocity not used here, we change orientation automatically
+            // Angular velocity not used here, we change orientation
+            // automatically
             angular = 0f;
         }
 

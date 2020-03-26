@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *
- * Author: Nuno Fachada 
+ * Author: Nuno Fachada
  * */
 
 using UnityEngine;
@@ -34,7 +34,7 @@ public class StaticTargetController : MonoBehaviour
         GameObject target = GameObject.FindWithTag("Target");
 
         // If no target exists and if we didn't yet schedule target creation...
-        if ((target == null) && !IsInvoking("SpawnTarget"))
+        if (target == null && !IsInvoking("SpawnTarget"))
         {
             //...then schedule target creation
             Invoke("SpawnTarget", delay);
