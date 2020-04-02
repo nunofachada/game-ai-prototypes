@@ -12,9 +12,11 @@ using Random = UnityEngine.Random;
 // This class defines movement for kinematic agents
 public class KinematicAgent : MonoBehaviour
 {
-
     // Maximum speed for this agent
     [SerializeField] private float maxSpeed = 10;
+
+    // Maximum angular speed (only used here for wander behaviour)
+    [SerializeField] private float maxAngularSpeed = 10;
 
     // The tag for this agent's target
     [SerializeField] private string targetTag = null;
@@ -28,9 +30,6 @@ public class KinematicAgent : MonoBehaviour
     // These are only valid for SeekWithArrive behaviour
     [SerializeField] private float satisfactionRadius = 0.5f;
     [SerializeField] private float timeToTarget = 1f;
-
-    // Maximum angular velocity for wander behaviour
-    [SerializeField] private float maxAngularVelocity = 10;
 
     // Actual functions defining agent behaviour
     private Func<Transform, SteeringOutput> steer;
@@ -93,8 +92,8 @@ public class KinematicAgent : MonoBehaviour
         SteeringOutput steering = steer(target);
 
         // Apply steering to the current agent rigid body
-        rb.velocity = steering.Linear;
-        rb.angularVelocity = steering.Angular;
+        rb.MovePosition(rb.position + steering.Linear * Time.deltaTime);
+        rb.MoveRotation(rb.rotation + steering.Angular * Time.deltaTime);
     }
 
     // This function is called by the steering behaviours in order to determine
@@ -131,8 +130,8 @@ public class KinematicAgent : MonoBehaviour
     {
         if (collider.tag == "Wall")
         {
-            rb.MovePosition(
-                gameArea.OppositePosition(collider.name[4], rb.position));
+            transform.position =
+                gameArea.OppositePosition(collider.name[4], rb.position);
         }
     }
 
@@ -142,7 +141,7 @@ public class KinematicAgent : MonoBehaviour
     {
         if (collider.tag == "Wall")
         {
-            rb.MovePosition(gameArea.RandomPosition(0.9f));
+            transform.position = gameArea.RandomPosition(0.9f);
         }
     }
 
@@ -167,11 +166,12 @@ public class KinematicAgent : MonoBehaviour
             linear = linear.normalized * maxSpeed;
 
             // Face in the direction we want to move
-            rb.MoveRotation(GetNewOrientation(rb.rotation, linear));
+            transform.eulerAngles =
+                new Vector3(0, 0, GetNewOrientation(rb.rotation, linear));
 
             // Angular velocity not used here, we already changed orientation
             // in the code above
-            angular = 0f;
+            angular = 0;
         }
 
         // Output the steering
@@ -191,7 +191,8 @@ public class KinematicAgent : MonoBehaviour
         linear = steering.Linear * -1;
 
         // Update rotation according to inverted velocity
-        rb.MoveRotation(GetNewOrientation(rb.rotation, linear));
+        transform.eulerAngles =
+            new Vector3(0, 0, GetNewOrientation(rb.rotation, linear));
 
         // Angular velocity not used here, we already changed orientation
         // in the code above
@@ -234,7 +235,8 @@ public class KinematicAgent : MonoBehaviour
                 }
 
                 // Face in the direction we want to move
-                rb.MoveRotation(GetNewOrientation(rb.rotation, linear));
+                transform.eulerAngles =
+                    new Vector3(0, 0, GetNewOrientation(rb.rotation, linear));
             }
 
             // Angular velocity not used here, we change orientation
@@ -259,7 +261,7 @@ public class KinematicAgent : MonoBehaviour
 
         // Change our orientation randomly
         float angular = (Random.Range(0, 1f) - Random.Range(0, 1f))
-            * maxAngularVelocity;
+            * maxAngularSpeed;
 
         // Output the steering
         return new SteeringOutput(linear, angular);
