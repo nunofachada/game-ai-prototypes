@@ -33,7 +33,7 @@ public class KinematicAgent : MonoBehaviour
     [SerializeField] private float maxAngularVelocity = 10;
 
     // Actual functions defining agent behaviour
-    private Func<GameObject, SteeringOutput> steer;
+    private Func<Transform, SteeringOutput> steer;
     private Action<Collider2D> bump;
 
     // The agent's rigid body
@@ -85,8 +85,8 @@ public class KinematicAgent : MonoBehaviour
     private void FixedUpdate()
     {
         // Is there any target for me?
-        GameObject target = targetTag != ""
-            ? GameObject.FindWithTag(targetTag)
+        Transform target = targetTag != ""
+            ? GameObject.FindWithTag(targetTag)?.transform
             : null;
 
         // Obtain steering (velocity and angular velocity) given a target
@@ -151,7 +151,7 @@ public class KinematicAgent : MonoBehaviour
     // //////////////////////////////////////// //
 
     // Seek behaviour
-    private SteeringOutput GetSeekSteering(GameObject target)
+    private SteeringOutput GetSeekSteering(Transform target)
     {
         // Initialize linear and angular velocity to zero
         Vector2 linear = Vector2.zero;
@@ -161,7 +161,7 @@ public class KinematicAgent : MonoBehaviour
         if (target != null)
         {
             // Get the direction to the target
-            linear = target.transform.position - transform.position;
+            linear = target.position - transform.position;
 
             // The velocity is along this direction, at full speed
             linear = linear.normalized * maxSpeed;
@@ -179,7 +179,7 @@ public class KinematicAgent : MonoBehaviour
     }
 
     // Flee behaviour
-    private SteeringOutput GetFleeSteering(GameObject target)
+    private SteeringOutput GetFleeSteering(Transform target)
     {
         Vector2 linear;
         float angular;
@@ -202,7 +202,7 @@ public class KinematicAgent : MonoBehaviour
     }
 
     // Seek with arrive behaviour
-    private SteeringOutput GetSeekWithArriveSteering(GameObject target)
+    private SteeringOutput GetSeekWithArriveSteering(Transform target)
     {
         // Initialize linear and angular velocity to zero
         Vector2 linear = Vector2.zero;
@@ -213,7 +213,7 @@ public class KinematicAgent : MonoBehaviour
         {
 
             // Get the direction to the target
-            linear = target.transform.position - transform.position;
+            linear = target.position - transform.position;
 
             // Check if we're within radius
             if (linear.magnitude < satisfactionRadius)
@@ -247,7 +247,7 @@ public class KinematicAgent : MonoBehaviour
     }
 
     // Wander behaviour
-    private SteeringOutput GetWanderSteering(GameObject target)
+    private SteeringOutput GetWanderSteering(Transform target)
     {
         // Get vector form of the current rotation of this game object
         Vector2 orientation = new Vector2(
