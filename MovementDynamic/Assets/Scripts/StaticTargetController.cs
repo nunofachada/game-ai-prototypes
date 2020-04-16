@@ -10,41 +10,42 @@ using UnityEngine;
 // Controls when to spawn a static target
 public class StaticTargetController : MonoBehaviour
 {
-
-    // Holds an instance of a static target
-    [SerializeField] private GameObject target = default;
+    // The static target prefab
+    [SerializeField] private GameObject target = null;
 
     // How long between target destruction and target spawn
-    [SerializeField] private float delay = 1f;
+    [SerializeField] private float delay = 0.5f;
 
     // The game area
     private GameArea gameArea;
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         gameArea = new GameArea();
         SpawnTarget();
     }
 
-    // Called every frame
-    private void Update()
+    // Called when the previously created target is destroyed
+    private void TargetDestroyed()
     {
-        // Find current target
-        GameObject target = GameObject.FindWithTag("Target");
-
-        // If no target exists and if we didn't yet schedule target creation...
-        if ((target == null) && !IsInvoking("SpawnTarget"))
-        {
-            //...then schedule target creation
-            Invoke("SpawnTarget", delay);
-        }
+        // Schedule the creation of a new target
+        Invoke("SpawnTarget", delay);
     }
 
     // Spawn a new target at a random location
-    void SpawnTarget()
+    private void SpawnTarget()
     {
+        // Get a random position in the game area
         Vector2 pos = gameArea.RandomPosition(0.9f);
-        Instantiate(target, pos, Quaternion.identity);
+
+        // Create a new target game object in that random position
+        GameObject targetObj = Instantiate(target, pos, Quaternion.identity);
+
+        // Get the script associated with the target game object
+        StaticTarget targetScript = targetObj.GetComponent<StaticTarget>();
+
+        // Attach a listener method to be called when the target is destroyed
+        targetScript.Destroyed.AddListener(TargetDestroyed);
     }
 }
