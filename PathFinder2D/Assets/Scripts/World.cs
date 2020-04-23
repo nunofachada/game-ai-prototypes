@@ -24,7 +24,10 @@ public class World : MonoBehaviour
     [SerializeField] private PathFindingType pathFindingType = default;
 
     // Enumeration that represents the differerent path finding strategies
-    private enum PathFindingType { Dijkstra, AStar }
+    private enum PathFindingType { Dijkstra = 0, AStar = 1}
+
+    // Known path finders
+    private IPathFinder[] knownPathFinders;
 
     // Player and goal positions
     public Vector2Int PlayerPos { get; private set; }
@@ -48,6 +51,13 @@ public class World : MonoBehaviour
     // Awake is called when the script instance is being loaded
     private void Awake()
     {
+        // Instantiate known path finders
+        knownPathFinders = new IPathFinder[2];
+        knownPathFinders[(int)PathFindingType.Dijkstra] =
+            new DijkstraPathFinder();
+        knownPathFinders[(int)PathFindingType.AStar] =
+            new AStarPathFinder(HeuristicForAStar);
+
         // References to camera game object and camera component
         GameObject cameraGameObj = GameObject.FindWithTag("MainCamera");
         Camera cameraComponent = cameraGameObj.GetComponent<Camera>();
@@ -213,23 +223,10 @@ public class World : MonoBehaviour
         while (PlayerPos != GoalPos)
         {
             // Perform path finding
-            if (pathFindingType == PathFindingType.Dijkstra)
-            {
-                // Use Dijkstra algorithm
-                path = Dijkstra.GetShortestPath(
-                    graph,
-                    Vec2Ind(PlayerPos, world.GetLength(0)),
-                    Vec2Ind(GoalPos, world.GetLength(0)));
-            }
-            else
-            {
-                // Use A* algorithm
-                path = AStar.GetPath(
-                    graph,
-                    Vec2Ind(PlayerPos, world.GetLength(0)),
-                    Vec2Ind(GoalPos, world.GetLength(0)),
-                    HeuristicForAStar);
-            }
+            path = knownPathFinders[(int)pathFindingType].FindPath(
+                graph,
+                Vec2Ind(PlayerPos, world.GetLength(0)),
+                Vec2Ind(GoalPos, world.GetLength(0)));
 
             // Was a path found?
             if (path == null)

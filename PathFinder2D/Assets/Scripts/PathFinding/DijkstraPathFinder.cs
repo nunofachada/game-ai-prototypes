@@ -10,13 +10,19 @@ using System.Collections.Generic;
 
 namespace LibGameAI.PathFinding
 {
-    public static class Dijkstra
+    /// <summary>
+    /// A path finder implemented with the Dijkstra algorithm. Always finds
+    /// the shortest path.
+    /// </summary>
+    public class DijkstraPathFinder : IPathFinder
     {
+        // Auxiliary collections
+        private List<NodeRecord> open, closed;
+        private IDictionary<int, NodeRecord> nodeRecords;
+        private Stack<IConnection> path;
 
-        /// <summary>
-        /// This private class is used to keep node records for the shortest
-        /// path algorithm.
-        /// </summary>
+        // This private class is used to keep node records for the shortest
+        // path algorithm.
         private class NodeRecord : IComparable<NodeRecord>
         {
             public int Node { get; }
@@ -37,6 +43,17 @@ namespace LibGameAI.PathFinding
         }
 
         /// <summary>
+        /// Create a new Dijkstra shortest path finder.
+        /// </summary>
+        public DijkstraPathFinder()
+        {
+            open = new List<NodeRecord>();
+            closed = new List<NodeRecord>();
+            nodeRecords = new Dictionary<int, NodeRecord>();
+            path = new Stack<IConnection>();
+        }
+
+        /// <summary>
         /// Find shortest path between start and goal nodes.
         /// </summary>
         /// <param name="graph">Graph where to perform search.</param>
@@ -46,14 +63,16 @@ namespace LibGameAI.PathFinding
         /// An enumerable containing the connections that constitute
         /// the shortest path from start to goal.
         /// </returns>
-        public static IEnumerable<IConnection> GetShortestPath(
+        public IEnumerable<IConnection> FindPath(
             IGraph graph, int start, int goal)
         {
-
+            // Current node
             int current;
-            List<NodeRecord> open, closed;
-            IDictionary<int, NodeRecord> nodeRecords =
-                new Dictionary<int, NodeRecord>();
+
+            // Clear collections
+            open.Clear();
+            closed.Clear();
+            nodeRecords.Clear();
 
             // Initialize the record for the start node
             nodeRecords[start] = new NodeRecord(start);
@@ -61,9 +80,8 @@ namespace LibGameAI.PathFinding
             // "Current" node is start node
             current = start;
 
-            // Initialize the open and closed lists
-            open = new List<NodeRecord>() { nodeRecords[start] };
-            closed = new List<NodeRecord>();
+            // Initialize the open list by adding the starting node
+            open.Add(nodeRecords[start]);
 
             // Iterate through processing each node
             while (open.Count > 0)
@@ -143,12 +161,12 @@ namespace LibGameAI.PathFinding
             else
             {
                 // Compile the list of connections in the path
-                LinkedList<IConnection> path = new LinkedList<IConnection>();
+                path.Clear();
 
                 // Work back along the path, accumulating connections
                 while (current != start)
                 {
-                    path.AddFirst(nodeRecords[current].Connection);
+                    path.Push(nodeRecords[current].Connection);
                     current = nodeRecords[current].Connection.FromNode;
                 }
 
@@ -156,6 +174,5 @@ namespace LibGameAI.PathFinding
                 return path;
             }
         }
-
     }
 }
