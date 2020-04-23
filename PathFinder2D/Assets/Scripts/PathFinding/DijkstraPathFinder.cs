@@ -53,6 +53,22 @@ namespace LibGameAI.PathFinding
             path = new Stack<IConnection>();
         }
 
+        public IEnumerable<int> FillOpen()
+        {
+            foreach (NodeRecord nr in open)
+            {
+                yield return nr.Node;
+            }
+        }
+
+        public IEnumerable<int> FillClosed()
+        {
+            foreach (NodeRecord nr in closed)
+            {
+                yield return nr.Node;
+            }
+        }
+
         /// <summary>
         /// Find shortest path between start and goal nodes.
         /// </summary>

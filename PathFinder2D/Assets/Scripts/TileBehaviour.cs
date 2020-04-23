@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 // Tile prefabs should contain this script
 public class TileBehaviour : MonoBehaviour
@@ -18,9 +16,15 @@ public class TileBehaviour : MonoBehaviour
     // Property that returns the tile type
     public TileTypeEnum TileType => tileType;
 
+    // Was tile used in path finding?
+    public bool UsedForFill { get; set; } = false;
+
     // Property that returns true if mouse actions can be performed on a tile
     private bool ActOnMouse =>
         Pos != world.PlayerPos && Pos != world.GoalPos && !world.GoalReached;
+
+    private Color NormalColor => world.ShowFill && UsedForFill
+        ? Color.magenta : Color.white;
 
     // Position of this tile in the world
     internal Vector2Int Pos { get; set; }
@@ -40,6 +44,10 @@ public class TileBehaviour : MonoBehaviour
         if (world.GoalReached)
         {
             spriteRenderer.color = Color.white;
+        }
+        else
+        {
+            spriteRenderer.color = NormalColor;
         }
     }
 
@@ -82,6 +90,6 @@ public class TileBehaviour : MonoBehaviour
     // Remove tile highlight when mouse leaves tile
     private void OnMouseExit()
     {
-        spriteRenderer.color = Color.white;
+        spriteRenderer.color = NormalColor;
     }
 }

@@ -12,5 +12,9 @@ namespace LibGameAI.PathFinding
     public interface IPathFinder
     {
         IEnumerable<IConnection> FindPath(IGraph graph, int start, int goal);
+
+        IEnumerable<int> FillOpen();
+
+        IEnumerable<int> FillClosed();
     }
 }

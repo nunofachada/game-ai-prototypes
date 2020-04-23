@@ -1,10 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LibGameAI.PathFinding;
 using static World;
 
-// Graph implementation f0r a simple tile-based world
+// Graph implementation for a simple tile-based world
 public class TileWorldGraph : IGraph
 {
     // The tile-based world

@@ -23,6 +23,9 @@ public class World : MonoBehaviour
     // Path finding algorithm to use
     [SerializeField] private PathFindingType pathFindingType = default;
 
+    // Show fill?
+    [SerializeField] private bool showFill = false;
+
     // Enumeration that represents the differerent path finding strategies
     private enum PathFindingType { Dijkstra = 0, AStar = 1}
 
@@ -38,6 +41,9 @@ public class World : MonoBehaviour
 
     // Does a valid path exists between player and goal?
     public bool ValidPath { get; private set; } = true;
+
+    // Show fill?
+    public bool ShowFill => showFill;
 
     // Current path
     private IEnumerable<IConnection> path = null;
@@ -197,7 +203,6 @@ public class World : MonoBehaviour
         }
 
         Debug.Log($"Goal placed at {GoalPos}");
-
     }
 
     // This method is used as an heuristic for A*
@@ -222,11 +227,33 @@ public class World : MonoBehaviour
         // Start player movement loop
         while (PlayerPos != GoalPos)
         {
+            // Pathfinder to use
+            IPathFinder pathFinder = knownPathFinders[(int)pathFindingType];
+
             // Perform path finding
-            path = knownPathFinders[(int)pathFindingType].FindPath(
+            path = pathFinder.FindPath(
                 graph,
                 Vec2Ind(PlayerPos, world.GetLength(0)),
                 Vec2Ind(GoalPos, world.GetLength(0)));
+
+            // Show fill?
+            if (showFill)
+            {
+                foreach (TileBehaviour tile in world)
+                {
+                    tile.UsedForFill = false;
+                }
+                foreach (int ind in pathFinder.FillOpen())
+                {
+                    Vector2Int tilePos = Ind2Vec(ind, world.GetLength(0));
+                    world[tilePos.x, tilePos.y].UsedForFill = true;
+                }
+                foreach (int ind in pathFinder.FillClosed())
+                {
+                    Vector2Int tilePos = Ind2Vec(ind, world.GetLength(0));
+                    world[tilePos.x, tilePos.y].UsedForFill = true;
+                }
+            }
 
             // Was a path found?
             if (path == null)
