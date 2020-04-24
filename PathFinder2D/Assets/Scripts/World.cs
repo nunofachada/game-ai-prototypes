@@ -5,12 +5,6 @@ using LibGameAI.PathFinding;
 
 public class World : MonoBehaviour
 {
-
-    // These should contain the prefabs that represent the game objects
-    [SerializeField] private GameObject tile = null;
-    [SerializeField] private GameObject player = null;
-    [SerializeField] private GameObject goal = null;
-
     // The world size
     [SerializeField] private Vector2Int worldSize = new Vector2Int(10, 10);
 
@@ -25,6 +19,11 @@ public class World : MonoBehaviour
 
     // Show fill?
     [SerializeField] private bool showFill = false;
+
+    // These should contain the prefabs that represent the game objects
+    private GameObject tilePrefab;
+    private GameObject playerPrefab;
+    private GameObject goalPrefab;
 
     // Enumeration that represents the differerent path finding strategies
     private enum PathFindingType { Dijkstra = 0, AStar = 1}
@@ -46,10 +45,15 @@ public class World : MonoBehaviour
     public bool ShowFill => showFill;
 
     // Current path
-    private IEnumerable<IConnection> path = null;
+    private IEnumerable<IConnection> path;
 
     // Matrix of game world state
     private TileBehaviour[,] world;
+
+    // The current player and goal
+    private GameObject player;
+    private GameObject goal;
+
 
     // Offset for all tiles
     private Vector2 offset;
@@ -57,6 +61,11 @@ public class World : MonoBehaviour
     // Awake is called when the script instance is being loaded
     private void Awake()
     {
+        // Load prefabs
+        tilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
+        playerPrefab = Resources.Load<GameObject>("Prefabs/Player");
+        goalPrefab = Resources.Load<GameObject>("Prefabs/Goal");
+
         // Instantiate known path finders
         knownPathFinders = new IPathFinder[2];
         knownPathFinders[(int)PathFindingType.Dijkstra] =
@@ -160,7 +169,7 @@ public class World : MonoBehaviour
             // Instantiate tiles for current column
             for (int j = 0; j < worldSize.y; j++)
             {
-                GameObject currTile = Instantiate(tile, transform);
+                GameObject currTile = Instantiate(tilePrefab, transform);
                 currTile.name = $"Tile({i},{j})";
                 currTile.transform.position =
                     new Vector3(i - offset.x, j - offset.y, 0);
@@ -177,7 +186,7 @@ public class World : MonoBehaviour
                 Random.Range(0, worldSize.x), Random.Range(0, worldSize.y));
             if (world[PlayerPos.x, PlayerPos.y].TileType == TileTypeEnum.Empty)
             {
-                player = Instantiate(player);
+                player = Instantiate(playerPrefab);
                 player.transform.position = new Vector3(
                     PlayerPos.x - offset.x, PlayerPos.y - offset.y, -2);
                 break;
@@ -195,7 +204,7 @@ public class World : MonoBehaviour
             if (world[GoalPos.x, GoalPos.y].TileType == TileTypeEnum.Empty
                 && PlayerPos != GoalPos)
             {
-                goal = Instantiate(goal);
+                goal = Instantiate(goalPrefab);
                 goal.transform.position = new Vector3(
                     GoalPos.x - offset.x, GoalPos.y - offset.y, -1);
                 break;
@@ -334,11 +343,15 @@ public class World : MonoBehaviour
     {
         // Player gizmo
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(player.transform.position, new Vector3(1, 1, 1));
+        if (player != null)
+            Gizmos.DrawWireCube(
+                player.transform.position, new Vector3(1, 1, 1));
 
         // Goal gizmo
         Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(goal.transform.position, new Vector3(1, 1, 1));
+        if (goal != null)
+            Gizmos.DrawWireCube(
+                goal.transform.position, new Vector3(1, 1, 1));
 
         // Path gizmo
         Gizmos.color = Color.red;
