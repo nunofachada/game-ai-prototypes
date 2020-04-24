@@ -7,6 +7,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 
 namespace LibGameAI.PathFinding
 {
@@ -121,7 +124,7 @@ namespace LibGameAI.PathFinding
                 current = open[0].Node;
 
                 // If it is end node, break out of node processing loop
-                if (current == goal) break;
+                // if (current == goal) break;
 
                 // Otherwise get the node outgoing connections
                 foreach (IConnection conn in graph.GetConnections(current))
@@ -153,6 +156,16 @@ namespace LibGameAI.PathFinding
                         if (open[nrIndex].CostSoFar <= toNodeCost)
                             continue;
                     }
+                    else if (conn.ToNode == goal)
+                    {
+                        nodeRecords[conn.ToNode] = new NodeRecord(conn.ToNode);
+                        nodeRecords[conn.ToNode].CostSoFar = toNodeCost;
+                        nodeRecords[conn.ToNode].Connection = conn;
+                        nodeRecords[conn.ToNode].EstimatedTotalCost =
+                            toNodeCost + heuristics(conn.ToNode);
+                        UnityEngine.Debug.Log("Early Exit Found!");
+                        return DeterminePath(conn.ToNode, start, goal);
+                    }
                     else
                     {
                         // If we're here we've got an unvisited node, so make
@@ -179,10 +192,12 @@ namespace LibGameAI.PathFinding
                 closed.Add(nodeRecords[current]);
             }
 
-            // We're here if we've either found the goal, or if we've no more
-            // nodes to search
+            return DeterminePath(current, start, goal);
+        }
 
-            if (current != goal)
+        private Stack<IConnection> DeterminePath(int node, int start, int goal)
+        {
+            if (node != goal)
             {
                 // We've run out of nodes without finding the goal, so there's
                 // no solution
@@ -194,10 +209,10 @@ namespace LibGameAI.PathFinding
                 path.Clear();
 
                 // Work back along the path, accumulating connections
-                while (current != start)
+                while (node != start)
                 {
-                    path.Push(nodeRecords[current].Connection);
-                    current = nodeRecords[current].Connection.FromNode;
+                    path.Push(nodeRecords[node].Connection);
+                    node = nodeRecords[node].Connection.FromNode;
                 }
 
                 // Return the path
