@@ -26,7 +26,8 @@ public class World : MonoBehaviour
     private GameObject goalPrefab;
 
     // Enumeration that represents the differerent path finding strategies
-    private enum PathFindingType { Dijkstra = 0, AStar = 1}
+    private enum PathFindingType {
+        Dijkstra = 0, AStarEuclidean = 1, AStarManhattan = 2 }
 
     // Known path finders
     private IPathFinder[] knownPathFinders;
@@ -67,11 +68,13 @@ public class World : MonoBehaviour
         goalPrefab = Resources.Load<GameObject>("Prefabs/Goal");
 
         // Instantiate known path finders
-        knownPathFinders = new IPathFinder[2];
+        knownPathFinders = new IPathFinder[3];
         knownPathFinders[(int)PathFindingType.Dijkstra] =
             new DijkstraPathFinder();
-        knownPathFinders[(int)PathFindingType.AStar] =
-            new AStarPathFinder(HeuristicForAStar);
+        knownPathFinders[(int)PathFindingType.AStarEuclidean] =
+            new AStarPathFinder(EuclideanDistance);
+        knownPathFinders[(int)PathFindingType.AStarManhattan] =
+            new AStarPathFinder(ManhattanDistance);
 
         // References to camera game object and camera component
         GameObject cameraGameObj = GameObject.FindWithTag("MainCamera");
@@ -214,13 +217,20 @@ public class World : MonoBehaviour
         Debug.Log($"Goal placed at {GoalPos}");
     }
 
-    // This method is used as an heuristic for A*
-    // It's the euclidean distance heuristic
-    private float HeuristicForAStar(int node)
+    // Euclidean distance heuristic from given node to destination node
+    private float EuclideanDistance(int node)
     {
         Vector2 nodeVec = (Vector2)Ind2Vec(node, world.GetLength(0));
         Vector2 destVec = (Vector2)GoalPos;
         return Vector2.Distance(nodeVec, destVec);
+    }
+
+    // Manhattan distance heuristic from given node to destination node
+    private float ManhattanDistance(int node)
+    {
+        Vector2Int nodeVec = Ind2Vec(node, world.GetLength(0));
+        return Mathf.Abs(nodeVec.x - GoalPos.x)
+            + Mathf.Abs(nodeVec.y - GoalPos.y);
     }
 
     // This co-routine performs the path finding and invokes another coroutine

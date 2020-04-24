@@ -23,8 +23,8 @@ public class TileBehaviour : MonoBehaviour
     private bool ActOnMouse =>
         Pos != world.PlayerPos && Pos != world.GoalPos && !world.GoalReached;
 
-    private Color NormalColor => world.ShowFill && UsedForFill
-        ? Color.magenta : Color.white;
+    // Is the mouse over this tile?
+    private bool mouseOver = false;
 
     // Position of this tile in the world
     internal Vector2Int Pos { get; set; }
@@ -47,7 +47,9 @@ public class TileBehaviour : MonoBehaviour
         }
         else
         {
-            spriteRenderer.color = NormalColor;
+            spriteRenderer.color = mouseOver
+                ? Color.yellow
+                : world.ShowFill && UsedForFill ? Color.grey : Color.white;
         }
     }
 
@@ -83,13 +85,13 @@ public class TileBehaviour : MonoBehaviour
     {
         if (ActOnMouse)
         {
-            spriteRenderer.color = Color.yellow;
+            mouseOver = true;
         }
     }
 
     // Remove tile highlight when mouse leaves tile
     private void OnMouseExit()
     {
-        spriteRenderer.color = NormalColor;
+        mouseOver = false;
     }
 }
