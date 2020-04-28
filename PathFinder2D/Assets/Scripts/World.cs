@@ -260,17 +260,17 @@ public class World : MonoBehaviour
             {
                 foreach (TileBehaviour tile in world)
                 {
-                    tile.UsedForFill = false;
+                    tile.FillState = Fill.None;
                 }
                 foreach (int ind in pathFinder.OpenNodes)
                 {
                     Vector2Int tilePos = Ind2Vec(ind, world.GetLength(0));
-                    world[tilePos.x, tilePos.y].UsedForFill = true;
+                    world[tilePos.x, tilePos.y].FillState = Fill.Open;
                 }
                 foreach (int ind in pathFinder.ClosedNodes)
                 {
                     Vector2Int tilePos = Ind2Vec(ind, world.GetLength(0));
-                    world[tilePos.x, tilePos.y].UsedForFill = true;
+                    world[tilePos.x, tilePos.y].FillState = Fill.Closed;
                 }
             }
 

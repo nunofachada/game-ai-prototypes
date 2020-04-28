@@ -6,6 +6,12 @@ public class TileBehaviour : MonoBehaviour
     // Common tile data
     [SerializeField] private TileScriptableObject tileData = null;
 
+    // Sprite colors for different situations
+    private readonly Color colorDefault = Color.white;
+    private readonly Color colorMouseOver = Color.yellow;
+    private readonly Color colorOpenFill = new Color(0.75f, 0.75f, 0.75f, 1);
+    private readonly Color colorClosedFill = new Color(0.5f, 0.5f, 0.5f, 1);
+
     // Tile type
     private TileTypeEnum tileType = default;
     // Reference to the sprite renderer
@@ -17,7 +23,7 @@ public class TileBehaviour : MonoBehaviour
     public TileTypeEnum TileType => tileType;
 
     // Was tile used in path finding?
-    public bool UsedForFill { get; set; } = false;
+    public Fill FillState { get; set; } = Fill.None;
 
     // Property that returns true if mouse actions can be performed on a tile
     private bool ActOnMouse =>
@@ -43,13 +49,17 @@ public class TileBehaviour : MonoBehaviour
     {
         if (world.GoalReached)
         {
-            spriteRenderer.color = Color.white;
+            spriteRenderer.color = colorDefault;
         }
         else
         {
             spriteRenderer.color = mouseOver
-                ? Color.yellow
-                : world.ShowFill && UsedForFill ? Color.grey : Color.white;
+                ? colorMouseOver
+                : world.ShowFill && FillState == Fill.Open
+                    ? colorOpenFill
+                    : world.ShowFill && FillState == Fill.Closed
+                        ? colorClosedFill
+                        : colorDefault;
         }
     }
 
