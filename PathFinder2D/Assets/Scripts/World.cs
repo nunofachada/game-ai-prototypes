@@ -15,7 +15,7 @@ public class World : MonoBehaviour
     [SerializeField] private float moveDuration = 0.5f;
 
     // Path finding algorithm to use
-    [SerializeField] private PathFindingType pathFindingType = default;
+    [SerializeField] private PathFindingType pathFindingAlgorithm = default;
 
     // Show fill?
     [SerializeField] private bool showFill = false;
@@ -27,7 +27,8 @@ public class World : MonoBehaviour
 
     // Enumeration that represents the differerent path finding strategies
     private enum PathFindingType {
-        Dijkstra = 0, AStarEuclidean = 1, AStarManhattan = 2 }
+        Dijkstra = 0, AStarEuclidean = 1, AStarEuclideanEarly = 2,
+        AStarManhattan = 3, AStarManhattanEarly = 4 }
 
     // Known path finders
     private IPathFinder[] knownPathFinders;
@@ -68,13 +69,17 @@ public class World : MonoBehaviour
         goalPrefab = Resources.Load<GameObject>("Prefabs/Goal");
 
         // Instantiate known path finders
-        knownPathFinders = new IPathFinder[3];
+        knownPathFinders = new IPathFinder[5];
         knownPathFinders[(int)PathFindingType.Dijkstra] =
             new DijkstraPathFinder();
         knownPathFinders[(int)PathFindingType.AStarEuclidean] =
             new AStarPathFinder(EuclideanDistance);
+        knownPathFinders[(int)PathFindingType.AStarEuclideanEarly] =
+            new AStarPathFinder(EuclideanDistance, true);
         knownPathFinders[(int)PathFindingType.AStarManhattan] =
             new AStarPathFinder(ManhattanDistance);
+        knownPathFinders[(int)PathFindingType.AStarManhattanEarly] =
+            new AStarPathFinder(ManhattanDistance, true);
 
         // References to camera game object and camera component
         GameObject cameraGameObj = GameObject.FindWithTag("MainCamera");
@@ -247,7 +252,8 @@ public class World : MonoBehaviour
         while (PlayerPos != GoalPos)
         {
             // Pathfinder to use
-            IPathFinder pathFinder = knownPathFinders[(int)pathFindingType];
+            IPathFinder pathFinder =
+                knownPathFinders[(int)pathFindingAlgorithm];
 
             // Perform path finding
             path = pathFinder.FindPath(
@@ -292,8 +298,8 @@ public class World : MonoBehaviour
                     // Did the path finder return any connection at all?
                     if (conns.MoveNext())
                     {
-                        // If so, move player towards the destination node in the
-                        // first connection
+                        // If so, move player towards the destination node in
+                        // the first connection
                         StartCoroutine(MovePlayer(
                             conns.Current.ToNode, moveDuration / 2));
                     }
