@@ -11,10 +11,10 @@ namespace LibGameAI.PathFinding
 {
     public interface IPathFinder
     {
+        IEnumerable<int> OpenNodes { get; }
+
+        IEnumerable<int> ClosedNodes { get; }
+
         IEnumerable<IConnection> FindPath(IGraph graph, int start, int goal);
-
-        IEnumerable<int> FillOpen();
-
-        IEnumerable<int> FillClosed();
     }
 }

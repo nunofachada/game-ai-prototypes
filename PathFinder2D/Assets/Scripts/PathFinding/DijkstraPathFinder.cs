@@ -53,19 +53,25 @@ namespace LibGameAI.PathFinding
             path = new Stack<IConnection>();
         }
 
-        public IEnumerable<int> FillOpen()
+        public IEnumerable<int> OpenNodes
         {
-            foreach (NodeRecord nr in open)
+            get
             {
-                yield return nr.Node;
+                foreach (NodeRecord nr in open)
+                {
+                    yield return nr.Node;
+                }
             }
         }
 
-        public IEnumerable<int> FillClosed()
+        public IEnumerable<int> ClosedNodes
         {
-            foreach (NodeRecord nr in closed)
+            get
             {
-                yield return nr.Node;
+                foreach (NodeRecord nr in closed)
+                {
+                    yield return nr.Node;
+                }
             }
         }
 
@@ -121,7 +127,7 @@ namespace LibGameAI.PathFinding
 
                     // Function to find specific node in a list
                     Predicate<NodeRecord> findNodePred =
-                        new Predicate<NodeRecord>(nr => nr.Node == conn.ToNode);
+                        nr => nr.Node == conn.ToNode;
 
                     // Get cost estimate for the "to node"
                     float toNodeCost =
