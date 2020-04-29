@@ -153,7 +153,8 @@ MonoBehaviour:
   worldSize: {x: 20, y: 20}
   passageRatio: 0.5
   moveDuration: 1
-  pathFindingType: 1
+  pathFindingAlgorithm: 0
+  heuristicWeight: 1
   showFill: 0
 --- !u!4 &483100505
 Transform:

@@ -17,6 +17,10 @@ public class World : MonoBehaviour
     // Path finding algorithm to use
     [SerializeField] private PathFindingType pathFindingAlgorithm = default;
 
+    // Heuristic weight
+    [Range(0, 25)]
+    [SerializeField] private float heuristicWeight = 1;
+
     // Show fill?
     [SerializeField] private bool showFill = false;
 
@@ -227,15 +231,15 @@ public class World : MonoBehaviour
     {
         Vector2 nodeVec = (Vector2)Ind2Vec(node, world.GetLength(0));
         Vector2 destVec = (Vector2)GoalPos;
-        return Vector2.Distance(nodeVec, destVec);
+        return Vector2.Distance(nodeVec, destVec) * heuristicWeight;
     }
 
     // Manhattan distance heuristic from given node to destination node
     private float ManhattanDistance(int node)
     {
         Vector2Int nodeVec = Ind2Vec(node, world.GetLength(0));
-        return Mathf.Abs(nodeVec.x - GoalPos.x)
-            + Mathf.Abs(nodeVec.y - GoalPos.y);
+        return (Mathf.Abs(nodeVec.x - GoalPos.x)
+            + Mathf.Abs(nodeVec.y - GoalPos.y)) * heuristicWeight;
     }
 
     // This co-routine performs the path finding and invokes another coroutine
