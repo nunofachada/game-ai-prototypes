@@ -12,4 +12,4 @@ Currently a work in progress. More information soon.
 
 ## License
 
-[MIT License](LICENSE)
+[Mozilla Public License 2.0](LICENSE)
