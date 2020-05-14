@@ -9,6 +9,9 @@
 
 namespace LibGameAI.DecisionTrees
 {
+    /// <summary>
+    /// A decision node in a decision tree.
+    /// </summary>
     public class DecisionNode : IDecisionTreeNode
     {
         // True and false nodes

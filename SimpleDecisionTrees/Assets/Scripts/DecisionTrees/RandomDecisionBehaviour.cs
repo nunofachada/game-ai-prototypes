@@ -9,6 +9,11 @@ using System;
 
 namespace LibGameAI.DecisionTrees
 {
+    /// <summary>
+    /// Helper class which performs a random decision and maintains it during
+    /// a specified number of frames and while the tree node containing it
+    /// continues to be invoked every frame.
+    /// </summary>
     public class RandomDecisionBehaviour
     {
         // Last frame this decision was queried

@@ -9,7 +9,10 @@ using System;
 
 namespace LibGameAI.DecisionTrees
 {
-    public class ActionNode : IGameAction, IDecisionTreeNode
+    /// <summary>
+    /// An action node in a decision tree.
+    /// </summary>
+    public class ActionNode : IDecisionTreeNode
     {
         // Delegate to function which will execute the actual game action
         private Action gameAction;

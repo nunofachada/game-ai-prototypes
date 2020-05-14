@@ -7,6 +7,9 @@
 
 namespace LibGameAI.DecisionTrees
 {
+    /// <summary>
+    /// Represents a node in a decision tree.
+    /// </summary>
     public interface IDecisionTreeNode
     {
         /// <summary>
