@@ -5,8 +5,6 @@
  * Author: Nuno Fachada
  * */
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlaneWalls : MonoBehaviour
@@ -14,24 +12,28 @@ public class PlaneWalls : MonoBehaviour
     // References to the player and AI agents
     private GameObject[] agents;
 
-    // Get references to the player and AI agents
+    // Plane limits
+    private Vector4 planeLimits;
+
+    // Awake is called when the script instance is being loaded
     private void Awake()
     {
+        // Get references to the player and AI agents
         agents = new GameObject[2];
         agents[0] = GameObject.Find("PlayerAgent");
         agents[1] = GameObject.Find("AIAgent");
+
+        // Determine plane limits
+        planeLimits = new Vector4(
+            transform.position.x + transform.localScale.x * 5,
+            transform.position.x - transform.localScale.x * 5,
+            transform.position.z + transform.localScale.z * 5,
+            transform.position.z - transform.localScale.z * 5);
     }
 
     // Check if agents are within plane limits
     private void Update()
     {
-        // Determine plane limits
-        Vector4 planeLimits = new Vector4(
-            transform.position.x + transform.localScale.x * 5,
-            transform.position.x - transform.localScale.x * 5,
-            transform.position.z + transform.localScale.z * 5,
-            transform.position.z - transform.localScale.z * 5);
-
         // Cycle through all agents
         foreach (GameObject agent in agents)
         {
