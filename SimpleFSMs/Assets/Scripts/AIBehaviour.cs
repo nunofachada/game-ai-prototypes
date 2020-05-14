@@ -6,8 +6,6 @@
  * */
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using URandom = UnityEngine.Random;
 using LibGameAI.FSMs;
@@ -111,13 +109,11 @@ public class AIBehaviour : MonoBehaviour
 
         // Move towards small enemy
         transform.Translate(direction * maxSpeed * Time.deltaTime, Space.World);
-
     }
 
     // Runaway from the closest enemy
     private void RunAway()
     {
-
         // Get vector to small enemy
         Vector3 toSmall = transform.position - smallEnemy.transform.position;
         // Get vector to big enemy

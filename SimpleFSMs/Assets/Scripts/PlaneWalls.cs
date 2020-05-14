@@ -5,30 +5,31 @@
  * Author: Nuno Fachada
  * */
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 // Component to associate with a plane where the game takes place
-// It stops agents from going out of the plane bounds, which can be resized
-// in real time
+// It stops agents from going out of the plane bounds
 public class PlaneWalls : MonoBehaviour
 {
     // References to the player and AI agents
     private GameObject[] agents;
 
+    // Plane limits
+    public Vector4 Limits { get; private set; }
+
     // Get references to the player and AI agents
     private void Awake()
     {
+        // Get references to all agents involved
         agents = GameObject.FindGameObjectsWithTag("Agent");
-    }
 
-    // Property that returns the limits of the plane
-    public Vector4 Limits => new Vector4(
+        // Determine plane limits
+        Limits = new Vector4(
             transform.position.x + transform.localScale.x * 5,
             transform.position.x - transform.localScale.x * 5,
             transform.position.z + transform.localScale.z * 5,
             transform.position.z - transform.localScale.z * 5);
+    }
 
     // Check if agents are within plane limits
     private void Update()

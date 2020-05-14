@@ -5,10 +5,7 @@
  * Author: Nuno Fachada
  * */
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 // Simple script to control an agent using keyboard or controller
 public class PlayerBehaviour : MonoBehaviour

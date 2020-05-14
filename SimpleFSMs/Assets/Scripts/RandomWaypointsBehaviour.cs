@@ -5,8 +5,6 @@
  * Author: Nuno Fachada
  * */
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 // Agents with this component move between random waypoints
