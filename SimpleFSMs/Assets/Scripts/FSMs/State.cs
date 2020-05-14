@@ -15,23 +15,48 @@ namespace LibGameAI.FSMs
     /// </summary>
     public class State
     {
-        // Name of the FSM state
+        /// <summary>
+        /// Name of the FSM state.
+        /// </summary>
         public string Name { get; }
 
-        // Actions to perform when entering this state
+        /// <summary>
+        /// Actions to perform when entering this state.
+        /// </summary>
         public Action EntryActions { get; }
-        // Actions to perform while in this state
+
+        /// <summary>
+        /// Actions to perform while in this state.
+        /// </summary>
         public Action StateActions { get; }
-        // Actions to perform when exiting this state
+
+        /// <summary>
+        /// Actions to perform when exiting this state.
+        /// </summary>
         public Action ExitActions { get; }
 
-        // Public property exposing the transactions associated with this state
+        /// <summary>
+        /// Public property exposing the transitions associated with this
+        /// state.
+        /// </summary>
         public IEnumerable<Transition> Transitions => transitions;
 
-        // Internal list of the transactions associated with this state
+        // Internal list of the transitions associated with this state
         private IList<Transition> transitions;
 
-        // Create a new state
+        /// <summary>
+        /// Create a new state.
+        /// </summary>
+        /// <param name="name">Name of the FSM state.</param>
+        /// <param name="entryActions">
+        /// Actions to perform when entering this state.
+        /// </param>
+        /// <param name="stateActions">
+        /// Actions to perform while in this state.
+        /// </param>
+        /// <param name="exitActions">
+        /// Actions to perform when exiting this state.
+        /// </param>
         public State(string name,
             Action entryActions, Action stateActions, Action exitActions)
         {
@@ -42,7 +67,10 @@ namespace LibGameAI.FSMs
             transitions = new List<Transition>();
         }
 
-        // Add a transition from this state to another state
+        /// <summary>
+        /// Add a transition from this state to another state
+        /// </summary>
+        /// <param name="transition">Transition to another state.</param>
         public void AddTransition(Transition transition)
         {
             transitions.Add(transition);

@@ -14,22 +14,42 @@ namespace LibGameAI.FSMs
     /// </summary>
     public class Transition
     {
-
-        // Actions associated with this transition
+        /// <summary>
+        /// Actions associated with this transition.
+        /// </summary>
         public Action Actions { get; }
-        // Target state for this transition
+
+        /// <summary>
+        /// Target state for this transition.
+        /// </summary>
         public State TargetState { get; }
 
         // The condition for triggering this transition
         private Func<bool> condition;
 
-        // Is this transition triggered?
+        /// <summary>
+        /// Is this transition triggered?
+        /// </summary>
+        /// <returns>
+        /// <c>true</c> if transition is triggered, <c>false</c> otherwise.
+        /// </returns>
         public bool IsTriggered()
         {
             return condition();
         }
 
-        // Create a new transition
+        /// <summary>
+        /// Create a new transition.
+        /// </summary>
+        /// <param name="condition">
+        /// Condition for triggering this transition.
+        /// </param>
+        /// <param name="actions">
+        /// Actions associated with this transition.
+        /// </param>
+        /// <param name="targetState">
+        /// Target state for this transition.
+        /// </param>
         public Transition(
             Func<bool> condition, Action actions, State targetState)
         {

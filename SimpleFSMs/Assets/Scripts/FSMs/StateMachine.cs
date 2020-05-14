@@ -6,7 +6,6 @@
  * */
 
 using System;
-using System.Collections.Generic;
 
 namespace LibGameAI.FSMs
 {
@@ -18,13 +17,19 @@ namespace LibGameAI.FSMs
         // Current state
         private State currentState;
 
-        // Create a new FSM
+        /// <summary>
+        /// Create a new FSM.
+        /// </summary>
+        /// <param name="initialState">Initial state.</param>
         public StateMachine(State initialState)
         {
             currentState = initialState;
         }
 
-        // Update the FSM and return the actions to perform
+        /// <summary>
+        /// Update the FSM and return the actions to perform.
+        /// </summary>
+        /// <returns>Actions to perform.</returns>
         public Action Update()
         {
             // Assume no transition is triggered
