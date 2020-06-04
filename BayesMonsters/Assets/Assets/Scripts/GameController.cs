@@ -54,7 +54,7 @@ public class GameController : MonoBehaviour
         // Add methods to listen to button clicks
         newHumanGameButton.onClick.AddListener(StartHumanGame);
         newAIGameButton.onClick.AddListener(StartAIGame);
-        quitButton.onClick.AddListener(Application.Quit);
+        quitButton.onClick.AddListener(Quit);
 
         // Get reference to the player and enemy controller game objects
         player = GameObject.Find("Player");
@@ -83,6 +83,19 @@ public class GameController : MonoBehaviour
     {
         StartGame();
         player.GetComponent<Player>().IsAI = true;
+    }
+
+    // Method called when user clicks the quit button
+    private void Quit()
+    {
+#if UNITY_STANDALONE
+        // Quit application if running standalone
+        Application.Quit();
+#endif
+#if UNITY_EDITOR
+        // Stop game if running in editor
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
 
     // Start a new game
