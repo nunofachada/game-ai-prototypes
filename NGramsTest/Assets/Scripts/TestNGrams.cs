@@ -4,14 +4,12 @@
  *
  * Author: Nuno Fachada
  * */
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NGrams;
 
 public class TestNGrams : MonoBehaviour
 {
-
     [Tooltip("The N value in the N-Gram")]
     [Range(0, 12)]
     [SerializeField] private int nValue = 4;
@@ -42,9 +40,8 @@ public class TestNGrams : MonoBehaviour
     private char prediction;
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
-
         // Initialize N-Gram
         predictor = useHierarchicalNGram
             ? new HierarchNGram<char>(nValue, threshold) as INGram<char>
@@ -62,7 +59,7 @@ public class TestNGrams : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         // Whether the user clicked the mouse buttons in this frame
         bool clicked = false;
@@ -110,11 +107,24 @@ public class TestNGrams : MonoBehaviour
     }
 
     // Show the final accuracy when the application terminates
-    void OnApplicationQuit()
+    private void OnApplicationQuit()
     {
         if (right + wrong > 0)
             Debug.LogWarning(
                 $"FINAL ACCURACY: {((float)right) / (right + wrong):p}");
     }
 
+    // Show instructions
+    private void OnGUI()
+    {
+        GUI.color = Color.yellow;
+
+        GUI.Label(
+            new Rect(
+                Screen.width / 4,
+                Screen.height / 3,
+                Screen.width / 2,
+                Screen.height / 3),
+            "Click right and left mouse buttons and check console output");
+    }
 }
