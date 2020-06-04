@@ -5,9 +5,8 @@
  * Author: Nuno Fachada
  * */
 
-using System.Collections;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
@@ -46,6 +45,14 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        // Determine player position, depends on screen proportions
+        float xPos =
+            -Camera.main.orthographicSize * Screen.width / Screen.height + 1;
+
+        // Set player position
+        transform.position =
+            new Vector3(xPos, transform.position.y, transform.position.z);
+
         // Make sure the weapon sprites are set
         Assert.IsNotNull(swordSprite);
         Assert.IsNotNull(bowSprite);

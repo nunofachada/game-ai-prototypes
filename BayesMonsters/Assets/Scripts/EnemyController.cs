@@ -5,8 +5,6 @@
  * Author: Nuno Fachada
  * */
 
-using System.Collections;
-using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -50,8 +48,16 @@ public class EnemyController : MonoBehaviour
     // Method called when the application loads
     private void Awake()
     {
+        // Position controller in order to enemies to be spawned at this
+        // position
+        float xPos =
+            Camera.main.orthographicSize * Screen.width / Screen.height - 1;
+        transform.position =
+            new Vector3(xPos, transform.position.y, transform.position.z);
+
         // Make sure the enemy prefab is specified
         Assert.IsNotNull(enemyPrototype);
+
         // Get reference to the game controller
         gameController =
             GameObject.Find("GameController").GetComponent<GameController>();
@@ -108,5 +114,4 @@ public class EnemyController : MonoBehaviour
     // Event which outside objects can register in order to be notified when
     // an enemy is spawned
     public event Action<Enemy> spawnEnemy;
-
 }

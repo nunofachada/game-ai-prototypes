@@ -5,16 +5,11 @@
  * Author: Nuno Fachada
  * */
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-
-
     // User interface references
     private Text uiMessages;
     private Text uiDamage;
@@ -68,7 +63,6 @@ public class GameController : MonoBehaviour
         // for enemies spawning
         enemyController.GetComponent<EnemyController>().spawnEnemy +=
             player.GetComponent<Player>().NotifyEnemySpawned;
-
     }
 
     // Method called when user clicks in new human game button
