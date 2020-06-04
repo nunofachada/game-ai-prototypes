@@ -17,8 +17,8 @@ public class Player : MonoBehaviour
 {
 
     // The weapon sprites
-    [SerializeField] private Sprite swordSprite;
-    [SerializeField] private Sprite bowSprite;
+    [SerializeField] private Sprite swordSprite = null;
+    [SerializeField] private Sprite bowSprite = null;
 
     // Property that exposes the total player damage to outside objects
     public int Damage => damage;

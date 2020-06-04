@@ -17,7 +17,7 @@ public class EnemyController : MonoBehaviour
 
     // This should have the enemy prefab
     [SerializeField]
-    private GameObject enemyPrototype;
+    private GameObject enemyPrototype = null;
 
     // Maximum enemy speed
     [SerializeField]

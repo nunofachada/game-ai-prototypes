@@ -14,8 +14,8 @@ public class Enemy : MonoBehaviour
 {
 
     // Enemy sprites
-    [SerializeField] private Sprite demonSprite;
-    [SerializeField] private Sprite dragonSprite;
+    [SerializeField] private Sprite demonSprite = null;
+    [SerializeField] private Sprite dragonSprite = null;
 
     // The enemy type
     private EnemyType type;
