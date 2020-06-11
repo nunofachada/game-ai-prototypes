@@ -47,7 +47,7 @@ public class Optimizer : MonoBehaviour
 
     // Blocking queues for exchanging messages between the main Unity thread
     // and the optimization thread
-    private BlockingCollection<ISolution> solutionsQueue;
+    private BlockingCollection<IList<float>> solutionsQueue;
     private BlockingCollection<float> evaluationsQueue;
 
     // Reference to the hill climber algorithm class
@@ -70,7 +70,7 @@ public class Optimizer : MonoBehaviour
     private int run;
 
     // Current solution
-    private ISolution sol;
+    private IList<float> sol;
 
     // Awake is called before the first frame update
     private void Awake()
@@ -116,7 +116,7 @@ public class Optimizer : MonoBehaviour
             run = 0;
 
             // Initialize the thread communication queues
-            solutionsQueue = new BlockingCollection<ISolution>();
+            solutionsQueue = new BlockingCollection<IList<float>>();
             evaluationsQueue = new BlockingCollection<float>();
 
             // Initialize the hill climber algorithm
@@ -145,7 +145,7 @@ public class Optimizer : MonoBehaviour
             optimizationThread.Start();
 
             // Get first solution given by the hill climber
-            sol = (Solution)solutionsQueue.Take();
+            sol = solutionsQueue.Take();
 
             // Set the game parameters to the given solution
             SetSolution();
@@ -195,7 +195,7 @@ public class Optimizer : MonoBehaviour
                 Stop();
                 // Notify of current status
                 Debug.Log($"Run {run++} scored {stcComp.Points} for " +
-                    $"{sol} " +
+                    $"{SolutionToString(sol)} " +
                     $"(current = {hc.CurrentEvaluation}, " +
                     $"best in run = {hc.BestEvaluationInRun}, " +
                     $"best all runs = {hc.BestEvaluation})");
@@ -246,11 +246,16 @@ public class Optimizer : MonoBehaviour
     // Set the current solution values for the next run
     private void SetSolution()
     {
-        dynAgComp.MaxAccel = ((Solution)sol).MaxAccel;
-        dynAgComp.MaxSpeed = ((Solution)sol).MaxSpeed;
-        dynAgComp.MaxAngularAccel = ((Solution)sol).MaxAngularAccel;
-        dynAgComp.MaxRotation = ((Solution)sol).MaxRotation;
+        dynAgComp.MaxAccel = sol[0];
+        dynAgComp.MaxSpeed = sol[1];
+        dynAgComp.MaxAngularAccel = sol[2];
+        dynAgComp.MaxRotation = sol[3];
     }
+
+    // Converts the solution vector into a string
+    public string SolutionToString(IList<float> sol) =>
+        $"<maxAccel={sol[0]}, maxSpeed={sol[1]}, " +
+        $"maxAngularAccel={sol[2]}, maxRotation={sol[3]}>";
 
     // ////////////////////////////////////////////////////////// //
     // The methods below will only run in the optimization thread //
@@ -266,30 +271,30 @@ public class Optimizer : MonoBehaviour
         Result r = hc.Optimize(
             maxSteps,
             120, // Criteria
-            () => new Solution(
+            () => new float[] {
                 (float)(threadRnd.NextDouble() * 250),
                 (float)(threadRnd.NextDouble() * 250),
                 (float)(threadRnd.NextDouble() * 900),
-                (float)(threadRnd.NextDouble() * 900)),
+                (float)(threadRnd.NextDouble() * 900) },
             numRuns,
             evalsPerSolution
         );
-        Debug.Log(r);
+        Debug.Log(string.Format(
+            $"Best fitness is {0} at {1} (took me {2} evals to get there)",
+            r.Fitness, SolutionToString(r.Solution), r.Evaluations));
     }
 
     // Method which returns a neighbor of the current solution
     // It's internally called by the hill climber
-    private ISolution FindNeighbor(ISolution solution)
+    private IList<float> FindNeighbor(IList<float> solution)
     {
-        Solution s = (Solution)solution;
-        float dMaxAccel = RandBinom() * 25;
-        float dMaxSpeed = RandBinom() * 25;
-        float dMaxAngularAccel = RandBinom() * 60;
-        float dMaxRotation = RandBinom() * 60;
-        return new Solution(
-            Mathf.Max(0, s.MaxAccel + dMaxAccel),
-            Mathf.Max(0, s.MaxSpeed + dMaxSpeed),
-            Mathf.Max(0, s.MaxAngularAccel + dMaxAngularAccel),
-            Mathf.Max(0, s.MaxRotation + dMaxRotation));
+        float[] neighSolution = new float[4]; // Optimization: make this an instance variable
+
+        neighSolution[0] = solution[0] +  RandBinom() * 25; // MaxAccel
+        neighSolution[1] = solution[1] +  RandBinom() * 25; // MaxSpeed
+        neighSolution[2] = solution[2] +  RandBinom() * 60; // MaxAngAccel
+        neighSolution[3] = solution[3] +  RandBinom() * 60; // MaxRotation
+
+        return neighSolution;
     }
 }

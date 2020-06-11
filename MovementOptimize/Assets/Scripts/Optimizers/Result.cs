@@ -5,23 +5,21 @@
  * Author: Nuno Fachada
  * */
 
+using System.Collections.Generic;
+
 namespace LibGameAI.Optimizers
 {
     public struct Result
     {
-        public ISolution Solution { get; }
+        public IList<float> Solution { get; }
         public float Fitness { get; }
         public int Evaluations { get; }
 
-        public Result(ISolution solution, float fitness, int evaluations)
+        public Result(IList<float> solution, float fitness, int evaluations)
         {
             Solution = solution;
             Fitness = fitness;
             Evaluations = evaluations;
         }
-
-        public override string ToString() =>
-            $"Best fitness is {Fitness} at {Solution} " +
-            $"(took me {Evaluations} evaluations to get there)";
     }
 }
