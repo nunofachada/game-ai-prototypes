@@ -282,6 +282,7 @@ GameObject:
   - component: {fileID: 898528543}
   - component: {fileID: 898528541}
   - component: {fileID: 898528542}
+  - component: {fileID: 898528548}
   m_Layer: 0
   m_Name: DynamicAgent
   m_TagString: Untagged
@@ -435,6 +436,26 @@ Transform:
   m_Father: {fileID: 1318689999}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &898528548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898528540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebf1c6b0842a3d72181037f125f20467, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weight: 1
+  switchInterval: 0.25
+  angAcellL: 90
+  angAcellX0: 140
+  angAcellK: 0.04
+  linAcellL: 90
+  linAcellX0: 140
+  linAcellK: 0.04
 --- !u!1 &1106298839
 GameObject:
   m_ObjectHideFlags: 0
@@ -556,13 +577,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12ac2b4b8d9c8d6f58aba8996c690b74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameTime: 60
-  optimize: 0
+  gameTime: 30
+  optimize: 1
   timeScale: 100
   evalsPerSolution: 1
-  maxSteps: 100
-  numRuns: 5
-  showGame: 0
+  maxSteps: 20
+  numRuns: 8
+  showGame: 1
 --- !u!4 &1150418082
 Transform:
   m_ObjectHideFlags: 0

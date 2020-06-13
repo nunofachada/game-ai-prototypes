@@ -6,7 +6,6 @@
  * */
 
 using SRandom = System.Random;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Threading;
@@ -121,23 +120,23 @@ public class Optimizer : MonoBehaviour
 
             // Initialize the hill climber algorithm
             hc = new HillClimber(
-                // Method to find neighbor solutions
-                FindNeighbor,
+                // Solution domain
+                new (float, float)[]
+                    { (0, 10000), (0, 10000), (0, 10000), (0, 10000) },
+                // Deltas
+                new float[] { 2, 2, 3, 3 },
                 // Method for evaluating solutions, which is basically saying
                 // add current solution for evaluation and return the resulting
                 // evaluation
                 s => { solutionsQueue.Add(s); return evaluationsQueue.Take(); },
-                // Method for comparing solutions (which is best)
-                (a, b) => a > b,
-                // Method for selecting the solution for the next iteration
-                (a, b) =>
-                {
-                    // If neighbor is best, always select it
-                    if (a > b) return true;
-                    // Otherwise we can still select it with a given probability
-                    float p = 1 / (1 + Mathf.Exp((b - a) / (0.25f * b)));
-                    return threadRnd.NextDouble() < p;
-                });
+                // We want to maximize
+                minimize : false,
+                // Initial temperature
+                t0 : 0,
+                // Temperature decrease coefficient
+                r : 0.1f,
+                // Acceleration coefficient
+                accel : 1.2f);
 
             // Create and start optimization thread, which will run the
             // Optimize() method
@@ -196,8 +195,7 @@ public class Optimizer : MonoBehaviour
                 // Notify of current status
                 Debug.Log($"Run {run++} scored {stcComp.Points} for " +
                     $"{SolutionToString(sol)} " +
-                    $"(current = {hc.CurrentEvaluation}, " +
-                    $"best in run = {hc.BestEvaluationInRun}, " +
+                    $"(best in run = {hc.BestEvaluationInRun}, " +
                     $"best all runs = {hc.BestEvaluation})");
                 // Send evaluation to optimization thread
                 evaluationsQueue.Add(stcComp.Points);
@@ -261,10 +259,6 @@ public class Optimizer : MonoBehaviour
     // The methods below will only run in the optimization thread //
     // ////////////////////////////////////////////////////////// //
 
-    // Returns a value derived from the random binomial distribution
-    private float RandBinom() =>
-        (float)(threadRnd.NextDouble() - threadRnd.NextDouble());
-
     // The method which the optimization thread will run
     private void Optimize()
     {
@@ -272,29 +266,15 @@ public class Optimizer : MonoBehaviour
             maxSteps,
             120, // Criteria
             () => new float[] {
-                (float)(threadRnd.NextDouble() * 250),
-                (float)(threadRnd.NextDouble() * 250),
-                (float)(threadRnd.NextDouble() * 900),
-                (float)(threadRnd.NextDouble() * 900) },
+                (float)(threadRnd.NextDouble() * 5),
+                (float)(threadRnd.NextDouble() * 5),
+                (float)(threadRnd.NextDouble() * 10),
+                (float)(threadRnd.NextDouble() * 10) },
             numRuns,
             evalsPerSolution
         );
         Debug.Log(string.Format(
             $"Best fitness is {0} at {1} (took me {2} evals to get there)",
             r.Fitness, SolutionToString(r.Solution), r.Evaluations));
-    }
-
-    // Method which returns a neighbor of the current solution
-    // It's internally called by the hill climber
-    private IList<float> FindNeighbor(IList<float> solution)
-    {
-        float[] neighSolution = new float[4]; // Optimization: make this an instance variable
-
-        neighSolution[0] = solution[0] +  RandBinom() * 25; // MaxAccel
-        neighSolution[1] = solution[1] +  RandBinom() * 25; // MaxSpeed
-        neighSolution[2] = solution[2] +  RandBinom() * 60; // MaxAngAccel
-        neighSolution[3] = solution[3] +  RandBinom() * 60; // MaxRotation
-
-        return neighSolution;
     }
 }
