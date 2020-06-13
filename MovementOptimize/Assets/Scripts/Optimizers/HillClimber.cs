@@ -7,11 +7,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace LibGameAI.Optimizers
 {
     public class HillClimber
     {
+        // DELETE
+        public BlockingCollection<string> msgs;
+
         // Random number generator
         private Random random;
 
@@ -73,6 +77,10 @@ namespace LibGameAI.Optimizers
             float accel = 1f,
             int? seed = null)
         {
+
+            // DELETE
+            msgs = new BlockingCollection<string>();
+
             // Keep accel parameter
             this.accel = accel;
 
@@ -145,6 +153,7 @@ namespace LibGameAI.Optimizers
             int maxSteps,
             float criteria,
             Func<IList<float>> initialSolution,
+            IList<float> minDeltas,
             int runs = 1,
             int evalsPerSolution = 1)
         {
@@ -175,7 +184,8 @@ namespace LibGameAI.Optimizers
                     updateTemperature?.Invoke(step);
 
                     // Evaluate current solution
-                    CurrentEvaluation = Evaluate(CurrentSolution);
+                    CurrentEvaluation =
+                        Evaluate(CurrentSolution, evalsPerSolution);
 
                     // If it's the best in run, keep solution
                     if (compare(CurrentEvaluation, BestEvaluationInRun))
@@ -218,30 +228,31 @@ namespace LibGameAI.Optimizers
                                 // evaluate, and reset parameter
                                 CurrentSolution[i] += currentModif;
 
-                                // Perform required evaluations for current
-                                // solution
-                                for (int k = 0; k < evalsPerSolution; k++)
-                                    tempEval += Evaluate(CurrentSolution);
-
-                                // Get the mean of the evaluations and add the
-                                // annealing parameter
-                                tempEval = tempEval / evalsPerSolution
-                                    + annealing?.Invoke() ?? 0;
+                                // Evaluate current solution
+                                tempEval =
+                                    Evaluate(CurrentSolution, evalsPerSolution)
+                                    + (annealing?.Invoke() ?? 0);
 
                                 // Reset parameter
                                 CurrentSolution[i] -= currentModif;
                             }
+
 
                             // Is the temporary evaluation the best one?
                             if (compare(tempEval, bestEval))
                             {
                                 bestModifIdx = j;
                                 bestEval = tempEval;
+                                //msgs.Add($"[param={i}] {CurrentSolution[i]} -> {CurrentSolution[i] + currentModif} yields {tempEval} (j={j}) !!BEST!!");
+                            }
+                            else
+                            {
+                                //msgs.Add($"[param={i}] {CurrentSolution[i]} -> {CurrentSolution[i] + currentModif} yields {tempEval} (j={j}) !!BEST!!");
                             }
                         }
 
                         // Was no modification the best modification?
-                        if (bestModifIdx == 2)
+                        if (modif[bestModifIdx] == 0.0f)
                         {
                             // Deaccelerate search wrt this parameter
                             deltas[i] /= accel;
@@ -255,6 +266,7 @@ namespace LibGameAI.Optimizers
                             // Update acceleration correspondingly
                             deltas[i] *= Math.Abs(modif[bestModifIdx]);
                         }
+                        deltas[i] = Math.Max(deltas[i], minDeltas[i]);
                     }
                 }
 
@@ -273,10 +285,15 @@ namespace LibGameAI.Optimizers
             return new Result(BestSolution, BestEvaluation, Evaluations);
         }
 
-        private float Evaluate(IList<float> solution)
+        private float Evaluate(IList<float> solution, int evalsPerSolution)
         {
-            Evaluations++;
-            return evaluate(solution);
+            float eval = 0;
+            for (int i = 0; i < evalsPerSolution; i++)
+            {
+                Evaluations++;
+                eval += evaluate(solution);
+            }
+            return eval / evalsPerSolution;
         }
     }
 }

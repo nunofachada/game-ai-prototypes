@@ -123,8 +123,8 @@ public class Optimizer : MonoBehaviour
                 // Solution domain
                 new (float, float)[]
                     { (0, 10000), (0, 10000), (0, 10000), (0, 10000) },
-                // Deltas
-                new float[] { 2, 2, 3, 3 },
+                // Deltas (TODO the should be given in the Optimize method!)
+                new float[] { 20, 20, 20, 20 },
                 // Method for evaluating solutions, which is basically saying
                 // add current solution for evaluation and return the resulting
                 // evaluation
@@ -132,7 +132,7 @@ public class Optimizer : MonoBehaviour
                 // We want to maximize
                 minimize : false,
                 // Initial temperature
-                t0 : 0,
+                t0 : 5,
                 // Temperature decrease coefficient
                 r : 0.1f,
                 // Acceleration coefficient
@@ -195,8 +195,11 @@ public class Optimizer : MonoBehaviour
                 // Notify of current status
                 Debug.Log($"Run {run++} scored {stcComp.Points} for " +
                     $"{SolutionToString(sol)} " +
-                    $"(best in run = {hc.BestEvaluationInRun}, " +
+                    $"(current = {hc.CurrentEvaluation}, " +
+                    $"best in run = {hc.BestEvaluationInRun}, " +
                     $"best all runs = {hc.BestEvaluation})");
+                // foreach (string msg in hc.msgs)
+                //     Debug.Log(" ==== " + msg);
                 // Send evaluation to optimization thread
                 evaluationsQueue.Add(stcComp.Points);
                 // Try and take a new solution for the next run
@@ -266,10 +269,11 @@ public class Optimizer : MonoBehaviour
             maxSteps,
             120, // Criteria
             () => new float[] {
-                (float)(threadRnd.NextDouble() * 5),
-                (float)(threadRnd.NextDouble() * 5),
-                (float)(threadRnd.NextDouble() * 10),
-                (float)(threadRnd.NextDouble() * 10) },
+                (float)(threadRnd.NextDouble() * 50),
+                (float)(threadRnd.NextDouble() * 50),
+                (float)(threadRnd.NextDouble() * 100),
+                (float)(threadRnd.NextDouble() * 100) },
+            new float[] { 1.5f, 1.5f, 1.5f, 1.5f },
             numRuns,
             evalsPerSolution
         );
