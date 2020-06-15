@@ -48,6 +48,7 @@ public class Optimizer : MonoBehaviour
     // and the optimization thread
     private BlockingCollection<IList<float>> solutionsQueue;
     private BlockingCollection<float> evaluationsQueue;
+    private BlockingCollection<string> msgQueue;
 
     // Reference to the hill climber algorithm class
     private HillClimber hc;
@@ -64,9 +65,6 @@ public class Optimizer : MonoBehaviour
 
     // Is a run running?
     private bool running;
-
-    // Number of current run
-    private int run;
 
     // Current solution
     private IList<float> sol;
@@ -111,32 +109,28 @@ public class Optimizer : MonoBehaviour
         // Is this an optimization play?
         if (optimize)
         {
-            // Set run number to zero
-            run = 0;
-
             // Initialize the thread communication queues
             solutionsQueue = new BlockingCollection<IList<float>>();
             evaluationsQueue = new BlockingCollection<float>();
+            msgQueue = new BlockingCollection<string>();
 
             // Initialize the hill climber algorithm
             hc = new HillClimber(
-                // Solution domain
-                new (float, float)[]
-                    { (0, 10000), (0, 10000), (0, 10000), (0, 10000) },
-                // Deltas (TODO the should be given in the Optimize method!)
-                new float[] { 20, 20, 20, 20 },
                 // Method for evaluating solutions, which is basically saying
                 // add current solution for evaluation and return the resulting
                 // evaluation
                 s => { solutionsQueue.Add(s); return evaluationsQueue.Take(); },
+                // Solution domain
+                new (float, float)[]
+                    { (0, 10000), (0, 10000), (0, 10000), (0, 10000) },
                 // We want to maximize
-                minimize : false,
-                // Initial temperature
-                t0 : 5,
-                // Temperature decrease coefficient
-                r : 0.1f,
-                // Acceleration coefficient
-                accel : 1.2f);
+                minimize : false);
+
+            // Register listener
+            hc.BestInRunUpdate += (step, sol, eval, numEvals) =>
+                msgQueue.Add(
+                    string.Format("Step {0} with fit = {1} ({2})",
+                        step, eval, Sol2Str(sol)));
 
             // Create and start optimization thread, which will run the
             // Optimize() method
@@ -192,16 +186,25 @@ public class Optimizer : MonoBehaviour
             {
                 // Stop current run
                 Stop();
+
                 // Notify of current status
-                Debug.Log($"Run {run++} scored {stcComp.Points} for " +
-                    $"{SolutionToString(sol)} " +
-                    $"(current = {hc.CurrentEvaluation}, " +
-                    $"best in run = {hc.BestEvaluationInRun}, " +
-                    $"best all runs = {hc.BestEvaluation})");
+                if (msgQueue.TryTake(out string msg))
+                {
+                    Debug.Log(msg);
+                }
+
+                // Debug.Log($"Run {run++} scored {stcComp.Points} for " +
+                //     $"{Sol2Str(sol)} " +
+                //     $"(current = {hc.CurrentEvaluation}, " +
+                //     $"best in run = {hc.BestEvaluationInRun}, " +
+                //     $"best all runs = {hc.BestEvaluation})");
+
                 // foreach (string msg in hc.msgs)
                 //     Debug.Log(" ==== " + msg);
+
                 // Send evaluation to optimization thread
                 evaluationsQueue.Add(stcComp.Points);
+
                 // Try and take a new solution for the next run
                 if (!solutionsQueue.TryTake(out sol, 1500))
                 {
@@ -254,7 +257,7 @@ public class Optimizer : MonoBehaviour
     }
 
     // Converts the solution vector into a string
-    public string SolutionToString(IList<float> sol) =>
+    public string Sol2Str(IList<float> sol) =>
         $"<maxAccel={sol[0]}, maxSpeed={sol[1]}, " +
         $"maxAngularAccel={sol[2]}, maxRotation={sol[3]}>";
 
@@ -265,20 +268,24 @@ public class Optimizer : MonoBehaviour
     // The method which the optimization thread will run
     private void Optimize()
     {
-        Result r = hc.Optimize(
-            maxSteps,
-            120, // Criteria
-            () => new float[] {
+        (IList<float> sol, float eval, int numEvals) r = hc.Optimize(
+            maxSteps : maxSteps,
+            criteria : 120,
+            initialSolution : () => new float[] {
                 (float)(threadRnd.NextDouble() * 50),
                 (float)(threadRnd.NextDouble() * 50),
                 (float)(threadRnd.NextDouble() * 100),
                 (float)(threadRnd.NextDouble() * 100) },
-            new float[] { 1.5f, 1.5f, 1.5f, 1.5f },
-            numRuns,
-            evalsPerSolution
+            deltas :  new float[] { 20, 20, 20, 20 },
+            minDeltas : new float[] { 1.5f, 1.5f, 1.5f, 1.5f },
+            runs : numRuns,
+            evalsPerSolution : evalsPerSolution,
+            t0 : 5,       // Initial temperature
+            r : 0.1f,     // Temperature decrease coefficient
+            accel : 1.2f // Acceleration coefficient
         );
         Debug.Log(string.Format(
             $"Best fitness is {0} at {1} (took me {2} evals to get there)",
-            r.Fitness, SolutionToString(r.Solution), r.Evaluations));
+            r.eval, Sol2Str(r.sol), r.numEvals));
     }
 }
