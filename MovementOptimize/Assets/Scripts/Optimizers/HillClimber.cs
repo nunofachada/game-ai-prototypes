@@ -12,6 +12,18 @@ namespace LibGameAI.Optimizers
 {
     public class HillClimber
     {
+        // Maximum number of steps per run
+        private int maxSteps;
+
+        // Stoping criteria per run
+        private float criteria;
+
+        // Minimum improvement required per step
+        private float epsilon;
+
+        // Acceleration factor para adaptive steps
+        private float accel;
+
         // Solution domain
         private (float min, float max)[] solutionDomain;
 
@@ -21,20 +33,85 @@ namespace LibGameAI.Optimizers
         // Function for comparing two solutions based on their evaluation
         private Func<float, float, bool> compare;
 
+        // Function for generation initial solutions
+        private Func<IList<float>> initialSolution;
+
         // Worst evaluation possible
         private float WorstEvaluationPossible => sign * float.PositiveInfinity;
 
         // Sign multiplier
         private int sign;
 
+        // Initial temperature for simulated annealing
+        private float t0;
+
+        // Temperature decrease rate
+        private float r;
+
         // Problem dimensions
         private int numDims;
 
+        // Number of evaluations to perform for each solution
+        private int evalsPerSolution;
+
+        // Random number generator
+        private Random random;
+
+        // Initial deltas
+        private float[] deltas;
+
+        // Minimum deltas
+        private float[] minDeltas;
+
+        // Parameter modifiers
+        private float[] modif;
+
+        // Number of runs to perform per optimization
+        private int runs;
+
+        /// <summary>TODO</summary>
+        /// <param name="maxSteps">Maximum steps per run.</param>
+        /// <param name="criteria">Evaluation stopping criteria.</param>
+        /// <param name="initialSolution">
+        /// Function which returns an initial solution for starting the
+        /// search (should be a different initial solution each time the
+        /// function is called).
+        /// </param>
+        /// <param name="runs">
+        /// Number of times to start the algorithm from scratch with another
+        /// initial solution.
+        /// </param>
+        /// <param name="evalsPerSolution">
+        /// Number of evaluations per solution, in case evaluations are
+        /// non-deterministic.
+        /// </param>
         public HillClimber(
             Func<IList<float>, float> evaluate,
             IList<(float min, float max)> solutionDomain,
-            bool minimize = true)
+            bool minimize = true,
+            int maxSteps = int.MaxValue,
+            float criteria = float.PositiveInfinity,
+            float epsilon = float.NegativeInfinity,
+            Func<IList<float>> initialSolution = null,
+            IList<float> deltas = null,
+            IList<float> minDeltas = null,
+            int runs = 1,
+            int evalsPerSolution = 1,
+            float t0 = 0f,
+            float r = 0.1f,
+            float accel = 1f,
+            int? seed = null)
         {
+            // Check if one of maxSteps, criteria or epsilon was specified
+            if (maxSteps == int.MaxValue
+                && criteria == float.PositiveInfinity
+                && epsilon == float.NegativeInfinity)
+            {
+                throw new ArgumentException(string.Format(
+                    "One of '{0}', '{1}' or '{2}' must be specified.",
+                    nameof(maxSteps), nameof(criteria), nameof(epsilon)));
+            }
+
             // Do not allow a null evaluation function
             if (evaluate == null)
                 throw new ArgumentNullException(
@@ -79,99 +156,41 @@ namespace LibGameAI.Optimizers
                 compare = (a, b) => a > b;
                 sign = -1;
             }
-        }
 
-        /// <summary>
-        /// Optimize / search for a good solution.
-        /// </summary>
-        /// <param name="maxSteps">Maximum steps per run.</param>
-        /// <param name="criteria">Evaluation stopping criteria.</param>
-        /// <param name="initialSolution">
-        /// Function which returns an initial solution for starting the
-        /// search (should be a different initial solution each time the
-        /// function is called).
-        /// </param>
-        /// <param name="runs">
-        /// Number of times to start the algorithm from scratch with another
-        /// initial solution.
-        /// </param>
-        /// <param name="evalsPerSolution">
-        /// Number of evaluations per solution, in case evaluations are
-        /// non-deterministic.
-        /// </param>
-        /// <returns>
-        /// The best solution found, its evaluation and number of evaluations
-        /// required to find it.
-        /// </returns>
-        public (IList<float>, float, int) Optimize(
-            int maxSteps = int.MaxValue,
-            float criteria = float.PositiveInfinity,
-            float epsilon = float.NegativeInfinity,
-            Func<IList<float>> initialSolution = null,
-            IList<float> deltas = null,
-            IList<float> minDeltas = null,
-            int runs = 1,
-            int evalsPerSolution = 1,
-            float t0 = 0f,
-            float r = 0.1f,
-            float accel = 1f,
-            int? seed = null)
-        {
-            // Check if one of maxSteps, criteria or epsilon was specified
-            if (maxSteps == int.MaxValue
-                && criteria == float.PositiveInfinity
-                && epsilon == float.NegativeInfinity)
-            {
-                throw new ArgumentException(string.Format(
-                    "One of '{0}', '{1}' or '{2}' must be specified.",
-                    nameof(maxSteps), nameof(criteria), nameof(epsilon)));
-            }
-
-            // Best evaluation so far in all finished runs
-            float bestEvalAllRuns = WorstEvaluationPossible;
-            // Best evaluation so far in current run
-            float bestEvalInRun = WorstEvaluationPossible;
-            // Current (last) evaluation
-            float currentEvaluation = WorstEvaluationPossible;
-
-            // Best solution so far in all finished runs
-            IList<float> bestSolutionAllRuns = null;
-            // Best solution so far in current run
-            IList<float> bestSolutionInRun = null;
-            // Current (last) solution
-            IList<float> currentSolution;
-
-            // Number of evaluations performed
-            int numEvals = 0;
-            // Current temperature (for simulated annealing)
-            float t = t0;
+            // Keep required parameters
+            this.maxSteps = maxSteps;
+            this.criteria = criteria;
+            this.epsilon = epsilon;
+            this.accel = accel;
+            this.t0 = t0;
+            this.r = r;
+            this.runs = runs;
+            this.evalsPerSolution = evalsPerSolution;
 
             // Initialize random number generator
-            Random random =
-                seed.HasValue ? new Random(seed.Value) : new Random();;
+            random = seed.HasValue ? new Random(seed.Value) : new Random();
 
-            // Initialize deltas, i.e., maximum change in each parameter
-            float[] localDeltas = new float[numDims];
+            // Initialize vector to keep initial deltas
+            this.deltas = new float[numDims];
 
-            // Where deltas specified?
+            // Were initial deltas specified in the parameters?
             if (deltas is null)
                 // If not, initialize them all to 1
-                for (int i = 0; i < numDims; i++) localDeltas[i] = 1f;
+                for (int i = 0; i < numDims; i++) this.deltas[i] = 1f;
             else
                 // Otherwise keep a local copy
-                deltas.CopyTo(localDeltas, 0);
+                deltas.CopyTo(this.deltas, 0);
 
             // Initialize minimum deltas to zeros (minimum change hill climber
             // can apply to each parameter)
-            float[] localMinDeltas = new float[numDims];
+            this.minDeltas = new float[numDims];
 
             // If minimum deltas were specified, use them instead
-            if (!(minDeltas is null))
-                minDeltas.CopyTo(localMinDeltas, 0);
+            if (!(minDeltas is null)) minDeltas.CopyTo(this.minDeltas, 0);
 
             // Determine modifications to perform to each parameter
             // Depends whether there is an acceleration factor or not
-            float[] modif = accel > 1.0f
+            modif = accel > 1.0f
                 ? new float[] { -accel, -1f / accel, 0, 1f / accel, accel }
                 : new float[] { -1, 0, 1 };
 
@@ -179,7 +198,7 @@ namespace LibGameAI.Optimizers
             // spawn uniformly random solutions within the solution domain
             if (initialSolution is null)
             {
-                initialSolution = () =>
+                this.initialSolution = () =>
                 {
                     float[] initSol = new float[numDims];
                     for (int i = 0; i < numDims; i++)
@@ -192,24 +211,65 @@ namespace LibGameAI.Optimizers
                     return initSol;
                 };
             }
+            else
+            {
+                this.initialSolution = initialSolution;
+            }
+        }
+
+        /// <summary>
+        /// Optimize / search for a good solution.
+        /// </summary>
+        /// <returns>
+        /// The best solution found, its evaluation and number of evaluations
+        /// required to find it.
+        /// </returns>
+        public (IList<float>, float, int) Optimize()
+        {
+            // Best evaluation so far in all finished runs
+            float bestEvalAllRuns = WorstEvaluationPossible;
+            // Best evaluation so far in current run
+            float bestEvalInRun = WorstEvaluationPossible;
+            // Current (last) evaluation
+            float currentEval = WorstEvaluationPossible;
+
+            // Best solution so far in all finished runs
+            IList<float> bestSolutionAllRuns = null;
+            // Best solution so far in current run
+            IList<float> bestSolutionInRun = null;
+            // Current (last) solution
+            IList<float> currentSolution;
+
+            // Number of evaluations performed
+            int numEvals = 0;
+
+            // Create an array of possibly dynamic deltas, i.e., maximum
+            // changes in each parameter
+            float[] localDeltas = new float[numDims];
 
             // Perform algorithm runs
             for (int run = 0; run < runs; run++)
             {
+                // Reset temperature for simulated annealing to initial value
+                float t = t0;
+
                 // Set previous evaluation to worst possible
-                float prevEvaluation = WorstEvaluationPossible;
+                float prevEval = WorstEvaluationPossible;
+
+                // Reset deltas
+                deltas.CopyTo(localDeltas, 0);
 
                 // For current run, get an initial solution and evaluate it
                 currentSolution = initialSolution();
                 bestSolutionInRun = currentSolution;
-                currentEvaluation = Evaluate(
+                currentEval = Evaluate(
                     currentSolution, evalsPerSolution, ref numEvals);
 
                 // Perform a run of the algorithm
                 for (int step = 0;
                     step < maxSteps
-                    && compare(criteria, currentEvaluation)
-                    && Math.Abs(prevEvaluation - currentEvaluation) > epsilon;
+                    && compare(criteria, currentEval)
+                    && sign * (prevEval - currentEval) > epsilon;
                     step++)
                 {
                     // Loop through each parameter
@@ -283,7 +343,7 @@ namespace LibGameAI.Optimizers
 
                         // Don't let deltas go below defined minimum
                         localDeltas[i] =
-                            Math.Max(localDeltas[i], localMinDeltas[i]);
+                            Math.Max(localDeltas[i], minDeltas[i]);
 
                         // Notify listeners current paramter is optimized for
                         // current step
@@ -295,24 +355,24 @@ namespace LibGameAI.Optimizers
                     if (t0 > 0) t = t0 * (float)Math.Exp(-r * step);
 
                     // Keep previous evaluation
-                    prevEvaluation = currentEvaluation;
+                    prevEval = currentEval;
 
                     // Evaluate current solution
-                    currentEvaluation = Evaluate(
+                    currentEval = Evaluate(
                         currentSolution, evalsPerSolution, ref numEvals);
 
                     // If it's the best in run, keep solution
-                    if (compare(currentEvaluation, bestEvalInRun))
+                    if (compare(currentEval, bestEvalInRun))
                     {
                         bestSolutionInRun = currentSolution;
-                        bestEvalInRun = currentEvaluation;
+                        bestEvalInRun = currentEval;
                         BestInRunUpdate?.Invoke(
                             step, bestSolutionInRun, bestEvalInRun, numEvals);
                     }
 
                     // Notify listeners current step is over
                     PerStep?.Invoke(
-                        step, currentSolution, currentEvaluation, numEvals);
+                        step, currentSolution, currentEval, numEvals);
                 }
 
                 // Is last run's best solution better than the best solution

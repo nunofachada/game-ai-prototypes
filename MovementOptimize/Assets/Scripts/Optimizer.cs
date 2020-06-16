@@ -124,7 +124,22 @@ public class Optimizer : MonoBehaviour
                 new (float, float)[]
                     { (0, 10000), (0, 10000), (0, 10000), (0, 10000) },
                 // We want to maximize
-                minimize : false);
+                minimize : false,
+                maxSteps : maxSteps,
+                criteria : 120,
+                initialSolution : () => new float[] {
+                    (float)(threadRnd.NextDouble() * 50),
+                    (float)(threadRnd.NextDouble() * 50),
+                    (float)(threadRnd.NextDouble() * 100),
+                    (float)(threadRnd.NextDouble() * 100) },
+                deltas :  new float[] { 20, 20, 20, 20 },
+                minDeltas : new float[] { 1.5f, 1.5f, 1.5f, 1.5f },
+                runs : numRuns,
+                evalsPerSolution : evalsPerSolution,
+                t0 : 5,       // Initial temperature
+                r : 0.1f,     // Temperature decrease coefficient
+                accel : 1.2f // Acceleration coefficient
+            );
 
             // Register listener
             hc.BestInRunUpdate += (step, sol, eval, numEvals) =>
@@ -268,22 +283,7 @@ public class Optimizer : MonoBehaviour
     // The method which the optimization thread will run
     private void Optimize()
     {
-        (IList<float> sol, float eval, int numEvals) r = hc.Optimize(
-            maxSteps : maxSteps,
-            criteria : 120,
-            initialSolution : () => new float[] {
-                (float)(threadRnd.NextDouble() * 50),
-                (float)(threadRnd.NextDouble() * 50),
-                (float)(threadRnd.NextDouble() * 100),
-                (float)(threadRnd.NextDouble() * 100) },
-            deltas :  new float[] { 20, 20, 20, 20 },
-            minDeltas : new float[] { 1.5f, 1.5f, 1.5f, 1.5f },
-            runs : numRuns,
-            evalsPerSolution : evalsPerSolution,
-            t0 : 5,       // Initial temperature
-            r : 0.1f,     // Temperature decrease coefficient
-            accel : 1.2f // Acceleration coefficient
-        );
+        (IList<float> sol, float eval, int numEvals) r = hc.Optimize();
         Debug.Log(string.Format(
             $"Best fitness is {0} at {1} (took me {2} evals to get there)",
             r.eval, Sol2Str(r.sol), r.numEvals));
