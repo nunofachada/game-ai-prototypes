@@ -253,7 +253,14 @@ public class Optimizer : MonoBehaviour
     public void Finish()
     {
         // If this was an optimization play, join with the optimization thread
-        if (optimize) optimizationThread.Join();
+        if (optimize)
+        {
+            optimizationThread.Join();
+            foreach (string msg in msgQueue)
+            {
+                Debug.Log(msg);
+            }
+        }
         // Finish the game
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
@@ -284,8 +291,8 @@ public class Optimizer : MonoBehaviour
     private void Optimize()
     {
         (IList<float> sol, float eval, int numEvals) r = hc.Optimize();
-        Debug.Log(string.Format(
-            $"Best fitness is {0} at {1} (took me {2} evals to get there)",
+        msgQueue.Add(string.Format(
+            "Best fitness is {0} at {1} (took me {2} evals to get there)",
             r.eval, Sol2Str(r.sol), r.numEvals));
     }
 }
