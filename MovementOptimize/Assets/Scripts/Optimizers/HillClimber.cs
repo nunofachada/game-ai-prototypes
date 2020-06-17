@@ -10,6 +10,14 @@ using System.Collections.Generic;
 
 namespace LibGameAI.Optimizers
 {
+    /// <summary>
+    /// Iterative hill climber.
+    /// </summary>
+    /// TODO Better event output for debugging
+    /// TODO Add option to only select best parameter per step instead of
+    /// optimizing several parameters in one step
+    /// TODO Improve efficiency: last evaluation in step is probably not needed
+    /// TODO Fix doc-comments
     public class HillClimber
     {
         // Maximum number of steps per run
@@ -345,7 +353,7 @@ namespace LibGameAI.Optimizers
                         localDeltas[i] =
                             Math.Max(localDeltas[i], minDeltas[i]);
 
-                        // Notify listeners current paramter is optimized for
+                        // Notify listeners current parameter is optimized for
                         // current step
                         PerParam?.Invoke(
                             i, currentSolution, bestEval, numEvals);
