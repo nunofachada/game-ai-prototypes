@@ -10,7 +10,7 @@ using UnityEngine.UI;
 using LibGameAI.RNG;
 using Random = System.Random;
 
-public class DispersionGeneration : MonoBehaviour
+public class DispersionBehaviour : MonoBehaviour
 {
     public enum RNG { System, Halton }
 

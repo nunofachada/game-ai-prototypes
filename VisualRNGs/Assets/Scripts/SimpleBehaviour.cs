@@ -10,7 +10,7 @@ using UnityEngine.UI;
 using LibGameAI.RNG;
 using Random = System.Random;
 
-public class SimpleGeneration : MonoBehaviour
+public class SimpleBehaviour : MonoBehaviour
 {
     public enum PRNG { System, XorShift128 }
 
