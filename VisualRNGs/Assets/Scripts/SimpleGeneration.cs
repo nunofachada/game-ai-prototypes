@@ -1,36 +1,77 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using LibGameAI.RNG;
+using Random = System.Random;
 
 public class SimpleGeneration : MonoBehaviour
 {
+    public enum PRNG { System, /*LCG,*/ XorShift128 }
+
+    [SerializeField]
+    private PRNG randomNumberGenerator = PRNG.System;
+
+    [SerializeField]
+    private bool useSeed = false;
+
+    [SerializeField]
+    private int seed = 123;
 
     private RawImage image;
     private Color[] pixels;
 
     private void Awake()
     {
-        //System.Random rnd = new System.Random();
-        System.Random rnd = new LCG();
-        //System.Random rnd = new XorShift128();
+        // Random number generator
+        Random rnd = null;
 
-        image = GetComponent<RawImage>();
-        pixels = new Color[Screen.width * Screen.height];
-        Texture2D text = new Texture2D(Screen.width, Screen.height);
+        // Image width and height
+        int width = Screen.width;
+        int height = Screen.height;
 
-        for (int i = 0; i < Screen.height; i++)
+        // Texture to present, to be randomly created
+        Texture2D texture = new Texture2D(width, height);
+
+        // Instantiate the selected random number generator
+        switch (randomNumberGenerator)
         {
-            for (int j = 0; j < Screen.width; j++)
+            case PRNG.System:
+                rnd = useSeed ? new Random(seed) : new Random();
+                break;
+            // case PRNG.LCG:
+            //     rnd = useSeed ? new LCG(seed) : new LCG();
+            //     break;
+            case PRNG.XorShift128:
+                rnd = useSeed ? new XorShift128(seed) : new XorShift128();
+                break;
+        }
+
+        // Get image component where to place the texture
+        image = GetComponent<RawImage>();
+
+        // Create a vector of pixels
+        pixels = new Color[width * height];
+
+        // Fill vector of pixels with random black or white pixels
+        for (int i = 0; i < height; i++)
+        {
+            for (int j = 0; j < width; j++)
             {
+                // Get a random value between 0 and 1
                 double val = rnd.NextDouble();
+
+                // Determine color based on obtained random value
                 Color color = val < 0.5 ? Color.white : Color.black;
-                pixels[i * Screen.width + j] = color;
+
+                // Set color in pixels array
+                pixels[i * width + j] = color;
             }
         }
 
-        text.SetPixels(pixels);
-        text.Apply();
-        image.texture = text;
+        // Set and apply texture pixels
+        texture.SetPixels(pixels);
+        texture.Apply();
 
+        // Place texture in image
+        image.texture = texture;
     }
 }

@@ -278,12 +278,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2050566867}
+  - component: {fileID: 2050566868}
   - component: {fileID: 2050566866}
   - component: {fileID: 2050566865}
   - component: {fileID: 2050566864}
   - component: {fileID: 2050566863}
   - component: {fileID: 2050566862}
-  - component: {fileID: 2050566868}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -415,3 +415,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f0806990c9bd2a4285476a3504b7be6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  randomNumberGenerator: 0
+  useSeed: 1
+  seed: 0

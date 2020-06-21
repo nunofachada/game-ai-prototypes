@@ -16,6 +16,7 @@ namespace LibGameAI.RNG
         }
         public XorShift128(long seed)
         {
+            if (seed == 0) seed = (long)-1;
             x = unchecked((uint)(0xFFFFFFFF & seed));
             y = unchecked((uint)(0xFFFFFFFF & (seed >> 16)));
             z = unchecked((uint)(0xFFFFFFFF & (seed >> 32)));
