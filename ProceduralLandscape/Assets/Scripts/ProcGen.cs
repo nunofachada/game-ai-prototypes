@@ -34,6 +34,9 @@ public class ProcGen : MonoBehaviour
     [Range(0, 1)]
     private float meanDepth = 0.01f;
 
+    [SerializeField]
+    private float decreaseDistance = 0f;
+
     private void Awake()
     {
         System.Random random = new System.Random(seed);
@@ -50,7 +53,8 @@ public class ProcGen : MonoBehaviour
         for (int i = 0; i < numFaults; i++)
         {
             Landscape.FaultModifier(
-                heights, meanDepth, () => (float)random.NextDouble());
+                heights, meanDepth, () => (float)random.NextDouble(),
+                decreaseDistance);
         }
 
         // Apply Perlin noise
@@ -61,7 +65,8 @@ public class ProcGen : MonoBehaviour
                 for (int j = 0; j < height; j++)
                 {
                     heights[i, j] += Mathf.PerlinNoise(
-                        tileSize * i / (float)width, tileSize * (float)j / height);
+                        tileSize * i / (float)width,
+                        tileSize * (float)j / height);
                 }
             }
         }
@@ -76,7 +81,7 @@ public class ProcGen : MonoBehaviour
             }
         }
 
-        Debug.Log($"max = {max}, min = {min}");
+        //Debug.Log($"max = {max}, min = {min}");
 
         if (min < 0 || max > maxAltitude)
         {
@@ -85,7 +90,8 @@ public class ProcGen : MonoBehaviour
             {
                 for (int j = 0; j < height; j++)
                 {
-                    heights[i, j] =  maxAltitude * (heights[i, j] - min) / (max - min);
+                    heights[i, j] =
+                        maxAltitude * (heights[i, j] - min) / (max - min);
                 }
             }
         }

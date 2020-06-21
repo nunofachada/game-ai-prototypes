@@ -11,7 +11,8 @@ namespace LibGameAI.ProcGen
     public static class Landscape
     {
         public static void FaultModifier(
-            float[,] landscape, float depth, Func<float> randFloat)
+            float[,] landscape, float depth, Func<float> randFloat,
+            float decreaseDistance = 0)
         {
             // Create random fault epicentre and direction vector
             float cx = randFloat.Invoke() * landscape.GetLength(0);
@@ -29,9 +30,29 @@ namespace LibGameAI.ProcGen
                     float ox = cx - x;
                     float oy = cy - y;
                     float dp = ox * dx + oy * dy;
+                    float change;
 
                     // Positive dot product goes up, negative goes down
-                    float change = dp > 0 ? depth : -depth;
+                    if (dp > 0)
+                    {
+                        // Fault size will decrease with distance if
+                        // decreaseDistance > 0
+                        float decrease = decreaseDistance > 0
+                            ? decreaseDistance / (decreaseDistance + dp)
+                            : 1;
+                        // Positive dot product goes up
+                        change = depth * decrease;
+                    }
+                    else
+                    {
+                        // Fault size will decrease with distance if
+                        // decreaseDistance > 0
+                        float decrease = decreaseDistance > 0
+                            ? decreaseDistance / (decreaseDistance - dp)
+                            : 1;
+                        // Negative dot product goes down
+                        change = -depth * decrease;
+                    }
 
                     // Apply fault modification
                     landscape[x, y] += change;
