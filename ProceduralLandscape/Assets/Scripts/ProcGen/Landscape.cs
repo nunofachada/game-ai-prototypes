@@ -60,5 +60,54 @@ namespace LibGameAI.ProcGen
             }
         }
 
+        // TODO Not working properly
+        // Check https://github.com/creativitRy/Erosion
+        // and "Fast Hydraulic Erosion Simulation and Visualization on GPU" by Xing Mei, Philippe Decaudin, Bao-Gang Hu
+        // "Fast Hydraulic and Thermal Erosion on the GPU" by Balazs Jako
+        public static void ThermalErosion(float[,] landscape, float threshold)
+        {
+            // This should be updated to use System.ReadOnlySpan when
+            // Unity supports .NET Standard 2.1 in order to avoid heap
+            // allocations
+            (int, int)[] neighbors =
+                new (int, int)[] { (1, 0), (-1, 0), (0, 1), (0, -1) };
+
+            // Create a copy of the landscape
+            float[,] landscapeCopy =
+                new float[landscape.GetLength(0), landscape.GetLength(1)];
+            Array.Copy(landscape, landscapeCopy,
+                landscape.GetLength(0) * landscape.GetLength(1));
+
+            // Apply erosion
+            for (int x = 1; x < landscape.GetLength(0) - 1; x++)
+            {
+                for (int y = 1; y < landscape.GetLength(1) - 1; y++)
+                {
+                    float height = landscapeCopy[x, y];
+                    float limit = height - threshold;
+
+                    foreach ((int x, int y) d in neighbors)
+                    {
+                        int nx = x + d.x;
+                        int ny = y + d.y;
+                        float nHeight = landscapeCopy[nx, ny];
+
+                        // Is the neighbor below the threshold?
+                        if (nHeight < limit)
+                        {
+                            // Some of the height moves, from 0 to 1/4 of the
+                            // threshold, depending on the height difference
+                            float delta = (limit - nHeight) / threshold;
+                            if (delta > 2) delta = 2;
+                            float change = delta * threshold / 8;
+
+                            // Write new height to original landscape
+                            landscape[x, y] = -change;
+                            landscape[nx, ny] += change;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -129,9 +129,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 453445763}
+  - component: {fileID: 453445764}
   - component: {fileID: 453445762}
   - component: {fileID: 453445761}
-  - component: {fileID: 453445764}
   m_Layer: 0
   m_Name: Terrain
   m_TagString: Untagged
@@ -189,13 +189,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 453445760}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.008469984, y: -0.0026673367, z: -0.054401614, w: 0.99847966}
+  m_LocalPosition: {x: -11.13324, y: 46.60386, z: -0.5515747}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.98600006, y: -0.252, z: -6.235}
 --- !u!114 &453445764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,11 +209,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileSize: 25
-  maxAltitude: 0.32
-  seed: 1
-  perlinNoise: 1
-  numFaults: 150
-  meanDepth: 0.093
+  maxAltitude: 0.15
+  seed: 111
+  perlinNoise: 0
+  numFaults: 0
+  meanDepth: 0.117
+  decreaseDistance: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -355,7 +356,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 2500
+  far clip plane: 5000
   field of view: 60
   orthographic: 0
   orthographic size: 5

@@ -37,6 +37,12 @@ public class ProcGen : MonoBehaviour
     [SerializeField]
     private float decreaseDistance = 0f;
 
+    // [Header("Thermal erosion parameters")]
+
+    // [SerializeField]
+    // [Range(0, 1)]
+    // private float maxHeight = 0;
+
     private void Awake()
     {
         System.Random random = new System.Random(seed);
@@ -71,6 +77,12 @@ public class ProcGen : MonoBehaviour
             }
         }
 
+        // // Apply thermal erosion (not working atm)
+        // if (maxHeight > 0)
+        // {
+        //     Landscape.ThermalErosion(heights, maxHeight);
+        // }
+
         // Post-processing / normalizing
         for (int i = 0; i < width; i++)
         {
@@ -80,8 +92,6 @@ public class ProcGen : MonoBehaviour
                 else if (heights[i, j] > max) max = heights[i, j];
             }
         }
-
-        //Debug.Log($"max = {max}, min = {min}");
 
         if (min < 0 || max > maxAltitude)
         {
@@ -96,10 +106,8 @@ public class ProcGen : MonoBehaviour
             }
         }
 
-
-
+        // Apply terrain heights
         terrain.terrainData.SetHeights(0, 0, heights);
-        //terrain.terrainData.SyncHeightmap();
     }
 
 }
