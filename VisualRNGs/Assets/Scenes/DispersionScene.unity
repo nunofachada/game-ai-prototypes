@@ -184,7 +184,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
@@ -278,14 +278,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2050566867}
+  - component: {fileID: 2050566868}
   - component: {fileID: 2050566866}
   - component: {fileID: 2050566865}
   - component: {fileID: 2050566864}
   - component: {fileID: 2050566863}
   - component: {fileID: 2050566862}
-  - component: {fileID: 2050566868}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: LookAtMe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -396,7 +396,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -415,3 +415,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 405d991ad234febe88eb93bd5abefc2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scale: 2
+  numberOfPoints: 5000
+  xRandomNumberGenerator: 1
+  xSeed: 2
+  yRandomNumberGenerator: 1
+  ySeed: 3
