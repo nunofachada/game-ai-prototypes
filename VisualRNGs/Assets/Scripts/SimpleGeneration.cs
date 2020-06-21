@@ -8,6 +8,10 @@ public class SimpleGeneration : MonoBehaviour
     public enum PRNG { System, /*LCG,*/ XorShift128 }
 
     [SerializeField]
+    [Range(0.1f, 100f)]
+    private float scale = 1;
+
+    [SerializeField]
     private PRNG randomNumberGenerator = PRNG.System;
 
     [SerializeField]
@@ -25,8 +29,8 @@ public class SimpleGeneration : MonoBehaviour
         Random rnd = null;
 
         // Image width and height
-        int width = Screen.width;
-        int height = Screen.height;
+        int width = (int)(Screen.width / scale);
+        int height = (int)(Screen.height / scale);
 
         // Texture to present, to be randomly created
         Texture2D texture = new Texture2D(width, height);
