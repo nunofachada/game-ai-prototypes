@@ -1,36 +1,47 @@
 using System;
 
-namespace LibGameAI.PRNGs
+namespace LibGameAI.RNG
 {
-    public class LCG : Random
+    public class XorShift128 : Random
     {
-        private long state;
+        private uint x, y, z, w;
 
-        public LCG() : this(System.DateTime.Now.Ticks)
+        public XorShift128() : this(System.DateTime.Now.Ticks)
         {
         }
 
-        public LCG(int seed) : this((long)seed << 32 | (long)seed)
+        public XorShift128(int seed) : this((long)seed << 32 | (long)seed)
         {
 
         }
-        public LCG(long seed)
+        public XorShift128(long seed)
         {
-            state = seed;
+            x = unchecked((uint)(0xFFFFFFFF & seed));
+            y = unchecked((uint)(0xFFFFFFFF & (seed >> 16)));
+            z = unchecked((uint)(0xFFFFFFFF & (seed >> 32)));
+            w = unchecked((uint)(0xFFFFFFFF & (seed >> 48)));
         }
 
+        private void UpdateState()
+        {
+            uint t = x ^ (x << 11);
+            x = y;
+            y = z;
+            z = w;
+            w = w ^ (w >> 19) ^ (t ^ (t >> 8));
+        }
+
+        // Implements the random number generation algorithm
         protected override double Sample()
         {
-            return (((long)Next(0, 26) << 27) + Next(0, 27))
-                / (double)(1L << 53);
+            UpdateState();
+            return (double)(((ulong)z << 32) | (ulong)w) / ulong.MaxValue;
         }
 
         public override int Next()
         {
-            int bits = 32;
-            state = (state * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1);
-            long next = state >> (48 - bits);
-            return (int)(next & 0x7FFFFFFF);
+            UpdateState();
+            return unchecked((int)w);
         }
 
         public override int Next(int minValue, int maxValue)
@@ -46,12 +57,10 @@ namespace LibGameAI.PRNGs
 
             if (range <= int.MaxValue)
             {
-                // Bug! Stackoverflow!
                 return (int)(Sample() * range) + minValue;
             }
             else
             {
-                // Bug! Stackoverflow!
                 return (int)(Sample() * range / 2.0 + Sample() * range / 2.0)
                     + minValue;
             }

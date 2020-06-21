@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using LibGameAI.PRNGs;
+using LibGameAI.RNG;
 
 public class SimpleGeneration : MonoBehaviour
 {
@@ -33,16 +33,4 @@ public class SimpleGeneration : MonoBehaviour
         image.texture = text;
 
     }
-
-
-    // // Start is called before the first frame update
-    // private void Start()
-    // {
-    // }
-
-    // // Update is called once per frame
-    // private void Update()
-    // {
-
-    // }
 }

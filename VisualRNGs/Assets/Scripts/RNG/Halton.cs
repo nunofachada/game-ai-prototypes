@@ -1,6 +1,6 @@
 using System;
 
-namespace LibGameAI.QRNGs
+namespace LibGameAI.RNG
 {
     public class Halton : Random
     {
