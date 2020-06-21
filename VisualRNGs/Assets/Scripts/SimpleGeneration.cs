@@ -1,11 +1,18 @@
-﻿using UnityEngine;
+﻿/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * Author: Nuno Fachada
+ * */
+
+using UnityEngine;
 using UnityEngine.UI;
 using LibGameAI.RNG;
 using Random = System.Random;
 
 public class SimpleGeneration : MonoBehaviour
 {
-    public enum PRNG { System, /*LCG,*/ XorShift128 }
+    public enum PRNG { System, XorShift128 }
 
     [SerializeField]
     [Range(0.1f, 100f)]
@@ -20,9 +27,6 @@ public class SimpleGeneration : MonoBehaviour
     [SerializeField]
     private int seed = 123;
 
-    private RawImage image;
-    private Color[] pixels;
-
     private void Awake()
     {
         // Random number generator
@@ -32,8 +36,14 @@ public class SimpleGeneration : MonoBehaviour
         int width = (int)(Screen.width / scale);
         int height = (int)(Screen.height / scale);
 
-        // Texture to present, to be randomly created
+        // Create a vector of pixels
+        Color[] pixels = new Color[width * height];
+
+        // Texture to show on screen, to be randomly created
         Texture2D texture = new Texture2D(width, height);
+
+        // Get image component where to place the texture
+        RawImage image = GetComponent<RawImage>();
 
         // Instantiate the selected random number generator
         switch (randomNumberGenerator)
@@ -41,19 +51,10 @@ public class SimpleGeneration : MonoBehaviour
             case PRNG.System:
                 rnd = useSeed ? new Random(seed) : new Random();
                 break;
-            // case PRNG.LCG:
-            //     rnd = useSeed ? new LCG(seed) : new LCG();
-            //     break;
             case PRNG.XorShift128:
                 rnd = useSeed ? new XorShift128(seed) : new XorShift128();
                 break;
         }
-
-        // Get image component where to place the texture
-        image = GetComponent<RawImage>();
-
-        // Create a vector of pixels
-        pixels = new Color[width * height];
 
         // Fill vector of pixels with random black or white pixels
         for (int i = 0; i < height; i++)
