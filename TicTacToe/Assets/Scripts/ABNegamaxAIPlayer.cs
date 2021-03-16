@@ -115,7 +115,7 @@ public class ABNegamaxAIPlayer : IPlayer
                         board.SetStateAt(pos, turn);
 
                         // Get score for this move
-                        score =-ABNegamax(
+                        score = -ABNegamax(
                                 board, turn.Other(), depth + 1, -beta, -alpha)
                             .score;
 
@@ -125,19 +125,24 @@ public class ABNegamaxAIPlayer : IPlayer
                         // Is this the best move so far?
                         if (score > bestMove.score)
                         {
-                            // If so, update alpha
-                            alpha = score;
-
-                            // Keep the best move
+                            // If so, update best move
                             bestMove = (score, pos);
 
-                            // Is alpha higher than beta?
-                            if (alpha >= beta)
-                            {
-                                // If so, make alpha-beta cut and return the
-                                // best move so far
-                                return bestMove;
-                            }
+                        }
+
+                        // Do we have a larger alpha?
+                        if (score > alpha)
+                        {
+                            // If so, update alpha
+                            alpha = score;
+                        }
+
+                        // Is alpha higher than beta?
+                        if (alpha >= beta)
+                        {
+                            // If so, make alpha-beta cut and return the
+                            // best move so far
+                            return bestMove;
                         }
                     }
                 }
