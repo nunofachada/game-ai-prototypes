@@ -6,13 +6,18 @@
  * Author: Nuno Fachada
  * */
 
-// The possible states of a board position (cell) in TicTacToe
-public enum CellState
+namespace AIUnityExamples.TicTacToe
 {
-    // No move
-    Undecided,
-    // X move
-    X,
-    // O move
-    O
+    /// <summary>
+    /// The possible states of a board position (cell) in TicTacToe.
+    /// </summary>
+    public enum CellState
+    {
+        // No move
+        Undecided,
+        // X move
+        X,
+        // O move
+        O
+    }
 }

@@ -6,8 +6,13 @@
  * */
 using UnityEngine;
 
-// Interface for a TicTacToe player
-public interface IPlayer
+namespace AIUnityExamples.TicTacToe
 {
-    Vector2Int Play(Board gameBoard, CellState turn);
+    /// <summary>
+    /// Interface for a TicTacToe player.
+    /// </summary>
+    public interface IPlayer
+    {
+        Vector2Int Play(Board gameBoard, CellState turn);
+    }
 }

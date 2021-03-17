@@ -5,104 +5,110 @@
  * Author: Nuno Fachada
  * */
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-// Controls a game of TicTacToe in Unity
-public class GameController : MonoBehaviour
+namespace AIUnityExamples.TicTacToe
 {
-    // Who's turn is to play?
-    public CellState Turn { get; private set; }
-
-    // What's the state of the board?
-    public CellState? Status => gameBoard.Status();
-
-    // The TicTacToe players
-    public IPlayer PlayerX { get; set; }
-    public IPlayer PlayerO { get; set; }
-
-    // Reference to the game board
-    private Board gameBoard = null;
-
-    // Public property for accessing the game board
-    public Board GameBoard => gameBoard;
-
-    // Is a game taking place?
-    public bool IsGameOn { get; set; }
-
-    // Is it time for a human to play?
-    public bool IsHumanTurn =>
-        ((Turn == CellState.X && PlayerX is HumanPlayer)
-        ||
-        (Turn == CellState.O && PlayerO is HumanPlayer));
-
-    // Initialize
-    private void Awake()
+    /// <summary>
+    /// Controls a game of TicTacToe in Unity.
+    /// </summary>
+    public class GameController : MonoBehaviour
     {
-        // Instantiate new board
-        gameBoard = new Board();
-        // Reset board
-        NewGame();
-        // Game not on right now
-        IsGameOn = false;
-    }
+        // Who's turn is to play?
+        public CellState Turn { get; private set; }
 
-    // Start new game
-    public void NewGame()
-    {
-        // X is first to play
-        Turn = CellState.X;
-        // Clear the board
-        gameBoard.Reset();
-    }
+        // What's the state of the board?
+        public CellState? Status => gameBoard.Status();
 
-    // Update called once per frame
-    private void Update()
-    {
-        // If it's the AI turn, schedule it for play in half a second
-        if (!IsInvoking("DoAutoPlay")
-            && !IsHumanTurn && IsGameOn && Status == null)
+        // The TicTacToe players
+        public IPlayer PlayerX { get; set; }
+        public IPlayer PlayerO { get; set; }
+
+        // Reference to the game board
+        private Board gameBoard = null;
+
+        // Public property for accessing the game board
+        public Board GameBoard => gameBoard;
+
+        // Is a game taking place?
+        public bool IsGameOn { get; set; }
+
+        // Is it time for a human to play?
+        public bool IsHumanTurn =>
+            (Turn == CellState.X && PlayerX is HumanPlayer)
+            ||
+            (Turn == CellState.O && PlayerO is HumanPlayer);
+
+        // Initialize
+        private void Awake()
         {
-            Invoke("DoAutoPlay", 0.5f);
+            // Instantiate new board
+            gameBoard = new Board();
+            // Reset board
+            NewGame();
+            // Game not on right now
+            IsGameOn = false;
         }
-    }
 
-    // Make an automatic move
-    private void DoAutoPlay()
-    {
-        // Choose move
-        Vector2Int pos = Turn == CellState.X
-            ? PlayerX.Play(gameBoard, Turn)
-            : PlayerO.Play(gameBoard, Turn);
-
-        // Perform the actual move
-        Move(pos);
-    }
-
-    // Perform a move
-    public void Move(Vector2Int pos)
-    {
-        gameBoard.SetStateAt(pos, Turn);
-        Turn = Turn.Other();
-    }
-
-    // Returns a string describing the state of the game
-    public override string ToString()
-    {
-        if (Status == null)
+        // Start new game
+        public void NewGame()
         {
-            // Game is ongoing
-            return Turn +
-                $" : It's {(Turn == CellState.X ? PlayerX : PlayerO)} turn";
+            // X is first to play
+            Turn = CellState.X;
+            // Clear the board
+            gameBoard.Reset();
         }
-        else
+
+        // Update called once per frame
+        private void Update()
         {
-            // Game is finished
-            return "Game Over : " +
-                (Status != CellState.Undecided
-                    ? $"{Status} ({(Status == CellState.X ? PlayerX : PlayerO)}) wins"
-                    : "It's a draw");
+            // If it's the AI turn, schedule it for play in half a second
+            if (!IsInvoking("DoAutoPlay")
+                && !IsHumanTurn && IsGameOn && Status == null)
+            {
+                Invoke("DoAutoPlay", 0.5f);
+            }
+        }
+
+        // Make an automatic move
+        private void DoAutoPlay()
+        {
+            // Choose move
+            Vector2Int pos = Turn == CellState.X
+                ? PlayerX.Play(gameBoard, Turn)
+                : PlayerO.Play(gameBoard, Turn);
+
+            // Perform the actual move
+            Move(pos);
+        }
+
+        // Perform a move
+        public void Move(Vector2Int pos)
+        {
+            gameBoard.SetStateAt(pos, Turn);
+            Turn = Turn.Other();
+        }
+
+        // Returns a string describing the state of the game
+        public override string ToString()
+        {
+            string xName = PlayerX.GetType().Name;
+            string oName = PlayerO.GetType().Name;
+
+            if (Status == null)
+            {
+                // Game is ongoing
+                return Turn +
+                    $" : It's {(Turn == CellState.X ? xName : oName)} turn";
+            }
+            else
+            {
+                // Game is finished
+                return "Game Over : " +
+                    (Status != CellState.Undecided
+                        ? $"{Status} ({(Status == CellState.X ? xName : oName)}) wins"
+                        : "It's a draw");
+            }
         }
     }
 }

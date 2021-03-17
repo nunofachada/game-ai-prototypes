@@ -7,26 +7,31 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-// A random TicTacToe player, not very smart
-public class RandomAIPlayer : IPlayer
+namespace AIUnityExamples.TicTacToe
 {
-    public Vector2Int Play(Board gameBoard, CellState turn)
+    /// <summary>
+    /// A random TicTacToe player, not very smart.
+    /// </summary>
+    public class RandomAIPlayer : IPlayer
     {
-        // Populate a list with available board positions
-        IList<Vector2Int> emptyPositions = new List<Vector2Int>();
-        for (int i = 0; i < 3; i++)
+        public Vector2Int Play(Board gameBoard, CellState turn)
         {
-            for (int j = 0; j < 3; j++)
+            // Populate a list with available board positions
+            IList<Vector2Int> emptyPositions = new List<Vector2Int>();
+            for (int i = 0; i < 3; i++)
             {
-                Vector2Int pos = new Vector2Int(i, j);
-                if (gameBoard.GetStateAt(pos) == CellState.Undecided)
+                for (int j = 0; j < 3; j++)
                 {
-                    emptyPositions.Add(pos);
+                    Vector2Int pos = new Vector2Int(i, j);
+                    if (gameBoard.GetStateAt(pos) == CellState.Undecided)
+                    {
+                        emptyPositions.Add(pos);
+                    }
                 }
             }
-        }
 
-        // Return a random empty board position
-        return emptyPositions[Random.Range(0, emptyPositions.Count)];
+            // Return a random empty board position
+            return emptyPositions[Random.Range(0, emptyPositions.Count)];
+        }
     }
 }

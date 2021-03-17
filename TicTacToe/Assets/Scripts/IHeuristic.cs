@@ -5,12 +5,17 @@
  * Author: Nuno Fachada
  * */
 
-// Interface to simplify the use of heuristics
-public interface IHeuristic
+namespace AIUnityExamples.TicTacToe
 {
-    // Get a board evaluation from the perspective of the given player
-    float Evaluate(Board board, CellState player);
+    /// <summary>
+    /// Interface to simplify the use of heuristics.
+    /// </summary>
+    public interface IHeuristic
+    {
+        // Get a board evaluation from the perspective of the given player
+        float Evaluate(Board board, CellState player);
 
-    // Maximum score for a win
-    float WinScore { get; }
+        // Maximum score for a win
+        float WinScore { get; }
+    }
 }

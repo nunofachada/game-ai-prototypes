@@ -7,9 +7,15 @@
 
 using UnityEngine;
 
-// A human TicTacToe player, doesn't do anything since the actual plays are
-// delegated to the UI
-public class HumanPlayer : IPlayer
+namespace AIUnityExamples.TicTacToe
 {
-    public Vector2Int Play(Board gameBoard, CellState turn) => Vector2Int.zero;
+    /// <summary>
+    /// A human TicTacToe player, doesn't do anything since the actual plays are
+    /// delegated to the UI.
+    /// </summary>
+    public class HumanPlayer : IPlayer
+    {
+        public Vector2Int Play(Board gameBoard, CellState turn) =>
+            Vector2Int.zero;
+    }
 }

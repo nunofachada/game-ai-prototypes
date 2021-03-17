@@ -7,26 +7,31 @@
 
 using System;
 
-// Extension methods for the CellState enumeration
-public static class CellStateExtensions
+namespace AIUnityExamples.TicTacToe
 {
-    // Get the opponent of this player
-    public static CellState Other(this CellState state)
+    /// <summary>
+    /// Extension methods for the CellState enumeration.
+    /// </summary>
+    public static class CellStateExtensions
     {
-        // Who is this player?
-        switch (state)
+        // Get the opponent of this player
+        public static CellState Other(this CellState state)
         {
-            // If current player is O, the other player is X
-            case CellState.O:
-                return CellState.X;
-            // If current player is X, the other player is O
-            case CellState.X:
-                return CellState.O;
-            // Otherwise, throw an exception
-            default:
-                throw new InvalidOperationException(
-                    $"Unable to get inverse state of {state}. Can only " +
-                    "do it for {CellState.X} or {CellState.O} states");
+            // Who is this player?
+            switch (state)
+            {
+                // If current player is O, the other player is X
+                case CellState.O:
+                    return CellState.X;
+                // If current player is X, the other player is O
+                case CellState.X:
+                    return CellState.O;
+                // Otherwise, throw an exception
+                default:
+                    throw new InvalidOperationException(
+                        $"Unable to get inverse state of {state}. Can only " +
+                        "do it for {CellState.X} or {CellState.O} states");
+            }
         }
     }
 }
