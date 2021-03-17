@@ -20,33 +20,36 @@ namespace AIUnityExamples.TicTacToe
         private CellState[,] board;
 
         // Possible winning positions
-        public readonly IEnumerable<Vector2Int[]> winCorridors;
+        public static readonly IEnumerable<Vector2Int[]> winCorridors;
 
         // Create a new empty board
         public Board()
         {
             board = new CellState[3, 3];
+        }
 
-            // All possible winning positions
-            winCorridors = (new List<Vector2Int[]>()
+        // Static constructor, sets up the winning positions
+        static Board()
         {
-            new Vector2Int[] {
-                new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(2, 0)},
-            new Vector2Int[] {
-                new Vector2Int(0, 1), new Vector2Int(1, 1), new Vector2Int(2, 1)},
-            new Vector2Int[] {
-                new Vector2Int(0, 2), new Vector2Int(1, 2), new Vector2Int(2, 2)},
-            new Vector2Int[] {
-                new Vector2Int(0, 0), new Vector2Int(0, 1), new Vector2Int(0, 2)},
-            new Vector2Int[] {
-                new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(1, 2)},
-            new Vector2Int[] {
-                new Vector2Int(2, 0), new Vector2Int(2, 1), new Vector2Int(2, 2)},
-            new Vector2Int[] {
-                new Vector2Int(0, 0), new Vector2Int(1, 1), new Vector2Int(2, 2)},
-            new Vector2Int[] {
-                new Vector2Int(0, 2), new Vector2Int(1, 1), new Vector2Int(2, 0)}
-        }).AsReadOnly();
+            winCorridors = new List<Vector2Int[]>()
+            {
+                new Vector2Int[] {
+                    new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(2, 0)},
+                new Vector2Int[] {
+                    new Vector2Int(0, 1), new Vector2Int(1, 1), new Vector2Int(2, 1)},
+                new Vector2Int[] {
+                    new Vector2Int(0, 2), new Vector2Int(1, 2), new Vector2Int(2, 2)},
+                new Vector2Int[] {
+                    new Vector2Int(0, 0), new Vector2Int(0, 1), new Vector2Int(0, 2)},
+                new Vector2Int[] {
+                    new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(1, 2)},
+                new Vector2Int[] {
+                    new Vector2Int(2, 0), new Vector2Int(2, 1), new Vector2Int(2, 2)},
+                new Vector2Int[] {
+                    new Vector2Int(0, 0), new Vector2Int(1, 1), new Vector2Int(2, 2)},
+                new Vector2Int[] {
+                    new Vector2Int(0, 2), new Vector2Int(1, 1), new Vector2Int(2, 0)}
+            }.AsReadOnly();
         }
 
         // This represents a "no move"
@@ -99,7 +102,7 @@ namespace AIUnityExamples.TicTacToe
                 }
             }
 
-            // Is board not full return null, meaning game is not over yet
+            // If board not full return null, meaning game is not over yet
             for (int x = 0; x < 3; x++)
                 for (int y = 0; y < 3; y++)
                     if (board[x, y] == CellState.Undecided)

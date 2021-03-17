@@ -34,7 +34,7 @@ namespace AIUnityExamples.TicTacToe
             float score = 0;
 
             // Search all corridors in the board
-            foreach (Vector2Int[] corridor in board.winCorridors)
+            foreach (Vector2Int[] corridor in Board.winCorridors)
             {
                 // By default we assume a line is available
                 bool lineAvailable = true;
