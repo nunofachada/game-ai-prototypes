@@ -33,5 +33,10 @@ namespace AIUnityExamples.TicTacToe
                         "do it for {CellState.X} or {CellState.O} states");
             }
         }
+
+        public static string ToShortString(this CellState state)
+        {
+            return state == CellState.Undecided ? "-" : state.ToString();
+        }
     }
 }

@@ -17,8 +17,12 @@ namespace AIUnityExamples.TicTacToe
         // Who's turn is to play?
         public CellState Turn { get; private set; }
 
+        // Override for game result
+        private CellState overrideWinner;
+
         // What's the state of the board?
-        public CellState? Status => gameBoard.Status();
+        public CellState? Status => overrideWinner != CellState.Undecided
+            ? overrideWinner : gameBoard.Status();
 
         // The TicTacToe players
         public IPlayer PlayerX { get; set; }
@@ -48,6 +52,8 @@ namespace AIUnityExamples.TicTacToe
             NewGame();
             // Game not on right now
             IsGameOn = false;
+            // We do not override the winner by the default
+            overrideWinner = CellState.Undecided;
         }
 
         // Start new game
@@ -63,10 +69,10 @@ namespace AIUnityExamples.TicTacToe
         private void Update()
         {
             // If it's the AI turn, schedule it for play in half a second
-            if (!IsInvoking("DoAutoPlay")
+            if (!IsInvoking(nameof(DoAutoPlay))
                 && !IsHumanTurn && IsGameOn && Status == null)
             {
-                Invoke("DoAutoPlay", 0.5f);
+                Invoke(nameof(DoAutoPlay), 0.5f);
             }
         }
 
@@ -77,6 +83,13 @@ namespace AIUnityExamples.TicTacToe
             Vector2Int pos = Turn == CellState.X
                 ? PlayerX.Play(gameBoard, Turn)
                 : PlayerO.Play(gameBoard, Turn);
+
+            // Is this an invalid move?
+            if (gameBoard.GetStateAt(pos) != CellState.Undecided)
+            {
+                overrideWinner = Turn.Other();
+                return;
+            }
 
             // Perform the actual move
             Move(pos);
@@ -104,6 +117,17 @@ namespace AIUnityExamples.TicTacToe
             else
             {
                 // Game is finished
+
+                // Did someone make an illegal move?
+                if (overrideWinner != CellState.Undecided)
+                {
+                    return string.Format(
+                        "Game Over : {0} wins since {1} made illegal move",
+                        Status == CellState.X ? xName : oName,
+                        Status != CellState.X ? xName : oName);
+                }
+
+                // Game ended within the rules
                 return "Game Over : " +
                     (Status != CellState.Undecided
                         ? $"{Status} ({(Status == CellState.X ? xName : oName)}) wins"

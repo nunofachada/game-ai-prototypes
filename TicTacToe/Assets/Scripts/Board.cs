@@ -53,7 +53,8 @@ namespace AIUnityExamples.TicTacToe
         }
 
         // This represents a "no move"
-        public Vector2Int NoMove => new Vector2Int(int.MinValue, int.MinValue);
+        public static Vector2Int NoMove =>
+            new Vector2Int(int.MinValue, int.MinValue);
 
         // Get board state at specified position
         public CellState GetStateAt(Vector2Int pos) => board[pos.x, pos.y];

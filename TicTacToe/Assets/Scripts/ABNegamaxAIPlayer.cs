@@ -87,7 +87,7 @@ namespace AIUnityExamples.TicTacToe
             {
                 // We reached the max depth, return the heuristic value for this
                 // board
-                return (heuristic.Evaluate(board, turn), board.NoMove);
+                return (heuristic.Evaluate(board, turn), Board.NoMove);
             }
             else
             {
@@ -96,7 +96,7 @@ namespace AIUnityExamples.TicTacToe
 
                 // Declare best move, which for now is no move at all
                 (float score, Vector2Int move) bestMove =
-                    (float.NegativeInfinity, board.NoMove);
+                    (float.NegativeInfinity, Board.NoMove);
 
                 // Try to play on all board positions
                 for (int i = 0; i < 3; i++)
