@@ -12,18 +12,18 @@ namespace AIUnityExamples.TicTacToe
 {
     public class MCTSBoard : Board
     {
-        private Dictionary<Vector2Int, MCTSBoard> childMoves;
+        private List<(Vector2Int, MCTSBoard)> childMoves;
 
         public CellState Turn { get; private set; }
 
-        public IReadOnlyDictionary<Vector2Int, MCTSBoard> ChildMoves
+        public IReadOnlyList<(Vector2Int, MCTSBoard)> ChildMoves
         {
             get
             {
                 if (childMoves == null)
                 {
                     CellState nextTurn = Turn.Other();
-                    childMoves = new Dictionary<Vector2Int, MCTSBoard>();
+                    childMoves = new List<(Vector2Int, MCTSBoard)>();
                     for (int i = 0; i < 3; i++)
                     {
                         for (int j = 0; j < 3; j++)
@@ -34,7 +34,7 @@ namespace AIUnityExamples.TicTacToe
                                 MCTSBoard boardWithMove = new MCTSBoard(this);
                                 boardWithMove.SetStateAt(move, nextTurn);
                                 boardWithMove.Turn = nextTurn;
-                                childMoves.Add(move, boardWithMove);
+                                childMoves.Add((move, boardWithMove));
                             }
                         }
                     }
@@ -50,9 +50,9 @@ namespace AIUnityExamples.TicTacToe
         {
             get
             {
-                foreach (MCTSBoard board in ChildMoves.Values)
+                foreach ((Vector2Int move, MCTSBoard board) movBoard in ChildMoves)
                 {
-                    if (board.Playouts == 0) return false;
+                    if (movBoard.board.Playouts == 0) return false;
                 }
                 return true;
             }

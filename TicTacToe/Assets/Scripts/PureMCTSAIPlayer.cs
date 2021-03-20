@@ -15,7 +15,7 @@ namespace AIUnityExamples.TicTacToe
     public class PureMCTSAIPlayer : IPlayer
     {
         // Time I can take to play in seconds
-        private const float timeToThink = 10f;
+        private const float timeToThink = 1f;
         // Balance between exploitation and exploration
         private readonly float k = 2 / Mathf.Sqrt(2);
 
@@ -45,8 +45,7 @@ namespace AIUnityExamples.TicTacToe
 
             Stack<MCTSBoard> moveSequence = new Stack<MCTSBoard>();
 
-            KeyValuePair<Vector2Int, MCTSBoard> current =
-                new KeyValuePair<Vector2Int, MCTSBoard>(Board.NoMove, board);
+            (Vector2Int move, MCTSBoard board) current = (Board.NoMove, board);
 
             int testedMoves;
 
@@ -55,13 +54,13 @@ namespace AIUnityExamples.TicTacToe
             moveSequence.Push(board);
 
             // 1. Selection
-            while (current.Value.FullyExplored && !current.Value.Status().HasValue)
+            while (current.board.FullyExplored && !current.board.Status().HasValue)
             {
-                MCTSBoard prevCurrent = current.Value;
-                current = SelectMovePolicy(current.Value);
-                if (current.Value == prevCurrent)
+                MCTSBoard prevCurrent = current.board;
+                current = SelectMovePolicy(current.board);
+                if (current.board == prevCurrent)
                     break;
-                moveSequence.Push(current.Value);
+                moveSequence.Push(current.board);
 
                 // if (DateTime.Now > start + TimeSpan.FromSeconds(1))
                 // {
@@ -72,12 +71,12 @@ namespace AIUnityExamples.TicTacToe
             }
 
             // 2. Expansion
-            current = ChooseUnexploredMovePolicy(current.Value);
-            if (current.Value != board)
-                moveSequence.Push(current.Value);
+            current = ChooseUnexploredMovePolicy(current.board);
+            if (current.board != board)
+                moveSequence.Push(current.board);
 
             // 3. Simulation
-            result = PlayoutPolicy(current.Value);
+            result = PlayoutPolicy(current.board);
 
             testedMoves = moveSequence.Count;
 
@@ -96,31 +95,19 @@ namespace AIUnityExamples.TicTacToe
         private CellState PlayoutPolicy(MCTSBoard board)
         {
             MCTSBoard boardCopy = new MCTSBoard(board);
-            List<Vector2Int> availableMoves = new List<Vector2Int>();
-            CellState turn = board.Turn;
             CellState? currentStatus = board.Status();
+            CellState turn = board.Turn;
 
             // No need to playout anything if this is a final board
             if (currentStatus.HasValue) return currentStatus.Value;
 
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    Vector2Int pos = new Vector2Int(i, j);
-                    if (board.GetStateAt(pos) == CellState.Undecided)
-                    {
-                        availableMoves.Add(pos);
-                    }
-                }
-            }
-
             do
             {
-                int index = UnityEngine.Random.Range(0, availableMoves.Count);
-                Vector2Int pos = availableMoves[index];
-                availableMoves.RemoveAt(index);
-                boardCopy.SetStateAt(pos, turn);
+                IReadOnlyList<(Vector2Int move, MCTSBoard board)> childMoves =
+                    board.ChildMoves;
+                Vector2Int move =
+                    childMoves[UnityEngine.Random.Range(0, childMoves.Count)].move;
+                boardCopy.SetStateAt(move, turn);
                 turn = turn.Other();
             }
             while (!boardCopy.Status().HasValue);
@@ -128,16 +115,15 @@ namespace AIUnityExamples.TicTacToe
             return boardCopy.Status().Value;
         }
 
-        private KeyValuePair<Vector2Int, MCTSBoard> SelectMovePolicy(MCTSBoard board)
+        private (Vector2Int move, MCTSBoard board) SelectMovePolicy(MCTSBoard board)
         {
             float lnN = Mathf.Log(board.Playouts);
-            KeyValuePair<Vector2Int, MCTSBoard> bestMove =
-                new KeyValuePair<Vector2Int, MCTSBoard>(Board.NoMove, board);
+            (Vector2Int, MCTSBoard) bestMove = (Board.NoMove, board);
             float bestUCT = 0;
-            foreach (KeyValuePair<Vector2Int, MCTSBoard> childMove in board.ChildMoves)
+            foreach ((Vector2Int move, MCTSBoard board) childMove in board.ChildMoves)
             {
-                float uct = childMove.Value.Wins / (float)childMove.Value.Playouts
-                    + k * Mathf.Sqrt(lnN / childMove.Value.Playouts);
+                float uct = childMove.board.Wins / (float)childMove.board.Playouts
+                    + k * Mathf.Sqrt(lnN / childMove.board.Playouts);
                 if (uct > bestUCT)
                 {
                     bestUCT = uct;
@@ -153,17 +139,17 @@ namespace AIUnityExamples.TicTacToe
             Vector2Int bestMove = Board.NoMove;
             StringBuilder log = new StringBuilder();
 
-            foreach (KeyValuePair<Vector2Int, MCTSBoard> childMove in root.ChildMoves)
+            foreach ((Vector2Int move, MCTSBoard board) childMove in root.ChildMoves)
             {
-                float winPlayoutRatio = childMove.Value.Wins / (float)childMove.Value.Playouts;
+                float winPlayoutRatio = childMove.board.Wins / (float)childMove.board.Playouts;
                 if (winPlayoutRatio >= maxWinPlayoutRatio)
                 {
                     maxWinPlayoutRatio = winPlayoutRatio;
-                    bestMove = childMove.Key;
+                    bestMove = childMove.move;
                 }
                 log.AppendFormat("Move {0} has ratio {1} ({2} / {3})\n",
-                    childMove.Key, winPlayoutRatio, childMove.Value.Wins,
-                    childMove.Value.Playouts);
+                    childMove.move, winPlayoutRatio, childMove.board.Wins,
+                    childMove.board.Playouts);
             }
 
             log.Insert(
@@ -173,14 +159,14 @@ namespace AIUnityExamples.TicTacToe
             return bestMove;
         }
 
-        private KeyValuePair<Vector2Int, MCTSBoard> ChooseUnexploredMovePolicy(MCTSBoard board)
+        private (Vector2Int move, MCTSBoard board) ChooseUnexploredMovePolicy(MCTSBoard board)
         {
-            List<KeyValuePair<Vector2Int, MCTSBoard>> unexplored
-                = new List<KeyValuePair<Vector2Int, MCTSBoard>>();
+            List<(Vector2Int move, MCTSBoard board)> unexplored
+                = new List<(Vector2Int move, MCTSBoard board)>();
 
-            foreach (KeyValuePair<Vector2Int, MCTSBoard> childMove in board.ChildMoves)
+            foreach ((Vector2Int move, MCTSBoard board) childMove in board.ChildMoves)
             {
-                if (childMove.Value.Playouts == 0)
+                if (childMove.board.Playouts == 0)
                 {
                     unexplored.Add(childMove);
                 }
@@ -189,7 +175,7 @@ namespace AIUnityExamples.TicTacToe
             if (unexplored.Count > 0)
                 return unexplored[UnityEngine.Random.Range(0, unexplored.Count)];
             else
-                return new KeyValuePair<Vector2Int, MCTSBoard>(Board.NoMove, board);
+                return (Board.NoMove, board);
         }
     }
 }
