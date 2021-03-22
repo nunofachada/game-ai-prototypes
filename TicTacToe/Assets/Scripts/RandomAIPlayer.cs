@@ -21,7 +21,7 @@ namespace AIUnityExamples.TicTacToe
             random = new Random();
         }
 
-        public Pos Play(Board gameBoard, CellState turn)
+        public Pos Play(Board gameBoard, ref string log)
         {
             // Populate a list with available board positions
             IList<Pos> emptyPositions = new List<Pos>();

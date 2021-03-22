@@ -5,9 +5,6 @@
  * Author: Nuno Fachada
  * */
 
-using System;
-using UnityEngine;
-
 namespace AIUnityExamples.TicTacToe
 {
     /// <summary>
@@ -33,23 +30,17 @@ namespace AIUnityExamples.TicTacToe
         }
 
         // Play a turn
-        public Pos Play(Board gameBoard, CellState turn)
+        public Pos Play(Board gameBoard, ref string log)
         {
             // Number of evaluations (recursive ABNegamax calls) starts at zero
             numEvals = 0;
 
-            // Keep start time
-            DateTime startTime = DateTime.Now;
-
             // Call ABNegamax at root board
             (float score, Pos move) decision = ABNegamax(
-                gameBoard, turn, 0, float.NegativeInfinity, float.PositiveInfinity);
+                gameBoard, 0, float.NegativeInfinity, float.PositiveInfinity);
 
             // Provide debug information
-            Debug.Log(string.Format(
-                "ABNegamax called {0} times, took {1} ms",
-                numEvals,
-                (DateTime.Now - startTime).TotalMilliseconds));
+            log = $"Performed {numEvals} evaluations";
 
             // Return best move
             return decision.move;
@@ -57,7 +48,7 @@ namespace AIUnityExamples.TicTacToe
 
         // Process given board with ABNegamax
         private (float score, Pos move) ABNegamax(
-            Board board, CellState turn, int depth, float alpha, float beta)
+            Board board, int depth, float alpha, float beta)
         {
             // Increment number of evaluations (recursive ABNegamax calls)
             numEvals++;
@@ -72,7 +63,7 @@ namespace AIUnityExamples.TicTacToe
                     // It's a tie, return 0
                     return (0, Board.NoMove);
                 }
-                else if (board.Status().Value == turn)
+                else if (board.Status().Value == board.Turn)
                 {
                     // Current player wins, return max heuristic value
                     return (heuristic.WinScore, Board.NoMove);
@@ -87,7 +78,7 @@ namespace AIUnityExamples.TicTacToe
             {
                 // We reached the max depth, return the heuristic value for this
                 // board
-                return (heuristic.Evaluate(board, turn), Board.NoMove);
+                return (heuristic.Evaluate(board, board.Turn), Board.NoMove);
             }
             else
             {
@@ -117,8 +108,7 @@ namespace AIUnityExamples.TicTacToe
                             board.DoMove(pos);
 
                             // Get score for this move
-                            score = -ABNegamax(
-                                    board, turn.Other(), depth + 1, -beta, -alpha)
+                            score = -ABNegamax(board, depth + 1, -beta, -alpha)
                                 .score;
 
                             // Undo the move we just evaluated

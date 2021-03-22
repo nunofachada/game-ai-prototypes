@@ -14,7 +14,11 @@ namespace AIUnityExamples.TicTacToe
     /// </summary>
     public static class CellStateExtensions
     {
-        // Get the opponent of this player
+        /// <summary>
+        /// Get the opponent of the given player.
+        /// </summary>
+        /// <param name="state">A given player.</param>
+        /// <returns>The opponent of the given player.</returns>
         public static CellState Other(this CellState state)
         {
             // Who is this player?
@@ -34,6 +38,14 @@ namespace AIUnityExamples.TicTacToe
             }
         }
 
+        /// <summary>
+        /// Simplified short string representing a board cell state.
+        /// </summary>
+        /// <param name="state">The state of a board cell.</param>
+        /// <returns>
+        /// Returns the strings "X", "O" and "-" for the X, O and Undecided
+        /// board states, respectively.
+        /// </returns>
         public static string ToShortString(this CellState state)
         {
             return state == CellState.Undecided ? "-" : state.ToString();

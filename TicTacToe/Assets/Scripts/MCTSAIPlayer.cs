@@ -8,19 +8,28 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace AIUnityExamples.TicTacToe
 {
     public class MCTSAIPlayer : IPlayer
     {
         // Time I can take to play in seconds
-        private const float timeToThink = 1f;
+        private const float timeToThink = 0.5f;
+
         // Balance between exploitation and exploration
-        private readonly float k = 2 / Mathf.Sqrt(2);
+        private readonly float k = 2 / (float)Math.Sqrt(2);
+
+        // Random number generator
+        private Random random;
+
+        // Create an instance of an MCTSAIPlayer
+        public MCTSAIPlayer()
+        {
+            random = new Random();
+        }
 
         // Play a turn
-        public Pos Play(Board gameBoard, CellState turn)
+        public Pos Play(Board gameBoard, ref string log)
         {
             // Keep start time
             DateTime startTime = DateTime.Now;
@@ -30,7 +39,11 @@ namespace AIUnityExamples.TicTacToe
 
             TicTacToeMCTSNode root = new TicTacToeMCTSNode(gameBoard, Board.NoMove);
 
+            TicTacToeMCTSNode selected;
+
             StringBuilder sb = new StringBuilder();
+
+            int simulations = 0;
 
             // Keep improving statistics while we have time
             while (DateTime.Now < deadline)
@@ -38,19 +51,25 @@ namespace AIUnityExamples.TicTacToe
                 MCTS(root);
             }
 
-            sb.AppendFormat("MCTS took {0} ms", (DateTime.Now - startTime).TotalMilliseconds);
+            selected = SelectMovePolicy(root, 0);
 
             foreach (AbstractMCTSNode<Pos, CellState> node in root.Children)
             {
                 sb.AppendFormat("{0} -> {1:f4} ({2}/{3})\n",
-                    node.Move, node.Wins / (float)node.Playouts, node.Wins, node.Playouts);
+                    node.Move,
+                    node.Wins / (float)node.Playouts,
+                    node.Wins,
+                    node.Playouts);
+                simulations += node.Playouts;
             }
 
-            TicTacToeMCTSNode selected = SelectMovePolicy(root, 0);
+            sb.Insert(0, string.Format(
+                "Selected {0} with ratio {1} after {2} simulations\n",
+                selected.Move,
+                selected.Wins / (float)selected.Playouts,
+                simulations));
 
-            sb.AppendFormat("=== Selected {0} ===", selected.Move);
-
-            Debug.Log(sb.ToString());
+            log = sb.ToString();
 
             return selected.Move;
         }
@@ -94,13 +113,13 @@ namespace AIUnityExamples.TicTacToe
 
         private TicTacToeMCTSNode SelectMovePolicy(TicTacToeMCTSNode node, float k)
         {
-            float lnN = Mathf.Log(node.Playouts);
+            float lnN = (float)Math.Log(node.Playouts);
             TicTacToeMCTSNode bestChild = null;
             float bestUCT = float.NegativeInfinity;
             foreach (AbstractMCTSNode<Pos, CellState> childNode in node.Children)
             {
                 float uct = childNode.Wins / (float)childNode.Playouts
-                    + k * Mathf.Sqrt(lnN / childNode.Playouts);
+                    + k * (float)Math.Sqrt(lnN / childNode.Playouts);
                 if (uct > bestUCT)
                 {
                     bestUCT = uct;
@@ -114,7 +133,7 @@ namespace AIUnityExamples.TicTacToe
         {
             IReadOnlyList<Pos> untriedMoves = node.UntriedMoves;
 
-            Pos move = untriedMoves[UnityEngine.Random.Range(0, untriedMoves.Count)];
+            Pos move = untriedMoves[random.Next(untriedMoves.Count)];
 
             TicTacToeMCTSNode childNode = node.MakeMove(move) as TicTacToeMCTSNode;
 
@@ -122,8 +141,8 @@ namespace AIUnityExamples.TicTacToe
         }
         private Pos PlayoutPolicy(IList<Pos> list)
         {
-            UnityEngine.Assertions.Assert.IsTrue(list.Count > 0);
-            return list[UnityEngine.Random.Range(0, list.Count)];
+            System.Diagnostics.Debug.Assert(list.Count > 0);
+            return list[random.Next(list.Count)];
         }
     }
 }

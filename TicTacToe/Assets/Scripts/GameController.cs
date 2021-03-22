@@ -5,6 +5,7 @@
  * Author: Nuno Fachada
  * */
 
+using System;
 using UnityEngine;
 
 namespace AIUnityExamples.TicTacToe
@@ -76,10 +77,23 @@ namespace AIUnityExamples.TicTacToe
         // Make an automatic move
         private void DoAutoPlay()
         {
-            // Choose move
-            Pos pos = Turn == CellState.X
-                ? PlayerX.Play(gameBoard, Turn)
-                : PlayerO.Play(gameBoard, Turn);
+            // Player to play
+            IPlayer player = Turn == CellState.X ? PlayerX : PlayerO;
+
+            // Log, to be optionally filled by the AI players
+            string log = "";
+
+            // Keep start time
+            DateTime startTime = DateTime.Now;
+
+            // Ask player for a move
+            Pos pos = player.Play(gameBoard, ref log);
+
+            // Print log, including how much time it took
+            Debug.LogFormat("{0} took {1} ms\n{2}",
+                player.GetType().Name,
+                (DateTime.Now - startTime).TotalMilliseconds,
+                log);
 
             // Is this an invalid move?
             if (gameBoard.GetStateAt(pos) != CellState.Undecided)

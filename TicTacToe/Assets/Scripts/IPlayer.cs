@@ -13,6 +13,14 @@ namespace AIUnityExamples.TicTacToe
     /// </summary>
     public interface IPlayer
     {
-        Pos Play(Board gameBoard, CellState turn);
+        /// <summary>
+        /// Ask the AI player to make a move.
+        /// </summary>
+        /// <param name="gameBoard">The current board.</param>
+        /// <param name="log">
+        /// Optional log for AI players to produce debugging information.
+        /// </param>
+        /// <returns>The move to make.</returns>
+        Pos Play(Board gameBoard, ref string log);
     }
 }
