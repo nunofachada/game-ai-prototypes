@@ -20,7 +20,7 @@ namespace AIUnityExamples.TicTacToe
         private readonly float k = 2 / Mathf.Sqrt(2);
 
         // Play a turn
-        public Vector2Int Play(Board gameBoard, CellState turn)
+        public Pos Play(Board gameBoard, CellState turn)
         {
             // Keep start time
             DateTime startTime = DateTime.Now;
@@ -40,7 +40,7 @@ namespace AIUnityExamples.TicTacToe
 
             sb.AppendFormat("MCTS took {0} ms", (DateTime.Now - startTime).TotalMilliseconds);
 
-            foreach (AbstractMCTSNode<Vector2Int, CellState> node in root.Children)
+            foreach (AbstractMCTSNode<Pos, CellState> node in root.Children)
             {
                 sb.AppendFormat("{0} -> {1:f4} ({2}/{3})\n",
                     node.Move, node.Wins / (float)node.Playouts, node.Wins, node.Playouts);
@@ -97,7 +97,7 @@ namespace AIUnityExamples.TicTacToe
             float lnN = Mathf.Log(node.Playouts);
             TicTacToeMCTSNode bestChild = null;
             float bestUCT = float.NegativeInfinity;
-            foreach (AbstractMCTSNode<Vector2Int, CellState> childNode in node.Children)
+            foreach (AbstractMCTSNode<Pos, CellState> childNode in node.Children)
             {
                 float uct = childNode.Wins / (float)childNode.Playouts
                     + k * Mathf.Sqrt(lnN / childNode.Playouts);
@@ -112,15 +112,15 @@ namespace AIUnityExamples.TicTacToe
 
         private TicTacToeMCTSNode ExpandPolicy(TicTacToeMCTSNode node)
         {
-            IReadOnlyList<Vector2Int> untriedMoves = node.UntriedMoves;
+            IReadOnlyList<Pos> untriedMoves = node.UntriedMoves;
 
-            Vector2Int move = untriedMoves[UnityEngine.Random.Range(0, untriedMoves.Count)];
+            Pos move = untriedMoves[UnityEngine.Random.Range(0, untriedMoves.Count)];
 
             TicTacToeMCTSNode childNode = node.MakeMove(move) as TicTacToeMCTSNode;
 
             return childNode;
         }
-        private Vector2Int PlayoutPolicy(IList<Vector2Int> list)
+        private Pos PlayoutPolicy(IList<Pos> list)
         {
             UnityEngine.Assertions.Assert.IsTrue(list.Count > 0);
             return list[UnityEngine.Random.Range(0, list.Count)];

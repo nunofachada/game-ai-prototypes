@@ -34,13 +34,13 @@ namespace AIUnityExamples.TicTacToe
             float score = 0;
 
             // Search all corridors in the board
-            foreach (Vector2Int[] corridor in Board.winCorridors)
+            foreach (Pos[] corridor in Board.winCorridors)
             {
                 // By default we assume a line is available
                 bool lineAvailable = true;
 
                 // Cycle through all the positions in the current corridor
-                foreach (Vector2Int position in corridor)
+                foreach (Pos position in corridor)
                 {
                     // Check if there's an opponent piece at this position
                     if (board.GetStateAt(position) == player.Other())

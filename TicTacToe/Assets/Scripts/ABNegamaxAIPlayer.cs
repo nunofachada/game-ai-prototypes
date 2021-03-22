@@ -33,7 +33,7 @@ namespace AIUnityExamples.TicTacToe
         }
 
         // Play a turn
-        public Vector2Int Play(Board gameBoard, CellState turn)
+        public Pos Play(Board gameBoard, CellState turn)
         {
             // Number of evaluations (recursive ABNegamax calls) starts at zero
             numEvals = 0;
@@ -42,7 +42,7 @@ namespace AIUnityExamples.TicTacToe
             DateTime startTime = DateTime.Now;
 
             // Call ABNegamax at root board
-            (float score, Vector2Int move) decision = ABNegamax(
+            (float score, Pos move) decision = ABNegamax(
                 gameBoard, turn, 0, float.NegativeInfinity, float.PositiveInfinity);
 
             // Provide debug information
@@ -56,7 +56,7 @@ namespace AIUnityExamples.TicTacToe
         }
 
         // Process given board with ABNegamax
-        private (float score, Vector2Int move) ABNegamax(
+        private (float score, Pos move) ABNegamax(
             Board board, CellState turn, int depth, float alpha, float beta)
         {
             // Increment number of evaluations (recursive ABNegamax calls)
@@ -70,17 +70,17 @@ namespace AIUnityExamples.TicTacToe
                 if (board.Status().Value == CellState.Undecided)
                 {
                     // It's a tie, return 0
-                    return (0, Vector2Int.zero);
+                    return (0, Board.NoMove);
                 }
                 else if (board.Status().Value == turn)
                 {
                     // Current player wins, return max heuristic value
-                    return (heuristic.WinScore, Vector2Int.zero);
+                    return (heuristic.WinScore, Board.NoMove);
                 }
                 else
                 {
                     // The other player won, return min heuristic value
-                    return (-heuristic.WinScore, Vector2Int.zero);
+                    return (-heuristic.WinScore, Board.NoMove);
                 }
             }
             else if (depth == maxDepth)
@@ -95,7 +95,7 @@ namespace AIUnityExamples.TicTacToe
                 // recursively call ABNegamax on all possible moves
 
                 // Declare best move, which for now is no move at all
-                (float score, Vector2Int move) bestMove =
+                (float score, Pos move) bestMove =
                     (float.NegativeInfinity, Board.NoMove);
 
                 // Try to play on all board positions
@@ -103,8 +103,8 @@ namespace AIUnityExamples.TicTacToe
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        // Get a vector reference to the current board position
-                        Vector2Int pos = new Vector2Int(i, j);
+                        // Get the current board position
+                        Pos pos = new Pos(i, j);
 
                         // Only consider making a move at this position if it's
                         // not already occupied
@@ -114,7 +114,7 @@ namespace AIUnityExamples.TicTacToe
                             float score;
 
                             // Make a virtual move at this position
-                            board.SetStateAt(pos, turn);
+                            board.DoMove(pos);
 
                             // Get score for this move
                             score = -ABNegamax(
@@ -122,7 +122,7 @@ namespace AIUnityExamples.TicTacToe
                                 .score;
 
                             // Undo the move we just evaluated
-                            board.SetStateAt(pos, CellState.Undecided);
+                            board.UndoMove();
 
                             // Is this the best move so far?
                             if (score > bestMove.score)

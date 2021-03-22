@@ -13,6 +13,6 @@ namespace AIUnityExamples.TicTacToe
     /// </summary>
     public interface IPlayer
     {
-        Vector2Int Play(Board gameBoard, CellState turn);
+        Pos Play(Board gameBoard, CellState turn);
     }
 }

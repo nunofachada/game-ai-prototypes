@@ -109,15 +109,15 @@ namespace AIUnityExamples.TicTacToe
             GUI.color = Color.white;
 
             // Draw board
-            for (int x = 0; x < 3; x++)
+            for (int r = 0; r < 3; r++)
             {
                 // Reset the cell position in the y-axis
                 currPos.y = topLeftCellPos.y;
-                for (int y = 0; y < 3; y++)
+                for (int c = 0; c < 3; c++)
                 {
                     // Determine the state of the board for current cell
                     CellState state =
-                        game.GameBoard.GetStateAt(new Vector2Int(x, y));
+                        game.GameBoard.GetStateAt(new Pos(r, c));
 
                     // Draw empty cell or move depending on what was determined
                     // by the previous instruction
@@ -144,7 +144,7 @@ namespace AIUnityExamples.TicTacToe
                             new Rect(currPos.x, currPos.y, cellSize, cellSize), ""))
                         {
                             // If button is pressed, make the move
-                            game.Move(new Vector2Int(x, y));
+                            game.Move(new Pos(r, c));
                         }
                     }
                     // Update the cell position in the y-axis

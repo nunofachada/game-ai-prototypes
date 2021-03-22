@@ -15,7 +15,6 @@ namespace AIUnityExamples.TicTacToe
     /// </summary>
     public class HumanPlayer : IPlayer
     {
-        public Vector2Int Play(Board gameBoard, CellState turn) =>
-            Vector2Int.zero;
+        public Pos Play(Board gameBoard, CellState turn) => Board.NoMove;
     }
 }

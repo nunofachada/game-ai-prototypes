@@ -15,7 +15,7 @@ namespace AIUnityExamples.TicTacToe
     public class GameController : MonoBehaviour
     {
         // Who's turn is to play?
-        public CellState Turn { get; private set; }
+        public CellState Turn =>  gameBoard.Turn;
 
         // Override for game result
         private CellState overrideWinner;
@@ -59,10 +59,7 @@ namespace AIUnityExamples.TicTacToe
         // Start new game
         public void NewGame()
         {
-            // X is first to play
-            Turn = CellState.X;
-            // Clear the board
-            gameBoard.Reset();
+            gameBoard = new Board();
         }
 
         // Update called once per frame
@@ -80,7 +77,7 @@ namespace AIUnityExamples.TicTacToe
         private void DoAutoPlay()
         {
             // Choose move
-            Vector2Int pos = Turn == CellState.X
+            Pos pos = Turn == CellState.X
                 ? PlayerX.Play(gameBoard, Turn)
                 : PlayerO.Play(gameBoard, Turn);
 
@@ -96,10 +93,9 @@ namespace AIUnityExamples.TicTacToe
         }
 
         // Perform a move
-        public void Move(Vector2Int pos)
+        public void Move(Pos pos)
         {
-            gameBoard.SetStateAt(pos, Turn);
-            Turn = Turn.Other();
+            gameBoard.DoMove(pos);
         }
 
         // Returns a string describing the state of the game

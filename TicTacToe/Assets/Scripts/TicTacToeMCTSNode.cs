@@ -7,23 +7,22 @@
 
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace AIUnityExamples.TicTacToe
 {
-    public class TicTacToeMCTSNode : AbstractMCTSNode<Vector2Int, CellState>
+    public class TicTacToeMCTSNode : AbstractMCTSNode<Pos, CellState>
     {
         private Board board;
 
-        private IList<Vector2Int> validMoves;
+        private IList<Pos> validMoves;
 
         public override bool IsTerminal => board.Status().HasValue;
 
         public override CellState Result => board.Status().Value;
 
-        public override CellState Turn { get; }
+        public override CellState Turn => board.Turn;
 
-        protected override IEnumerable<Vector2Int> ValidMoves
+        protected override IEnumerable<Pos> ValidMoves
         {
             get
             {
@@ -35,14 +34,14 @@ namespace AIUnityExamples.TicTacToe
             }
         }
 
-        private IList<Vector2Int> ValidMovesFromBoard(Board board)
+        private IList<Pos> ValidMovesFromBoard(Board board)
         {
-            List<Vector2Int> validMoves = new List<Vector2Int>();
+            List<Pos> validMoves = new List<Pos>();
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    Vector2Int move = new Vector2Int(i, j);
+                    Pos move = new Pos(i, j);
                     if (board.GetStateAt(move) == CellState.Undecided)
                     {
                         validMoves.Add(move);
@@ -52,68 +51,30 @@ namespace AIUnityExamples.TicTacToe
             return validMoves;
         }
 
-        public TicTacToeMCTSNode(Board board, Vector2Int move) : base(move)
+        public TicTacToeMCTSNode(Board board, Pos move) : base(move)
         {
             this.board = board;
-
-            int turnInt = 0;
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    Vector2Int pos = new Vector2Int(i, j);
-                    CellState piece = board.GetStateAt(pos);
-                    if (piece == CellState.X) turnInt++;
-                    else if (piece == CellState.O) turnInt--;
-                }
-            }
-            Turn = turnInt == 0 ? CellState.X : CellState.O;
         }
 
-        protected override AbstractMCTSNode<Vector2Int, CellState> DoMakeMove(Vector2Int move)
+        protected override AbstractMCTSNode<Pos, CellState> DoMakeMove(Pos move)
         {
-            (Board board, CellState turn) bt = CopyBoard(this.board);
-            bt.board.SetStateAt(move, bt.turn);
+            Board boardCopy = board.Copy();
+            boardCopy.DoMove(move);
 
-            TicTacToeMCTSNode childNode = new TicTacToeMCTSNode(bt.board, move);
-
-            return childNode;
+            return new TicTacToeMCTSNode(boardCopy, move);
         }
 
-        public override CellState Playout(Func<IList<Vector2Int>, Vector2Int> strategy)
+        public override CellState Playout(Func<IList<Pos>, Pos> strategy)
         {
-            (Board board, CellState turn) bt = CopyBoard(this.board);
+            Board boardCopy = board.Copy();
 
-            while (!bt.board.Status().HasValue)
+            while (!boardCopy.Status().HasValue)
             {
-                Vector2Int move = strategy(ValidMovesFromBoard(bt.board));
-                bt.board.SetStateAt(move, bt.turn);
-                bt.turn = bt.turn.Other();
+                Pos move = strategy(ValidMovesFromBoard(boardCopy));
+                boardCopy.DoMove(move);
             }
 
-            return bt.board.Status().Value;
+            return boardCopy.Status().Value;
         }
-
-        private static (Board, CellState) CopyBoard(Board board)
-        {
-            Board boardCopy = new Board();
-            CellState turn;
-            int turnInt = 0;
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    Vector2Int pos = new Vector2Int(i, j);
-                    CellState piece = board.GetStateAt(pos);
-                    boardCopy.SetStateAt(pos, piece);
-                    if (piece == CellState.X) turnInt++;
-                    else if (piece == CellState.O) turnInt--;
-                }
-            }
-            turn = turnInt == 0 ? CellState.X : CellState.O;
-
-            return (boardCopy, turn);
-        }
-
     }
 }

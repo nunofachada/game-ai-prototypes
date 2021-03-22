@@ -4,7 +4,7 @@
  *
  * Author: Nuno Fachada
  * */
-using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 namespace AIUnityExamples.TicTacToe
@@ -14,15 +14,22 @@ namespace AIUnityExamples.TicTacToe
     /// </summary>
     public class RandomAIPlayer : IPlayer
     {
-        public Vector2Int Play(Board gameBoard, CellState turn)
+        private Random random;
+
+        public RandomAIPlayer()
+        {
+            random = new Random();
+        }
+
+        public Pos Play(Board gameBoard, CellState turn)
         {
             // Populate a list with available board positions
-            IList<Vector2Int> emptyPositions = new List<Vector2Int>();
+            IList<Pos> emptyPositions = new List<Pos>();
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    Vector2Int pos = new Vector2Int(i, j);
+                    Pos pos = new Pos(i, j);
                     if (gameBoard.GetStateAt(pos) == CellState.Undecided)
                     {
                         emptyPositions.Add(pos);
@@ -31,7 +38,7 @@ namespace AIUnityExamples.TicTacToe
             }
 
             // Return a random empty board position
-            return emptyPositions[Random.Range(0, emptyPositions.Count)];
+            return emptyPositions[random.Next(emptyPositions.Count)];
         }
     }
 }

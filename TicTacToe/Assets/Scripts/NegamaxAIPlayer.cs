@@ -33,7 +33,7 @@ namespace AIUnityExamples.TicTacToe
         }
 
         // Play a turn
-        public Vector2Int Play(Board gameBoard, CellState turn)
+        public Pos Play(Board gameBoard, CellState turn)
         {
             // Number of evaluations (recursive Negamax calls) starts at zero
             numEvals = 0;
@@ -42,7 +42,7 @@ namespace AIUnityExamples.TicTacToe
             DateTime startTime = DateTime.Now;
 
             // Call Negamax at root board
-            (float score, Vector2Int move) decision = Negamax(gameBoard, turn, 0);
+            (float score, Pos move) decision = Negamax(gameBoard, turn, 0);
 
             // Provide debug information
             Debug.Log(string.Format(
@@ -55,7 +55,7 @@ namespace AIUnityExamples.TicTacToe
         }
 
         // Process given board with ABNegamax
-        private (float score, Vector2Int move) Negamax(
+        private (float score, Pos move) Negamax(
             Board board, CellState turn, int depth)
         {
             // Increment number of evaluations (recursive ABNegamax calls)
@@ -69,24 +69,24 @@ namespace AIUnityExamples.TicTacToe
                 if (board.Status().Value == CellState.Undecided)
                 {
                     // It's a tie, return 0
-                    return (0, Vector2Int.zero);
+                    return (0, Board.NoMove);
                 }
                 else if (board.Status().Value == turn)
                 {
                     // Current player wins, return max heuristic value
-                    return (heuristic.WinScore, Vector2Int.zero);
+                    return (heuristic.WinScore, Board.NoMove);
                 }
                 else
                 {
                     // The other player won, return min heuristic value
-                    return (-heuristic.WinScore, Vector2Int.zero);
+                    return (-heuristic.WinScore, Board.NoMove);
                 }
             }
             else if (depth == maxDepth)
             {
                 // We reached the max depth, return the heuristic value for this
                 // board
-                return (heuristic.Evaluate(board, turn), Vector2Int.zero);
+                return (heuristic.Evaluate(board, turn), Board.NoMove);
             }
             else
             {
@@ -94,16 +94,16 @@ namespace AIUnityExamples.TicTacToe
                 // recursively call Negamax on all possible moves
 
                 // Declare best move, which for now is no move at all
-                (float score, Vector2Int move) bestMove =
-                    (float.NegativeInfinity, Vector2Int.zero);
+                (float score, Pos move) bestMove =
+                    (float.NegativeInfinity, Board.NoMove);
 
                 // Try to play on all board positions
                 for (int i = 0; i < 3; i++)
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        // Get a vector reference to the current board position
-                        Vector2Int pos = new Vector2Int(i, j);
+                        // Get the current board position
+                        Pos pos = new Pos(i, j);
 
                         // Only consider making a move at this position if it's
                         // not already occupied
@@ -113,13 +113,13 @@ namespace AIUnityExamples.TicTacToe
                             float score;
 
                             // Make a virtual move at this position
-                            board.SetStateAt(pos, turn);
+                            board.DoMove(pos);
 
                             // Get score for this move
                             score = -Negamax(board, turn.Other(), depth + 1).score;
 
                             // Undo the move we just evaluated
-                            board.SetStateAt(pos, CellState.Undecided);
+                            board.UndoMove();
 
                             // Is this the best move so far?
                             if (score > bestMove.score)
