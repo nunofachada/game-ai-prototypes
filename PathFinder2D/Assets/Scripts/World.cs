@@ -1,41 +1,83 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using NaughtyAttributes;
 using LibGameAI.PathFinding;
 
 public class World : MonoBehaviour
 {
+    // Useful enumerations
+    private enum PathFindAlg { Dijkstra, AStar }
+    private enum Heuristic { EuclideanDist, ManhattanDist, InverseEuclidean }
+
+    // Names of boxes containing parameters
+    private const string worldParams = "World";
+    private const string pathFindingParams = "General Pathfinding";
+    private const string aStarParams = "AStar Pathfinding";
+
     // The world size
-    [SerializeField] private Vector2Int worldSize = new Vector2Int(10, 10);
+    [SerializeField]
+    [BoxGroup(worldParams)]
+    private Vector2Int worldSize = new Vector2Int(10, 10);
 
     // Ratio of passages in each column
-    [SerializeField] [Range(0f, 1f)] private float passageRatio = 0.1f;
+    [SerializeField]
+    [Range(0f, 1f)]
+    [BoxGroup(worldParams)]
+    private float passageRatio = 0.1f;
 
     // How long between each movement
-    [SerializeField] private float moveDuration = 0.5f;
+    [SerializeField]
+    [BoxGroup(worldParams)]
+    private float moveDuration = 0.5f;
+
+    // Show fill?
+    [SerializeField]
+    [BoxGroup(pathFindingParams)]
+    private bool showFill = true;
 
     // Path finding algorithm to use
-    [SerializeField] private PathFindingType pathFindingAlgorithm = default;
+    [SerializeField]
+    [BoxGroup(pathFindingParams)]
+    private PathFindAlg pathFindingAlgorithm = default;
+
+    [SerializeField]
+    [BoxGroup(aStarParams)]
+    [ShowIf(nameof(IsAStar))]
+    private bool earlyExit = false;
+
+    [SerializeField]
+    [BoxGroup(aStarParams)]
+    [ShowIf(nameof(IsAStar))]
+    private Heuristic heuristic = default;
 
     // Heuristic weight
     [Range(0, 25)]
-    [SerializeField] private float heuristicWeight = 1;
+    [SerializeField]
+    [BoxGroup(aStarParams)]
+    [ShowIf(nameof(IsAStar))]
+    private float heuristicWeight = 1;
 
-    // Show fill?
-    [SerializeField] private bool showFill = false;
+    // Returns true if A* algorithm is selected
+    private bool IsAStar => pathFindingAlgorithm == PathFindAlg.AStar;
 
     // These should contain the prefabs that represent the game objects
     private GameObject tilePrefab;
     private GameObject playerPrefab;
     private GameObject goalPrefab;
 
-    // Enumeration that represents the differerent path finding strategies
-    private enum PathFindingType {
-        Dijkstra = 0, AStarEuclidean = 1, AStarEuclideanEarly = 2,
-        AStarManhattan = 3, AStarManhattanEarly = 4 }
-
     // Known path finders
-    private IPathFinder[] knownPathFinders;
+    private IDictionary<int, IPathFinder> knownPathFinders;
+
+    // Key for getting the correct pathfinder from the dictionary
+    private int Key(
+        PathFindAlg pfa,
+        Heuristic h = Heuristic.EuclideanDist,
+        bool early = false)
+    {
+        if (pfa == PathFindAlg.Dijkstra) return 0;
+        else return 1 | ((early ? 0 : 1) << 1) | (int)h << 2;
+    }
 
     // Player and goal positions
     public Vector2Int PlayerPos { get; private set; }
@@ -60,7 +102,6 @@ public class World : MonoBehaviour
     private GameObject player;
     private GameObject goal;
 
-
     // Offset for all tiles
     private Vector2 offset;
 
@@ -73,17 +114,22 @@ public class World : MonoBehaviour
         goalPrefab = Resources.Load<GameObject>("Prefabs/Goal");
 
         // Instantiate known path finders
-        knownPathFinders = new IPathFinder[5];
-        knownPathFinders[(int)PathFindingType.Dijkstra] =
+        knownPathFinders = new Dictionary<int, IPathFinder>();
+
+        knownPathFinders[Key(PathFindAlg.Dijkstra)] =
             new DijkstraPathFinder();
-        knownPathFinders[(int)PathFindingType.AStarEuclidean] =
+        knownPathFinders[Key(PathFindAlg.AStar, Heuristic.EuclideanDist)] =
             new AStarPathFinder(EuclideanDistance);
-        knownPathFinders[(int)PathFindingType.AStarEuclideanEarly] =
+        knownPathFinders[Key(PathFindAlg.AStar, Heuristic.EuclideanDist, true)] =
             new AStarPathFinder(EuclideanDistance, true);
-        knownPathFinders[(int)PathFindingType.AStarManhattan] =
+        knownPathFinders[Key(PathFindAlg.AStar, Heuristic.ManhattanDist)] =
             new AStarPathFinder(ManhattanDistance);
-        knownPathFinders[(int)PathFindingType.AStarManhattanEarly] =
+        knownPathFinders[Key(PathFindAlg.AStar, Heuristic.ManhattanDist, true)] =
             new AStarPathFinder(ManhattanDistance, true);
+        knownPathFinders[Key(PathFindAlg.AStar, Heuristic.InverseEuclidean)] =
+            new AStarPathFinder(InverseEuclidean);
+        knownPathFinders[Key(PathFindAlg.AStar, Heuristic.InverseEuclidean, true)] =
+            new AStarPathFinder(InverseEuclidean, true);
 
         // References to camera game object and camera component
         GameObject cameraGameObj = GameObject.FindWithTag("MainCamera");
@@ -242,6 +288,9 @@ public class World : MonoBehaviour
             + Mathf.Abs(nodeVec.y - GoalPos.y)) * heuristicWeight;
     }
 
+    // Inverse Euclidean distance: essentially it's an anti-heuristic
+    private float InverseEuclidean(int node) => -EuclideanDistance(node);
+
     // This co-routine performs the path finding and invokes another coroutine
     // to perform player movement animation
     private IEnumerator FindPath()
@@ -257,7 +306,7 @@ public class World : MonoBehaviour
         {
             // Pathfinder to use
             IPathFinder pathFinder =
-                knownPathFinders[(int)pathFindingAlgorithm];
+                knownPathFinders[Key(pathFindingAlgorithm, heuristic, earlyExit)];
 
             // Perform path finding
             path = pathFinder.FindPath(
