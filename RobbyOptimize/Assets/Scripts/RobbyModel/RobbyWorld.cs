@@ -7,6 +7,7 @@
  * */
 
 using System;
+using System.Text;
 using System.Collections.Generic;
 
 namespace AIUnityExamples.RobbyOptimize.RobbyModel
@@ -21,6 +22,7 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
         private readonly Tile[] situation;
         private readonly Random random;
         private readonly float trashCov;
+        private readonly StringBuilder logger;
 
         private static readonly int numActions;
 
@@ -29,6 +31,7 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
         public Tile this[int row, int col] => world[row, col];
 
         public int Score => score;
+        public string Log => logger.ToString();
 
         public (int row, int col) RobbyPos { get; private set; }
 
@@ -38,6 +41,7 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
             world = new Tile[rows, cols];
             situation = new Tile[TileUtil.NUM_NEIGHBORS];
             this.trashCov = trashCov;
+            logger = new StringBuilder();
             Reset();
         }
 
@@ -62,6 +66,7 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
         {
             score = 0;
             RobbyPos = (0, 0);
+            logger.Clear();
             for (int i = 0; i < world.GetLength(0); i++)
             {
                 for (int j = 0; j < world.GetLength(1); j++)
@@ -84,6 +89,11 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
             {
                 NextTurn(rules);
             }
+
+            logger.AppendFormat(
+                "Robby@({0},{1}), Score={2} [FINISHED]",
+                RobbyPos.row, RobbyPos.col, score);
+
             return score;
         }
 
@@ -99,6 +109,11 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
             ruleIndex = TileUtil.ToDecimal(situation);
 
             action = rules[ruleIndex];
+
+            logger.AppendFormat(
+                "Robby@({0},{1}), Score={2}, Situation=({3})[{4}] -> Action={5}\n",
+                RobbyPos.row, RobbyPos.col, score, ruleIndex,
+                TileUtil.ToString(situation), action);
 
             if (action == Action.MoveRandom)
             {
