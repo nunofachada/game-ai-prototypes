@@ -5,7 +5,7 @@
  * Author: Nuno Fachada
  * */
 
-namespace AIUnityExamples.RobbyOptimize
+namespace AIUnityExamples.RobbyOptimize.RobbyModel
 {
     public enum Tile
     {

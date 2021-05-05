@@ -9,7 +9,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AIUnityExamples.RobbyOptimize
+namespace AIUnityExamples.RobbyOptimize.RobbyModel
 {
     public class RobbyWorld
     {
@@ -19,6 +19,7 @@ namespace AIUnityExamples.RobbyOptimize
         private const int PICK_UP_BONUS = 10;
 
         private readonly Tile[,] world;
+        private readonly Tile[] situation;
         private readonly Random random;
         private readonly float trashCov;
 
@@ -34,6 +35,7 @@ namespace AIUnityExamples.RobbyOptimize
         {
             random = new Random();
             world = new Tile[rows, cols];
+            situation = new Tile[MOVE_DIRECTIONS];
             this.trashCov = trashCov;
             Reset();
         }
@@ -70,7 +72,6 @@ namespace AIUnityExamples.RobbyOptimize
         public void NextTurn(IReadOnlyList<Action> rules)
         {
             Tile north, south, east, west, current;
-            Situation situation;
             int ruleIndex;
             Action action;
 
@@ -88,9 +89,13 @@ namespace AIUnityExamples.RobbyOptimize
 
             current = world[RobbyPos.row, RobbyPos.col];
 
-            situation = new Situation(north, south, east, west, current);
+            situation[0] = north;
+            situation[1] = south;
+            situation[2] = east;
+            situation[3] = west;
+            situation[4] = current;
 
-            ruleIndex = situation.Index;
+            ruleIndex = TileUtil.ToDecimal(situation);
 
             action = rules[ruleIndex];
 
