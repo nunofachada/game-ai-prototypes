@@ -6,12 +6,11 @@
  * */
 
 using System.Text;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using AIUnityExamples.RobbyOptimize.RobbyModel;
 
-namespace AIUnityExamples.RobbyOptimize.RobbyModel
+namespace AIUnityExamples.RobbyOptimize
 {
     public class Controller : MonoBehaviour
     {
