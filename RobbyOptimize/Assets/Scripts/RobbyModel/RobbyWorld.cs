@@ -22,6 +22,8 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
         private readonly Random random;
         private readonly float trashCov;
 
+        private static readonly int numActions;
+
         private int score;
 
         public Tile this[int row, int col] => world[row, col];
@@ -39,13 +41,18 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
             Reset();
         }
 
+        static RobbyWorld()
+        {
+            numActions = Enum.GetValues(typeof(Action)).Length;
+        }
+
         public IList<Action> GenerateRandomRules()
         {
             Action[] rules = new Action[TileUtil.numRules];
 
             for (int i = 0; i < TileUtil.numRules; i++)
             {
-                rules[i] = (Action)random.Next(TileUtil.numStates);
+                rules[i] = (Action)random.Next(numActions);
             }
 
             return rules;

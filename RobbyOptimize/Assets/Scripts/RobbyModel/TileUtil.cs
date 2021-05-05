@@ -39,7 +39,7 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
         public static void FromDecimal(int index, Tile[] tiles)
         {
             System.Diagnostics.Debug.Assert(tiles.Length == NUM_NEIGHBORS);
-            System.Diagnostics.Debug.Assert(index < numRules && index >= 0);
+            System.Diagnostics.Debug.Assert(index >= 0 && index < numRules);
 
             for (int i = 0; i < NUM_NEIGHBORS; i++)
             {   if (index > 0)
@@ -52,6 +52,15 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
                     tiles[i] = Tile.Empty;
                 }
             }
+        }
+
+        public static string ToString(Tile[] tiles)
+        {
+            System.Diagnostics.Debug.Assert(tiles.Length == NUM_NEIGHBORS);
+
+            return string.Format(
+                "North:{0} | South:{1} | East:{2} | West:{3} | Current:{4}",
+                tiles[0], tiles[1], tiles[2], tiles[3], tiles[4]);
         }
     }
 }
