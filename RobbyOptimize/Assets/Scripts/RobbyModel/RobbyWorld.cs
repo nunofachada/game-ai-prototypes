@@ -13,7 +13,6 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
 {
     public class RobbyWorld
     {
-        private const int MOVE_DIRECTIONS = 5; // N, S, E, W, Stay
         private const int WALL_BUMP_PENALTY = 5;
         private const int PICK_UP_PENALTY = 1;
         private const int PICK_UP_BONUS = 10;
@@ -31,13 +30,25 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
 
         public (int row, int col) RobbyPos { get; private set; }
 
-        public RobbyWorld(int rows, int cols, float trashCov)
+        public RobbyWorld(int rows, int cols, float trashCov, int? seed = null)
         {
-            random = new Random();
+            random = seed.HasValue ? new Random(seed.Value) : new Random();
             world = new Tile[rows, cols];
-            situation = new Tile[MOVE_DIRECTIONS];
+            situation = new Tile[TileUtil.NUM_NEIGHBORS];
             this.trashCov = trashCov;
             Reset();
+        }
+
+        public IList<Action> GenerateRandomRules()
+        {
+            Action[] rules = new Action[TileUtil.numRules];
+
+            for (int i = 0; i < TileUtil.numRules; i++)
+            {
+                rules[i] = (Action)random.Next(TileUtil.numStates);
+            }
+
+            return rules;
         }
 
         public void Reset()
@@ -48,7 +59,7 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
             {
                 for (int j = 0; j < world.GetLength(1); j++)
                 {
-                    if (random.NextDouble() < 0.5)
+                    if (random.NextDouble() < trashCov)
                     {
                         world[i, j] = Tile.Empty;
                     }
@@ -60,7 +71,7 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
             }
         }
 
-        public int FullRun(int iterations, IReadOnlyList<Action> rules)
+        public int FullRun(int iterations, IList<Action> rules)
         {
             for (int i = 0; i < iterations; i++)
             {
@@ -69,31 +80,14 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
             return score;
         }
 
-        public void NextTurn(IReadOnlyList<Action> rules)
+        public void NextTurn(IList<Action> rules)
         {
-            Tile north, south, east, west, current;
+            System.Diagnostics.Debug.Assert(rules.Count == TileUtil.numRules);
+
             int ruleIndex;
             Action action;
 
-            if (RobbyPos.row == 0) north = Tile.Wall;
-            else north = world[RobbyPos.row - 1, RobbyPos.col];
-
-            if (RobbyPos.row == world.GetLength(0) - 1) south = Tile.Wall;
-            else south = world[RobbyPos.row + 1, RobbyPos.col];
-
-            if (RobbyPos.col == world.GetLength(1) - 1) east = Tile.Wall;
-            else east = world[RobbyPos.row, RobbyPos.col + 1];
-
-            if (RobbyPos.col == 0) west = Tile.Wall;
-            else west = world[RobbyPos.row, RobbyPos.col - 1];
-
-            current = world[RobbyPos.row, RobbyPos.col];
-
-            situation[0] = north;
-            situation[1] = south;
-            situation[2] = east;
-            situation[3] = west;
-            situation[4] = current;
+            GetSituationAt(RobbyPos, situation);
 
             ruleIndex = TileUtil.ToDecimal(situation);
 
@@ -101,7 +95,7 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
 
             if (action == Action.MoveRandom)
             {
-                action = (Action)random.Next(MOVE_DIRECTIONS);
+                action = (Action)random.Next(TileUtil.NUM_NEIGHBORS);
             }
 
             switch (action)
@@ -112,6 +106,34 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
                 case Action.MoveWest: Move(0, -1); break;
                 case Action.PickUpTrash: PickUpTrash(); break;
             }
+        }
+
+        public void GetSituationAt((int row, int col) pos, Tile[] situation)
+        {
+            System.Diagnostics.Debug.Assert(
+                situation.Length == TileUtil.NUM_NEIGHBORS);
+
+            Tile north, south, east, west, current;
+
+            if (pos.row == 0) north = Tile.Wall;
+            else north = world[pos.row - 1, pos.col];
+
+            if (pos.row == world.GetLength(0) - 1) south = Tile.Wall;
+            else south = world[pos.row + 1, pos.col];
+
+            if (pos.col == world.GetLength(1) - 1) east = Tile.Wall;
+            else east = world[pos.row, pos.col + 1];
+
+            if (pos.col == 0) west = Tile.Wall;
+            else west = world[pos.row, pos.col - 1];
+
+            current = world[pos.row, pos.col];
+
+            situation[0] = north;
+            situation[1] = south;
+            situation[2] = east;
+            situation[3] = west;
+            situation[4] = current;
         }
 
         private void Move(int dRow, int dCol)
