@@ -17,6 +17,24 @@ namespace AIUnityExamples.RobbyOptimize
         // Start is called before the first frame update
         private void Start()
         {
+            //OneTurn();
+            FullRun();
+        }
+
+        private void FullRun()
+        {
+            RobbyWorld world = new RobbyWorld(10, 10, 0.5f);
+
+            IList<Action> rules = world.GenerateRandomRules();
+
+            int score = world.FullRun(200, rules);
+
+            Debug.Log(world.Log);
+            Debug.Log($"Final score = {score}");
+        }
+
+        private void OneTurn()
+        {
             (int row, int col) pos1, pos2;
             Tile[] situation = new Tile[TileUtil.NUM_NEIGHBORS];
 
