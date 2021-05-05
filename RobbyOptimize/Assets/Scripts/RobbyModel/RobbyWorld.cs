@@ -47,16 +47,18 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
 
         static RobbyWorld()
         {
-            numActions = Enum.GetValues(typeof(Action)).Length;
+            numActions = Enum.GetValues(typeof(Reaction)).Length;
         }
 
-        public IList<Action> GenerateRandomRules()
+        public IList<Reaction> GenerateRandomRules(IList<Reaction> outRules = null)
         {
-            Action[] rules = new Action[TileUtil.numRules];
+            IList<Reaction> rules = outRules ?? new Reaction[TileUtil.numRules];
+
+            System.Diagnostics.Debug.Assert(rules.Count == TileUtil.numRules);
 
             for (int i = 0; i < TileUtil.numRules; i++)
             {
-                rules[i] = (Action)random.Next(numActions);
+                rules[i] = (Reaction)random.Next(numActions);
             }
 
             return rules;
@@ -83,7 +85,7 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
             }
         }
 
-        public int FullRun(int iterations, IList<Action> rules)
+        public int FullRun(int iterations, IList<Reaction> rules)
         {
             for (int i = 0; i < iterations; i++)
             {
@@ -97,12 +99,12 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
             return score;
         }
 
-        public void NextTurn(IList<Action> rules)
+        public void NextTurn(IList<Reaction> rules)
         {
             System.Diagnostics.Debug.Assert(rules.Count == TileUtil.numRules);
 
             int ruleIndex;
-            Action action;
+            Reaction action;
 
             GetSituationAt(RobbyPos, situation);
 
@@ -115,18 +117,18 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
                 RobbyPos.row, RobbyPos.col, score, ruleIndex,
                 TileUtil.ToString(situation), action);
 
-            if (action == Action.MoveRandom)
+            if (action == Reaction.MoveRandom)
             {
-                action = (Action)random.Next(TileUtil.NUM_NEIGHBORS);
+                action = (Reaction)random.Next(TileUtil.NUM_NEIGHBORS);
             }
 
             switch (action)
             {
-                case Action.MoveNorth: Move(-1, 0); break;
-                case Action.MoveSouth: Move(1, 0); break;
-                case Action.MoveEast: Move(0, 1); break;
-                case Action.MoveWest: Move(0, -1); break;
-                case Action.PickUpTrash: PickUpTrash(); break;
+                case Reaction.MoveNorth: Move(-1, 0); break;
+                case Reaction.MoveSouth: Move(1, 0); break;
+                case Reaction.MoveEast: Move(0, 1); break;
+                case Reaction.MoveWest: Move(0, -1); break;
+                case Reaction.PickUpTrash: PickUpTrash(); break;
             }
         }
 

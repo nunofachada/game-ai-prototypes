@@ -25,7 +25,7 @@ namespace AIUnityExamples.RobbyOptimize
         {
             RobbyWorld world = new RobbyWorld(10, 10, 0.5f);
 
-            IList<Action> rules = world.GenerateRandomRules();
+            IList<Reaction> rules = world.GenerateRandomRules();
 
             int score = world.FullRun(200, rules);
 
@@ -40,7 +40,7 @@ namespace AIUnityExamples.RobbyOptimize
 
             RobbyWorld world = new RobbyWorld(10, 10, 0.5f);
 
-            IList<Action> rules = world.GenerateRandomRules();
+            IList<Reaction> rules = world.GenerateRandomRules();
 
             StringBuilder sb = new StringBuilder();
 
