@@ -6,56 +6,57 @@
  * */
 
 using System;
-using System.Text;
 using System.Collections.Generic;
 
 namespace LibGameAI.GAs
 {
-    public class GeneticAlgorithm<I, F>
+    public class GeneticAlgorithm<G>
     {
-        private readonly int popCount;
+        private readonly int popSize;
+        private readonly float crossoverProb;
+        private readonly float mutateProb;
 
-        private readonly Func<I> generate;
-        private readonly Comparison<F> compare;
-        private readonly Action<IList<IndFit<I, F>>, IList<IndFit<I, F>>> select;
-        private readonly Action<IList<IndFit<I, F>>, IList<IndFit<I, F>>> mate;
-        private readonly Action<IList<IndFit<I, F>>> mutate;
-        private readonly Func<I, F> evaluate;
+        private readonly Func<Ind<G>> generate;
+        private readonly Action<IList<Ind<G>>, IList<Ind<G>>> select;
+        private readonly Action<Ind<G>, Ind<G>> mate;
+        private readonly Action<Ind<G>> mutate;
+        private readonly Action<Ind<G>> evaluate;
+        private readonly Random random;
 
-        private IndFit<I, F>[] popCurrent;
-        private IndFit<I, F>[] popNext;
+        private Ind<G>[] popCurrent;
+        private Ind<G>[] popNext;
 
         private int step;
-        private IndFit<I, F> best;
+        private Ind<G> best;
 
         public GeneticAlgorithm(
-            int popCount,
-            Func<I> generate,
-            Comparison<F> compare,
-            Action<IList<IndFit<I, F>>, IList<IndFit<I, F>>> select,
-            Action<IList<IndFit<I, F>>, IList<IndFit<I, F>>> mate,
-            Action<IList<IndFit<I, F>>> mutate,
-            Func<I, F> evaluate)
+            int popSize,
+            float crossoverProb,
+            float mutateProb,
+            Func<Ind<G>> generate,
+            Action<IList<Ind<G>>, IList<Ind<G>>> select,
+            Action<Ind<G>, Ind<G>> mate,
+            Action<Ind<G>> mutate,
+            Action<Ind<G>> evaluate,
+            Random random = null)
         {
-            this.popCount = popCount;
+            this.popSize = popSize;
+            this.crossoverProb = crossoverProb;
+            this.mutateProb = mutateProb;
 
-            popCurrent = new IndFit<I, F>[popCount];
-            popNext = new IndFit<I, F>[popCount];
+            popCurrent = new Ind<G>[popSize];
+            popNext = new Ind<G>[popSize];
 
             this.generate = generate;
-            this.compare = compare;
             this.select = select;
             this.mate = mate;
             this.mutate = mutate;
             this.evaluate = evaluate;
 
-            // for (int i = 0; i < popCount; i++)
-            // {
-            //     popCurrent[i] = (new Reaction[TileUtil.numRules], float.NegativeInfinity);
-            //     popNext[i] = (new Reaction[TileUtil.numRules], float.NegativeInfinity);
-            // }
-
-            // Reset();
+            if (random is null)
+                this.random = new Random();
+            else
+                this.random = random;
         }
 
         public void Init()
@@ -63,70 +64,75 @@ namespace LibGameAI.GAs
             step = 0;
 
             // Generate a new population and determine each individual's fitness
-            for (int i = 0; i < popCount; i++)
+            for (int i = 0; i < popSize; i++)
             {
-                I ind = generate();
-                F fit = evaluate(ind);
-                popCurrent[i] = new IndFit<I, F>(ind, fit);
+                Ind<G> ind = generate.Invoke();
+                evaluate.Invoke(ind);
+                popCurrent[i] = ind;
 
-                if (i == 0 || compare(fit, best.Fit) > 0)
+                if (i == 0 || ind.Fit > best.Fit)
                 {
                     best = popCurrent[i];
                 }
             }
         }
 
-        public I Run(int steps, F goalFit)
+        public Ind<G> Run(int steps, float goalFit)
         {
-
-            IndFit<I, F>[] aux;
+            // Aux. variable
+            Ind<G>[] aux;
 
             // Run the genetic algorithm until a maximum number of steps or
             // a goal fitness is reached
-            for (int i = 0; i < steps && compare(best.Fit, goalFit) < 0; step++, i++)
+            for (int i = 0; i < steps && best.Fit < goalFit; step++, i++)
             {
-                // Selection
-                select(popCurrent, popNext);
+                // Select the next generation of individuals
+                select.Invoke(popCurrent, popNext);
 
-                // Crossover
-                mate(popCurrent, popNext);
+                // Clone the selected individuals
+                for (int j = 0; j < popSize; j++)
+                {
+                    popNext[j] = popNext[j].Copy();
+                }
+
+                // Crossover (mate)
+                for (int j = 0; j < popSize; j += 2)
+                {
+                    if (random.NextDouble() < crossoverProb)
+                    {
+                        mate.Invoke(popNext[j], popNext[j + 1]);
+                        popNext[j].Fit = null;
+                    }
+                }
 
                 // Mutation
-                mutate(popNext);
+                foreach (Ind<G> ind in popNext)
+                {
+                    if (random.NextDouble() < mutateProb)
+                    {
+                        mutate.Invoke(ind);
+                        ind.Fit = null;
+                    }
+                }
+
+                // Evaluate new generation
+                foreach (Ind<G> ind in popNext)
+                {
+                    if (!ind.Fit.HasValue)
+                    {
+                        evaluate.Invoke(ind);
+                        if (ind.Fit > best.Fit) best = ind;
+                    }
+                }
 
                 // Update population
                 aux = popCurrent;
                 popCurrent = popNext;
                 popNext = aux;
-
-                // Evaluate new generation
-
             }
 
             // Return best solution found so far
-            return best.Ind;
+            return best;
         }
-
-
-        // public void Reset()
-        // {
-        //     step = 0;
-        //     for (int i = 0; i < popCount; i++)
-        //     {
-        //         world.GenerateRandomRules(popCurrent[i].rules);
-        //         popCurrent[i].fitness = float.NegativeInfinity;
-        //     }
-        // }
-
-        // public void Step()
-        // {
-        //     EvalCurrentPop();
-        // }
-
-        // private void EvalCurrentPop()
-        // {
-
-        // }
-
     }
 }

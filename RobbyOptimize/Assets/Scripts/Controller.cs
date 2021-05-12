@@ -9,6 +9,7 @@ using System.Text;
 using System.Collections.Generic;
 using UnityEngine;
 using AIUnityExamples.RobbyOptimize.RobbyModel;
+using LibGameAI.GAs;
 
 namespace AIUnityExamples.RobbyOptimize
 {
@@ -18,7 +19,31 @@ namespace AIUnityExamples.RobbyOptimize
         private void Start()
         {
             //OneTurn();
-            FullRun();
+            //FullRun();
+            Optimize();
+        }
+
+        private void Optimize()
+        {
+            System.Random random = new System.Random();
+            RobbyWorld world = new RobbyWorld(10, 10, 0.5f);
+
+            GeneticAlgorithm<Reaction> ga = new GeneticAlgorithm<Reaction>(
+                200,
+                0.9f,
+                0.1f,
+                () => new Ind<Reaction>(world.GenerateRandomRules()),
+                (new TournamentSelection<Reaction>(random)).Select,
+                (new OnePointCrossover<Reaction>(random)).Mate,
+                (new FlipEnumMutation<Reaction>(0.1f)).Mutate,
+                (ind) => { world.Reset(); ind.Fit = world.FullRun(200, ind.GenesView); },
+                random);
+
+            ga.Init();
+
+            Ind<Reaction> best = ga.Run(1000, float.PositiveInfinity);
+
+            Debug.Log($"Best fitness is {best.Fit}");
         }
 
         private void FullRun()
