@@ -37,6 +37,28 @@ public class ProcGen : MonoBehaviour
     [SerializeField]
     private float decreaseDistance = 0f;
 
+    [Header("Sandpile")]
+
+    [SerializeField]
+    private bool sandpile = false;
+
+    [SerializeField]
+    private float threshold = 4;
+
+    [SerializeField]
+    private float increment = 1;
+
+    [SerializeField]
+    private float decrement = 4;
+
+    [SerializeField]
+    private float grainDropDensity = 10;
+
+    [SerializeField]
+    private bool staticDrop = true;
+    [SerializeField]
+    private bool stochastic = true;
+
     // [Header("Thermal erosion parameters")]
 
     // [SerializeField]
@@ -48,8 +70,8 @@ public class ProcGen : MonoBehaviour
         System.Random random = new System.Random(seed);
 
         Terrain terrain = GetComponent<Terrain>();
-        int width = terrain.terrainData.heightmapWidth;
-        int height = terrain.terrainData.heightmapHeight;
+        int width = terrain.terrainData.heightmapResolution;
+        int height = terrain.terrainData.heightmapResolution;
 
         float[,] heights = new float[width, height];
 
@@ -76,6 +98,13 @@ public class ProcGen : MonoBehaviour
                 }
             }
         }
+
+        // Apply sandpile
+        if (sandpile)
+        {
+            Landscape.Sandpile(heights, threshold, increment, decrement, grainDropDensity, staticDrop, stochastic, random.Next, random.NextDouble);
+        }
+
 
         // // Apply thermal erosion (not working atm)
         // if (maxHeight > 0)
