@@ -88,7 +88,7 @@ namespace AIUnityExamples.ProceduralLandscape.GenConfig
         /// <returns>
         /// The simplified name of the generator.
         /// </returns>
-        private string SimpleName(string fqName)
+        public static string SimpleName(string fqName)
         {
             string simpleName = fqName;
 

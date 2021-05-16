@@ -137,5 +137,23 @@ namespace AIUnityExamples.ProceduralLandscape
         {
             generatorConfig.Generate(heights);
         }
+
+
+        /// <summary>
+        /// Set this generator as a normalizer.
+        /// </summary>
+        public void SetAsNormalizer()
+        {
+            generatorName = GenConfigManager.SimpleName(
+                typeof(NormalizeConfig).FullName);
+            OnChangeGeneratorName();
+        }
+
+        private void Reset()
+        {
+            generatorName = GenConfigManager.SimpleName(
+                typeof(NoneConfig).FullName);
+            OnChangeGeneratorName();
+        }
     }
 }

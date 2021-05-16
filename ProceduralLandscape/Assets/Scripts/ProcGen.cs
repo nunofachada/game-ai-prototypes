@@ -5,7 +5,6 @@
  * Author: Nuno Fachada
  * */
 
-using System.Collections.Generic;
 using UnityEngine;
 using AIUnityExamples.ProceduralLandscape.GenConfig;
 using NaughtyAttributes;
@@ -14,57 +13,56 @@ namespace AIUnityExamples.ProceduralLandscape
 {
     public class ProcGen : MonoBehaviour
     {
-        // ///////// //
-        // Constants //
-        // ///////// //
-        private const string generalStr = ":: General parameters ::";
-
-        // ////////////////// //
-        // General parameters //
-        // ////////////////// //
-
-        [BoxGroup(generalStr)]
         [SerializeField]
-        [Range(0, 1)]
-        private float maxAltitude = 0.1f;
+        [OnValueChanged(nameof(ResetConfiguration))]
+        private Terrain terrain;
+
+        [SerializeField]
+        [HideInInspector]
+        private float[,] heights;
+
+        [SerializeField]
+        [HideInInspector]
+        private float maxHeight;
+
+        [SerializeField]
+        [HideInInspector]
+        private int tSide;
+
+        private float[,] Heights
+        {
+            get
+            {
+                if (heights is null)
+                {
+                    tSide = terrain.terrainData.heightmapResolution;
+                    heights = heights = new float[tSide, tSide];
+                    maxHeight = 0;
+                }
+                return heights;
+            }
+        }
 
         [Button("Generate", enabledMode: EButtonEnableMode.Editor)]
         private void Generate()
         {
-
-            Terrain terrain = GameObject.Find("Terrain").GetComponent<Terrain>();
-            int width = terrain.terrainData.heightmapResolution;
-            int height = terrain.terrainData.heightmapResolution;
-
-            float[,] heights = new float[width, height];
-
-            float min = 0, max = float.NegativeInfinity;
+            Flatten();
 
             // Apply the generation
             foreach (Generator g in GetComponents<Generator>())
             {
-                g.Generate(heights);
+                g.Generate(Heights);
             }
 
-            // Post-processing / normalizing
-            for (int i = 0; i < width; i++)
+            // Determine maximum height
+            maxHeight = float.NegativeInfinity;
+            for (int i = 0; i < heights.GetLength(0); i++)
             {
-                for (int j = 0; j < height; j++)
+                for (int j = 0; j < heights.GetLength(1); j++)
                 {
-                    if (heights[i, j] < min) min = heights[i, j];
-                    else if (heights[i, j] > max) max = heights[i, j];
-                }
-            }
-
-            if (min < 0 || max > maxAltitude)
-            {
-                //float modif = (max - min) / maxAltitude;
-                for (int i = 0; i < width; i++)
-                {
-                    for (int j = 0; j < height; j++)
+                    if (heights[i, j] > maxHeight)
                     {
-                        heights[i, j] =
-                            maxAltitude * (heights[i, j] - min) / (max - min);
+                        maxHeight = heights[i, j];
                     }
                 }
             }
@@ -73,48 +71,70 @@ namespace AIUnityExamples.ProceduralLandscape
             terrain.terrainData.SetHeights(0, 0, heights);
         }
 
-        [Button("Clear", enabledMode: EButtonEnableMode.Editor)]
-        private void Clear()
+        [Button("Flatten", enabledMode: EButtonEnableMode.Editor)]
+        private void Flatten()
         {
-            Terrain terrain = GameObject.Find("Terrain").GetComponent<Terrain>();
-            int width = terrain.terrainData.heightmapResolution;
-            int height = terrain.terrainData.heightmapResolution;
+            for (int i = 0; i < Heights.GetLength(0); i++)
+            {
+                for (int j = 0; j < heights.GetLength(1); j++)
+                {
+                    heights[i, j] = 0;
+                }
+            }
 
-            float[,] heights = new float[width, height];
+            maxHeight = 0;
 
             // Apply terrain heights
             terrain.terrainData.SetHeights(0, 0, heights);
+        }
+
+        [Button("Reset Configuration", enabledMode: EButtonEnableMode.Editor)]
+        private void ResetConfiguration()
+        {
+            terrain.transform.position = new Vector3(0, 0, 0);
+            terrain.transform.rotation = Quaternion.identity;
+            terrain.transform.localScale = new Vector3(1, 1, 1);
+
+            foreach (Generator g in GetComponents<Generator>())
+            {
+                DestroyImmediate(g);
+            }
+
+            gameObject.AddComponent<Generator>();
+            gameObject.AddComponent<Generator>();
+            gameObject.AddComponent<Generator>().SetAsNormalizer();
 
             AbstractGenConfig.ClearUnusedInstances();
 
+            terrain.terrainData.SetHeights(0, 0, Heights);
         }
 
         // Update is called once per frame
         // We use to orbit the camera around the cube grid
         private void Update()
         {
-            Terrain terrain = GetComponent<Terrain>();
-            float width = terrain.terrainData.size.x;
-            float height = terrain.terrainData.size.z;
+            float side1Len = terrain.terrainData.size.x;
+            float side2Len = terrain.terrainData.size.z;
 
             // Determine the radius which the camera will orbit around the
             // center of the grid
-            float radius = (width + height) / 3f;
+            float radius = (side1Len + side2Len) / 3f;
 
             // Camera rotation speed
-            float cameraRotationSpeed = 0.25f;
+            float cameraRotationSpeed = 0.15f;
 
+            // Camera height
+            float camHeight = Mathf.Max(1500 * maxHeight, 100);
 
             // Determine camera position in its orbit around the center of the grid
-            Camera.main.transform.position = new Vector3(width / 2, 1700 * maxAltitude, height / 2)
+            Camera.main.transform.position = new Vector3(side1Len / 2, camHeight, side2Len / 2)
                 + radius * new Vector3(
                     Mathf.Sin(cameraRotationSpeed * Time.time),
                     0,
                     Mathf.Cos(cameraRotationSpeed * Time.time));
 
             // Make camera look at center of the grid
-            Camera.main.transform.LookAt(new Vector3(width / 2, 0, height / 2));
-
+            Camera.main.transform.LookAt(new Vector3(side1Len / 2, 0, side2Len / 2));
         }
 
         // private void OnDrawGizmos()
