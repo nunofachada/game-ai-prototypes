@@ -5,7 +5,6 @@
  * Author: Nuno Fachada
  * */
 
-using System;
 using UnityEngine;
 using NaughtyAttributes;
 using Random = System.Random;

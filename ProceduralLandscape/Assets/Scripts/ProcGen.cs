@@ -17,14 +17,14 @@ namespace AIUnityExamples.ProceduralLandscape
         // ///////// //
         // Constants //
         // ///////// //
-        private const string generalParams = ":: General parameters ::";
-        private const string generatorParams = ":: Generator parameters ::";
+        private const string generalStr = ":: General parameters ::";
+        private const string generatorStr = ":: Generator parameters ::";
 
         // ////////////////// //
         // General parameters //
         // ////////////////// //
 
-        [BoxGroup(generalParams)]
+        [BoxGroup(generalStr)]
         [SerializeField]
         [Range(0, 1)]
         private float maxAltitude = 0.1f;
@@ -33,13 +33,13 @@ namespace AIUnityExamples.ProceduralLandscape
         // Generator parameters //
         // //////////////////// //
 
-        [BoxGroup(generatorParams)]
+        [BoxGroup(generatorStr)]
         [SerializeField]
         [Dropdown(nameof(GeneratorNames))]
         [OnValueChanged(nameof(OnChangeGeneratorName))]
         private string generatorName;
 
-        [BoxGroup(generatorParams)]
+        [BoxGroup(generatorStr)]
         [SerializeField]
         [Expandable]
         [OnValueChanged(nameof(OnChangeGeneratorType))]
@@ -113,12 +113,6 @@ namespace AIUnityExamples.ProceduralLandscape
             generatorConfig = AbstractGenConfig.GetInstance(genConfigType);
         }
 
-        // [Header("Thermal erosion parameters")]
-
-        // [SerializeField]
-        // [Range(0, 1)]
-        // private float maxHeight = 0;
-
         [Button("Generate", enabledMode: EButtonEnableMode.Editor)]
         private void Generate()
         {
@@ -133,12 +127,6 @@ namespace AIUnityExamples.ProceduralLandscape
 
             // Apply the generation
             generatorConfig.Generate(heights);
-
-            // // Apply thermal erosion (not working atm)
-            // if (maxHeight > 0)
-            // {
-            //     Landscape.ThermalErosion(heights, maxHeight);
-            // }
 
             // Post-processing / normalizing
             for (int i = 0; i < width; i++)

@@ -5,9 +5,6 @@
  * Author: Nuno Fachada
  * */
 
-using UnityEngine;
-using LibGameAI.ProcGen;
-
 namespace AIUnityExamples.ProceduralLandscape.GenConfig
 {
     public class NoneConfig : AbstractGenConfig

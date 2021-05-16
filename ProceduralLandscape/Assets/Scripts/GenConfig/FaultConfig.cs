@@ -13,7 +13,7 @@ namespace AIUnityExamples.ProceduralLandscape.GenConfig
     public class FaultConfig : StochasticGenConfig
     {
         [SerializeField]
-        private int numFaults = 0;
+        private int numFaults = 10;
 
         [SerializeField]
         [Range(0, 1)]

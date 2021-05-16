@@ -5,9 +5,7 @@
  * Author: Nuno Fachada
  * */
 
-using System;
 using UnityEngine;
-using NaughtyAttributes;
 using LibGameAI.ProcGen;
 
 namespace AIUnityExamples.ProceduralLandscape.GenConfig
