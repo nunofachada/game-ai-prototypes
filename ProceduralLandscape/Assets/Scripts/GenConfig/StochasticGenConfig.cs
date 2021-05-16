@@ -18,6 +18,7 @@ namespace AIUnityExamples.ProceduralLandscape.GenConfig
         private bool useSeed = false;
 
         [SerializeField]
+        [EnableIf(nameof(useSeed))]
         private int seed = 0;
 
         private Random random;

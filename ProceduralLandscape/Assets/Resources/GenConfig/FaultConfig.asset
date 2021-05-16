@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 152bbc9f3ec3732bf8cc965126869956, type: 3}
   m_Name: FaultConfig
   m_EditorClassIdentifier: 
-  useSeed: 1
+  useSeed: 0
   seed: 123
   numFaults: 1000
   meanDepth: 0.1

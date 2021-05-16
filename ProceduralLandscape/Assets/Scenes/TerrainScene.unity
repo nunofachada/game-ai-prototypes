@@ -214,8 +214,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxAltitude: 0.15
-  generatorName: None
-  generatorConfig: {fileID: 11400000, guid: bda721782d5a959fd99f1708cf5b852f, type: 2}
+  generatorName: Sandpile
+  generatorConfig: {fileID: 11400000, guid: 8a412cc2f85bacad5896e10ae1d90032, type: 2}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
