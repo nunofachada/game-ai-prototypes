@@ -7,64 +7,107 @@
 
 using System.Collections.Generic;
 using UnityEngine;
-using LibGameAI.ProcGen;
+using AIUnityExamples.ProceduralLandscape.GenConfig;
 using NaughtyAttributes;
 
 namespace AIUnityExamples.ProceduralLandscape
 {
     public class ProcGen : MonoBehaviour
     {
+        // ///////// //
+        // Constants //
+        // ///////// //
+        private const string generalParams = ":: General parameters ::";
+        private const string generatorParams = ":: Generator parameters ::";
 
-        [Header("General parameters")]
+        // ////////////////// //
+        // General parameters //
+        // ////////////////// //
 
-        [SerializeField]
-        private int seed = 1234;
-
+        [BoxGroup(generalParams)]
         [SerializeField]
         [Range(0, 1)]
         private float maxAltitude = 0.1f;
 
-        [Header("Perlin noise")]
+        // //////////////////// //
+        // Generator parameters //
+        // //////////////////// //
 
+        [BoxGroup(generatorParams)]
         [SerializeField]
-        private bool perlinNoise = true;
+        [Dropdown(nameof(GeneratorNames))]
+        [OnValueChanged(nameof(OnChangeGeneratorName))]
+        private string generatorName;
 
+        [BoxGroup(generatorParams)]
         [SerializeField]
-        private float tileSize = 10f;
+        [Expandable]
+        [OnValueChanged(nameof(OnChangeGeneratorType))]
+        private AbstractGenConfig generatorConfig;
 
-        [Header("Fault parameters")]
+        // ///////////////////////////////////// //
+        // Instance variables not used in editor //
+        // ///////////////////////////////////// //
 
-        [SerializeField]
-        private int numFaults = 0;
+        // Names of known generation methods
+        [System.NonSerialized]
+        private string[] generatorNames;
 
-        [SerializeField]
-        [Range(0, 1)]
-        private float meanDepth = 0.01f;
+        // ////////// //
+        // Properties //
+        // ////////// //
 
-        [SerializeField]
-        private float decreaseDistance = 0f;
+        // Get generation method names
+        private ICollection<string> GeneratorNames
+        {
+            get
+            {
+                // Did we initialize generator names already?
+                if (generatorNames is null)
+                {
+                    // Get generator names
+                    generatorNames = GenConfigManager.Instance.GeneratorNames;
+                    // Sort them
+                    System.Array.Sort(generatorNames);
+                }
 
-        [Header("Sandpile")]
+                // Return existing generator names
+                return generatorNames;
+            }
+        }
 
-        [SerializeField]
-        private bool sandpile = false;
+        // /////// //
+        // Methods //
+        // ////// //
 
-        [SerializeField]
-        private float threshold = 4;
+        // Callback invoked when user changes generator type in editor
+        private void OnChangeGeneratorType()
+        {
+            if (generatorConfig is null)
+            {
+                // Cannot allow this field to be empty, so set it back to what
+                // is specified in the generation method name
+                Debug.Log(
+                    $"The {nameof(generatorConfig)} field cannot be empty");
+                OnChangeGeneratorName();
+            }
+            else
+            {
+                // Update generation method name accordingly to what is now set
+                // in the generation configurator fields
+                generatorName = GenConfigManager.Instance.GetNameFromType(
+                    generatorConfig.GetType());
+            }
+        }
 
-        [SerializeField]
-        private float increment = 1;
-
-        [SerializeField]
-        private float decrement = 4;
-
-        [SerializeField]
-        private float grainDropDensity = 10;
-
-        [SerializeField]
-        private bool staticDrop = true;
-        [SerializeField]
-        private bool stochastic = true;
+        // Callback invoked when user changes generation method name in editor
+        private void OnChangeGeneratorName()
+        {
+            // Make sure gen. method type is updated accordingly
+            System.Type genConfigType =
+                GenConfigManager.Instance.GetTypeFromName(generatorName);
+            generatorConfig = AbstractGenConfig.GetInstance(genConfigType);
+        }
 
         // [Header("Thermal erosion parameters")]
 
@@ -75,7 +118,6 @@ namespace AIUnityExamples.ProceduralLandscape
         [Button("Generate", enabledMode: EButtonEnableMode.Editor)]
         private void Generate()
         {
-            System.Random random = new System.Random(seed);
 
             Terrain terrain = GetComponent<Terrain>();
             int width = terrain.terrainData.heightmapResolution;
@@ -85,34 +127,8 @@ namespace AIUnityExamples.ProceduralLandscape
 
             float min = 0, max = float.NegativeInfinity;
 
-            // Apply faults
-            for (int i = 0; i < numFaults; i++)
-            {
-                Landscape.FaultModifier(
-                    heights, meanDepth, () => (float)random.NextDouble(),
-                    decreaseDistance);
-            }
-
-            // Apply Perlin noise
-            if (perlinNoise)
-            {
-                for (int i = 0; i < width; i++)
-                {
-                    for (int j = 0; j < height; j++)
-                    {
-                        heights[i, j] += Mathf.PerlinNoise(
-                            tileSize * i / (float)width,
-                            tileSize * (float)j / height);
-                    }
-                }
-            }
-
-            // Apply sandpile
-            if (sandpile)
-            {
-                Landscape.Sandpile(heights, threshold, increment, decrement, grainDropDensity, staticDrop, stochastic, random.Next, random.NextDouble);
-            }
-
+            // Apply the generation
+            generatorConfig.Generate(heights);
 
             // // Apply thermal erosion (not working atm)
             // if (maxHeight > 0)
@@ -161,7 +177,6 @@ namespace AIUnityExamples.ProceduralLandscape
 
         }
 
-
         // Update is called once per frame
         // We use to orbit the camera around the cube grid
         private void Update()
@@ -196,10 +211,10 @@ namespace AIUnityExamples.ProceduralLandscape
         //     Gizmos.DrawSphere(new Vector3(500, 1000 * maxAltitude, 500), 20);
         // }
 
-        private void OnGUI()
-        {
-            GUI.Label(new Rect(10, 10, 100, 20), $"Dist: {(Camera.main.transform.position - new Vector3(500, 1500 * maxAltitude, 500)).magnitude}");
-        }
+        // private void OnGUI()
+        // {
+        //     GUI.Label(new Rect(10, 10, 100, 20), $"Dist: {(Camera.main.transform.position - new Vector3(500, 1500 * maxAltitude, 500)).magnitude}");
+        // }
 
     }
 }

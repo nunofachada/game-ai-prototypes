@@ -213,20 +213,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3a9acc24b7a0b6c0af4f102a07ffa1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 111
   maxAltitude: 0.15
-  perlinNoise: 0
-  tileSize: 25
-  numFaults: 0
-  meanDepth: 0.05
-  decreaseDistance: 0
-  sandpile: 0
-  threshold: 4
-  increment: 0.2
-  decrement: 1.54
-  grainDropDensity: 0.01
-  staticDrop: 0
-  stochastic: 0
+  generatorName: Perlin
+  generatorConfig: {fileID: 11400000, guid: 60369e20834d13f3d82288c558d1111e, type: 2}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
