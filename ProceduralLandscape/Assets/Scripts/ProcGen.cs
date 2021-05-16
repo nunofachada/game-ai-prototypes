@@ -18,7 +18,6 @@ namespace AIUnityExamples.ProceduralLandscape
         // Constants //
         // ///////// //
         private const string generalStr = ":: General parameters ::";
-        private const string generatorStr = ":: Generator parameters ::";
 
         // ////////////////// //
         // General parameters //
@@ -29,95 +28,11 @@ namespace AIUnityExamples.ProceduralLandscape
         [Range(0, 1)]
         private float maxAltitude = 0.1f;
 
-        // //////////////////// //
-        // Generator parameters //
-        // //////////////////// //
-
-        [BoxGroup(generatorStr)]
-        [SerializeField]
-        [Dropdown(nameof(GeneratorNames))]
-        [OnValueChanged(nameof(OnChangeGeneratorName))]
-        private string generatorName;
-
-        [BoxGroup(generatorStr)]
-        [SerializeField]
-        [Expandable]
-        [OnValueChanged(nameof(OnChangeGeneratorType))]
-        private AbstractGenConfig generatorConfig;
-
-        // ///////////////////////////////////// //
-        // Instance variables not used in editor //
-        // ///////////////////////////////////// //
-
-        // Names of known generation methods
-        [System.NonSerialized]
-        private string[] generatorNames;
-
-        // ////////// //
-        // Properties //
-        // ////////// //
-
-        // Get generation method names
-        private ICollection<string> GeneratorNames
-        {
-            get
-            {
-                // Did we initialize generator names already?
-                if (generatorNames is null)
-                {
-                    // Get generator names
-                    generatorNames = GenConfigManager.Instance.GeneratorNames;
-                    // Sort them, but None always appears first
-                    System.Array.Sort(
-                        generatorNames,
-                        (a, b) => a.Equals("None")
-                            ? -1
-                            : (b.Equals("None") ? 1 : a.CompareTo(b)));
-                }
-
-                // Return existing generator names
-                return generatorNames;
-            }
-        }
-
-        // /////// //
-        // Methods //
-        // ////// //
-
-        // Callback invoked when user changes generator type in editor
-        private void OnChangeGeneratorType()
-        {
-            if (generatorConfig is null)
-            {
-                // Cannot allow this field to be empty, so set it back to what
-                // is specified in the generation method name
-                Debug.Log(
-                    $"The {nameof(generatorConfig)} field cannot be empty");
-                OnChangeGeneratorName();
-            }
-            else
-            {
-                // Update generation method name accordingly to what is now set
-                // in the generation configurator fields
-                generatorName = GenConfigManager.Instance.GetNameFromType(
-                    generatorConfig.GetType());
-            }
-        }
-
-        // Callback invoked when user changes generation method name in editor
-        private void OnChangeGeneratorName()
-        {
-            // Make sure gen. method type is updated accordingly
-            System.Type genConfigType =
-                GenConfigManager.Instance.GetTypeFromName(generatorName);
-            generatorConfig = AbstractGenConfig.GetInstance(genConfigType);
-        }
-
         [Button("Generate", enabledMode: EButtonEnableMode.Editor)]
         private void Generate()
         {
 
-            Terrain terrain = GetComponent<Terrain>();
+            Terrain terrain = GameObject.Find("Terrain").GetComponent<Terrain>();
             int width = terrain.terrainData.heightmapResolution;
             int height = terrain.terrainData.heightmapResolution;
 
@@ -126,7 +41,10 @@ namespace AIUnityExamples.ProceduralLandscape
             float min = 0, max = float.NegativeInfinity;
 
             // Apply the generation
-            generatorConfig.Generate(heights);
+            foreach (Generator g in GetComponents<Generator>())
+            {
+                g.Generate(heights);
+            }
 
             // Post-processing / normalizing
             for (int i = 0; i < width; i++)
@@ -158,7 +76,7 @@ namespace AIUnityExamples.ProceduralLandscape
         [Button("Clear", enabledMode: EButtonEnableMode.Editor)]
         private void Clear()
         {
-            Terrain terrain = GetComponent<Terrain>();
+            Terrain terrain = GameObject.Find("Terrain").GetComponent<Terrain>();
             int width = terrain.terrainData.heightmapResolution;
             int height = terrain.terrainData.heightmapResolution;
 
@@ -166,6 +84,8 @@ namespace AIUnityExamples.ProceduralLandscape
 
             // Apply terrain heights
             terrain.terrainData.SetHeights(0, 0, heights);
+
+            AbstractGenConfig.ClearUnusedInstances();
 
         }
 

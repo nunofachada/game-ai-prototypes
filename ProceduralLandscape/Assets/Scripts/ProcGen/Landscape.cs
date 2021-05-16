@@ -10,6 +10,8 @@ namespace LibGameAI.ProcGen
 {
     public static class Landscape
     {
+        // Other possibilities:
+        // - Diamond-square algorithm
 
         public static void FaultModifier(
             float[,] landscape, float depth, Func<float> randFloat,

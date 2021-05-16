@@ -9,7 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 341423e1a38431e0b9108b74af11cbb6, type: 3}
-  m_Name: PerlinConfig
+  m_Script: {fileID: 11500000, guid: ab70461c15befbacdbb49e19a1bfd9f3, type: 3}
+  m_Name: SandpileConfig___0
   m_EditorClassIdentifier: 
-  tileSize: 10
+  useSeed: 0
+  seed: 0
+  threshold: 4
+  increment: 1
+  decrement: 4
+  grainDropDensity: 10
+  staticDrop: 1
+  stochastic: 1

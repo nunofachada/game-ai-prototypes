@@ -9,14 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab70461c15befbacdbb49e19a1bfd9f3, type: 3}
-  m_Name: SandpileConfig
+  m_Script: {fileID: 11500000, guid: c02f16755eed4464d8e9bb0527e39840, type: 3}
+  m_Name: NoneConfig___1
   m_EditorClassIdentifier: 
-  useSeed: 1
-  seed: 0
-  threshold: 4
-  increment: 1
-  decrement: 4
-  grainDropDensity: 0.001
-  staticDrop: 0
-  stochastic: 0
