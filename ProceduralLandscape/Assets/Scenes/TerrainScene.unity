@@ -214,8 +214,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxAltitude: 0.15
-  generatorName: Perlin
-  generatorConfig: {fileID: 11400000, guid: 60369e20834d13f3d82288c558d1111e, type: 2}
+  generatorName: None
+  generatorConfig: {fileID: 11400000, guid: bda721782d5a959fd99f1708cf5b852f, type: 2}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

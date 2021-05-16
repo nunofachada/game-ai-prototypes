@@ -67,8 +67,12 @@ namespace AIUnityExamples.ProceduralLandscape
                 {
                     // Get generator names
                     generatorNames = GenConfigManager.Instance.GeneratorNames;
-                    // Sort them
-                    System.Array.Sort(generatorNames);
+                    // Sort them, but None always appears first
+                    System.Array.Sort(
+                        generatorNames,
+                        (a, b) => a.Equals("None")
+                            ? -1
+                            : (b.Equals("None") ? 1 : a.CompareTo(b)));
                 }
 
                 // Return existing generator names
