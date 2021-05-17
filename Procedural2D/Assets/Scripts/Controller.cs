@@ -15,7 +15,7 @@ namespace AIUnityExamples.Procedural2D
 {
     public class Controller : MonoBehaviour
     {
-        [SerializeField]
+        [SerializeField] [HideInInspector]
         private RawImage image;
 
         [SerializeField]
@@ -91,7 +91,6 @@ namespace AIUnityExamples.Procedural2D
                 ScenarioManager.Instance.GetTypeFromName(scenarioName);
             scenarioConfig = AbstractScenario.GetInstance(scenarioType);
         }
-
 
         [Button("Generate", enabledMode: EButtonEnableMode.Editor)]
         private void Generate()
