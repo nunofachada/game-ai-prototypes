@@ -304,8 +304,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   image: {fileID: 1882121597}
   scale: 1
-  scenarioName: Random
-  scenarioConfig: {fileID: 11400000, guid: 681ef9d8540f76c218b8adfc81d1c268, type: 2}
+  scenarioName: CA2DCave
+  scenarioConfig: {fileID: 11400000, guid: 0dd709430a5a936c4ae5ec42a54da9c7, type: 2}
 --- !u!4 &1726461150
 Transform:
   m_ObjectHideFlags: 0
