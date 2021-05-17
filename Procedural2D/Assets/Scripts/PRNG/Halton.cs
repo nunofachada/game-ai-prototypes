@@ -7,7 +7,7 @@
 
 using System;
 
-namespace LibGameAI.RNG
+namespace LibGameAI.PRNG
 {
     public class Halton : Random
     {
