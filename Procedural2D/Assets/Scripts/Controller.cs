@@ -96,13 +96,11 @@ namespace AIUnityExamples.Procedural2D
         private void Generate()
         {
             // Image width and height
-            // int width = (int)(Screen.width / scale);
-            // int height = (int)(Screen.height / scale);
             Rect rect = image.GetPixelAdjustedRect();
             int width = (int)(rect.width / scale);
             int height = (int)(rect.height / scale);
 
-            Debug.Log($"{width} {height}");
+            //Debug.Log($"{width} {height}");
 
             // Create a vector of pixels
             Color[] pixels = new Color[width * height];

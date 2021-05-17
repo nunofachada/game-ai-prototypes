@@ -19,15 +19,18 @@ namespace AIUnityExamples.Procedural2D.Scenarios
         // private PRNG randomNumberGenerator = PRNG.System;
 
         [SerializeField]
+        [EnableIf(nameof(RandActive))]
         private bool useSeed = false;
 
         [SerializeField]
-        [EnableIf(nameof(useSeed))]
+        [EnableIf(EConditionOperator.And, nameof(useSeed), nameof(RandActive))]
         private int seed = 0;
 
         private Random random;
 
         protected Random PRNG => random;
+
+        protected virtual bool RandActive => true;
 
         public override void Generate(Color[] pixels, int width, int height)
         {
