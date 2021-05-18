@@ -14,7 +14,7 @@ namespace AIUnityExamples.Procedural2D.Scenarios
 {
     public class CorrelationScenario : AbstractScenario
     {
-        public enum PRNG { System, XorShift128 }
+        public enum PRNG { System, XorShift128, LCG }
 
         [SerializeField]
         private PRNG randGenerator = PRNG.System;
@@ -37,9 +37,22 @@ namespace AIUnityExamples.Procedural2D.Scenarios
             // Instantiate the random number generators
             for (int i = 0; i < seeds.Length; i++)
             {
-                rnd[i] = randGenerator == PRNG.System
-                    ? new Random(seeds[i])
-                    : new XorShift128(seeds[i]);
+                switch (randGenerator)
+                {
+                    case PRNG.System:
+                        rnd[i] = new Random(seeds[i]);
+                        break;
+                    case PRNG.XorShift128:
+                        rnd[i] = new XorShift128(seeds[i]);
+                        break;
+                    case PRNG.LCG:
+                        rnd[i] = new LCG(seeds[i]);
+                        break;
+                    default:
+                        Debug.LogWarning("Unknown PRNG, using System's");
+                        rnd[i] = new Random(seeds[i]);
+                        break;
+                }
             }
 
             // Fill vector of pixels with random black or white pixels
