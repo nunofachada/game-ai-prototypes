@@ -121,7 +121,6 @@ namespace AIUnityExamples.Procedural2D
 
             // Place texture in image
             image.texture = texture;
-
         }
 
         [Button("Save Image", enabledMode: EButtonEnableMode.Editor)]

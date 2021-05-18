@@ -33,13 +33,17 @@ namespace AIUnityExamples.Procedural2D.Scenarios
         {
             base.Generate(pixels, width, height);
 
+            Color[] aux;
+            Color[] buf1 = new Color[pixels.Length];
+            Color[] buf2 = new Color[pixels.Length];
+
             // Randomly place rocks in the scenario
             for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
                 {
                     // Put rock or floor, randomly
-                    pixels[i * width + j] =
+                    buf1[i * width + j] =
                         PRNG.NextDouble() < initRocks ? ROCK : FLOOR;
                 }
             }
@@ -52,13 +56,18 @@ namespace AIUnityExamples.Procedural2D.Scenarios
                     for (int j = 0; j < width; j++)
                     {
                         // How many rocks around here?
-                        int numRocks = CountRocks(pixels, width, height, i, j, neighSize);
+                        int numRocks = CountRocks(buf1, width, height, i, j, neighSize);
 
                         // Put rock or floor, randomly
-                        pixels[i * width + j] =
+                        buf2[i * width + j] =
                             numRocks >= rockThreshold ? ROCK : FLOOR;
                     }
                 }
+
+                // Swap buffers
+                aux = buf1;
+                buf1 = buf2;
+                buf2 = aux;
             }
 
             // Post-process border rocks for visual effect
@@ -66,19 +75,23 @@ namespace AIUnityExamples.Procedural2D.Scenarios
             {
                 for (int j = 0; j < width; j++)
                 {
-                    if (pixels[i * width + j] == ROCK)
+                    if (buf1[i * width + j] == ROCK)
                     {
                         // How many rocks around here?
-                        int numRocks = CountRocks(pixels, width, height, i, j, 1);
+                        int numRocks = CountRocks(buf1, width, height, i, j, 1);
 
                         if (numRocks < 9)
                         {
                             // Put border rock
-                            pixels[i * width + j] = BORDER;
+                            buf1[i * width + j] = BORDER;
                         }
                     }
                 }
             }
+
+            // Copy buf1 data to pixels
+            for (int i = 0; i < pixels.Length; i++)
+                pixels[i] = buf1[i];
         }
 
         private int CountRocks(Color[] pixels, int width, int height, int row, int col, int nSize)

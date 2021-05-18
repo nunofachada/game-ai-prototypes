@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useSeed: 0
   seed: 0
-  rockThreshold: 5
-  neighSize: 1
+  rockThreshold: 13
+  neighSize: 2
   initRocks: 0.5
   steps: 4
