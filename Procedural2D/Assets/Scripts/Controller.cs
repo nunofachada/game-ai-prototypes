@@ -5,6 +5,7 @@
  * Author: Nuno Fachada
  * */
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -36,7 +37,7 @@ namespace AIUnityExamples.Procedural2D
         private AbstractScenario scenarioConfig;
 
         // Names of known scenarios
-        [System.NonSerialized]
+        [NonSerialized]
         private string[] scenarioNames;
 
         // ////////// //
@@ -126,23 +127,25 @@ namespace AIUnityExamples.Procedural2D
         [Button("Save Image", enabledMode: EButtonEnableMode.Editor)]
         private void SaveImage()
         {
-            // Message to show user
-            string msg;
-
             // Encode texture into PNG
             byte[] bytes = (image.texture as Texture2D)?.EncodeToPNG();
 
-            // Get a temporary file name
-            string filename = Path.Combine(
-                Path.GetTempPath(), Path.GetRandomFileName() + ".png");
+            // Ask user for file name to save
+            string filename = EditorUtility.SaveFilePanel(
+                "Save image as PNG",
+                Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
+                $"{scenarioName.ToLower()}.png",
+                "png");
 
             // Write to a file in the project folder
-            File.WriteAllBytes(filename, bytes);
+            if (!string.IsNullOrEmpty(filename))
+            {
+                // Save image to file
+                File.WriteAllBytes(filename, bytes);
 
-            // Inform user of where image was saved to
-            msg = $"Image saved as {filename}";
-            Debug.Log(msg);
-            EditorUtility.DisplayDialog("Image saved!", msg, "OK");
+                // Inform user of where image was saved to
+                Debug.Log($"Image saved as {filename}");
+            }
         }
 
         [Button("Clear", enabledMode: EButtonEnableMode.Editor)]
