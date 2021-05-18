@@ -23,10 +23,6 @@ namespace AIUnityExamples.Procedural2D
         private RawImage image;
 
         [SerializeField]
-        [Range(0.1f, 100f)]
-        private float scale = 1;
-
-        [SerializeField]
         [Dropdown(nameof(ScenarioNames))]
         [OnValueChanged(nameof(OnChangeScenarioName))]
         private string scenarioName;
@@ -35,6 +31,10 @@ namespace AIUnityExamples.Procedural2D
         [Expandable]
         [OnValueChanged(nameof(OnChangeScenarioType))]
         private AbstractScenario scenarioConfig;
+
+        [SerializeField]
+        [Range(0.1f, 100f)]
+        private float scale = 1;
 
         // Names of known scenarios
         [NonSerialized]
