@@ -15,7 +15,11 @@ namespace AIUnityExamples.Procedural2D.Scenarios
     {
         [SerializeField]
         [Range(0, 0.5f)]
-        private float topBottomPadding = 0.2f;
+        private float imagePadding = 0.2f;
+
+        [SerializeField]
+        [Range(0, 1f)]
+        private float roughness = 0.5f;
 
         // Helper struct for line data
         private struct LineData
@@ -71,16 +75,16 @@ namespace AIUnityExamples.Procedural2D.Scenarios
                 {
                     // ...divide it and add resulting sublines to the queue for
                     // future processing
-                    queue.Enqueue(new LineData(data.Left, center, data.Randness / 2));
-                    queue.Enqueue(new LineData(center, data.Right, data.Randness / 2));
+                    queue.Enqueue(new LineData(data.Left, center, (int)(data.Randness * roughness)));
+                    queue.Enqueue(new LineData(center, data.Right, (int)(data.Randness * roughness)));
                 }
             }
 
             // Normalize line to better fit in image
             Normalize(
                 heights,
-                (int)(height * topBottomPadding),
-                (int)(height - height * topBottomPadding));
+                (int)(height * imagePadding),
+                (int)(height - height * imagePadding) - 1);
 
             // Fill image with white
             Fill(pixels, Color.white);
