@@ -6,6 +6,7 @@
  * */
 
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using NaughtyAttributes;
@@ -15,7 +16,8 @@ namespace AIUnityExamples.Procedural2D
 {
     public class Controller : MonoBehaviour
     {
-        [SerializeField] [HideInInspector]
+        [SerializeField]
+        [HideInInspector]
         private RawImage image;
 
         [SerializeField]
@@ -118,6 +120,23 @@ namespace AIUnityExamples.Procedural2D
             // Place texture in image
             image.texture = texture;
 
+        }
+
+        [Button("Save", enabledMode: EButtonEnableMode.Editor)]
+        private void Save()
+        {
+            // Encode texture into PNG
+            byte[] bytes = (image.texture as Texture2D)?.EncodeToPNG();
+
+            // Get a temporary file name
+            string filename = Path.Combine(
+                Path.GetTempPath(), Path.GetRandomFileName() + ".png");
+
+            // Write to a file in the project folder
+            File.WriteAllBytes(filename, bytes);
+
+            // Inform user of where file was saved to
+            Debug.Log($"Image saved as {filename}");
         }
 
         [Button("Clear", enabledMode: EButtonEnableMode.Editor)]

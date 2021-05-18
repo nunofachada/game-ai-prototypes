@@ -17,4 +17,4 @@ MonoBehaviour:
   rockThreshold: 5
   neighSize: 1
   initRocks: 0.5
-  steps: 5
+  steps: 4

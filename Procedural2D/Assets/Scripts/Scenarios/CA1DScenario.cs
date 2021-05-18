@@ -43,6 +43,11 @@ namespace AIUnityExamples.Procedural2D.Scenarios
             // Initialize first (bottom) line
             if (singleCenterPixel)
             {
+                for (int i = 0; i < width; i++)
+                {
+                    pixels[i] = Color.white;
+                }
+
                 // Put just one black pixel in the middle
                 pixels[width / 2] = Color.black;
             }

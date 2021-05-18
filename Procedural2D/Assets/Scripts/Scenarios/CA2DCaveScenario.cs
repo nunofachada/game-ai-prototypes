@@ -34,7 +34,7 @@ namespace AIUnityExamples.Procedural2D.Scenarios
             base.Generate(pixels, width, height);
 
             // Randomly place rocks in the scenario
-            for (int i = 1; i < height; i++)
+            for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
                 {
@@ -47,12 +47,12 @@ namespace AIUnityExamples.Procedural2D.Scenarios
             // Run cellular automata
             for (int step = 0; step < steps; step++)
             {
-                for (int i = 1; i < height; i++)
+                for (int i = 0; i < height; i++)
                 {
                     for (int j = 0; j < width; j++)
                     {
                         // How many rocks around here?
-                        int numRocks = CountRocks(pixels, width, height, i, j);
+                        int numRocks = CountRocks(pixels, width, height, i, j, neighSize);
 
                         // Put rock or floor, randomly
                         pixels[i * width + j] =
@@ -62,14 +62,14 @@ namespace AIUnityExamples.Procedural2D.Scenarios
             }
 
             // Post-process border rocks for visual effect
-            for (int i = 1; i < height; i++)
+            for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
                 {
                     if (pixels[i * width + j] == ROCK)
                     {
                         // How many rocks around here?
-                        int numRocks = CountRocks(pixels, width, height, i, j);
+                        int numRocks = CountRocks(pixels, width, height, i, j, 1);
 
                         if (numRocks < 9)
                         {
@@ -81,12 +81,12 @@ namespace AIUnityExamples.Procedural2D.Scenarios
             }
         }
 
-        private int CountRocks(Color[] pixels, int width, int height, int row, int col)
+        private int CountRocks(Color[] pixels, int width, int height, int row, int col, int nSize)
         {
             int numRocks = 0;
-            for (int i = -neighSize; i <= neighSize; i++)
+            for (int i = -nSize; i <= nSize; i++)
             {
-                for (int j = -neighSize; j <= neighSize; j++)
+                for (int j = -nSize; j <= nSize; j++)
                 {
                     int r = Wrap(row + i, height);
                     int c = Wrap(col + j, width);

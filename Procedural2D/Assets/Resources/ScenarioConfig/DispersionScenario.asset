@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5aca9914619f1f8692568102c382cdb, type: 3}
   m_Name: DispersionScenario
   m_EditorClassIdentifier: 
-  numberOfPoints: 1000
+  numberOfPoints: 10000
   xRandomNumberGenerator: 1
   xSeed: 2
   yRandomNumberGenerator: 1
