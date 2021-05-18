@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEditor;
 using NaughtyAttributes;
 using AIUnityExamples.Procedural2D.Scenarios;
 
@@ -122,9 +123,12 @@ namespace AIUnityExamples.Procedural2D
 
         }
 
-        [Button("Save", enabledMode: EButtonEnableMode.Editor)]
-        private void Save()
+        [Button("Save Image", enabledMode: EButtonEnableMode.Editor)]
+        private void SaveImage()
         {
+            // Message to show user
+            string msg;
+
             // Encode texture into PNG
             byte[] bytes = (image.texture as Texture2D)?.EncodeToPNG();
 
@@ -135,8 +139,10 @@ namespace AIUnityExamples.Procedural2D
             // Write to a file in the project folder
             File.WriteAllBytes(filename, bytes);
 
-            // Inform user of where file was saved to
-            Debug.Log($"Image saved as {filename}");
+            // Inform user of where image was saved to
+            msg = $"Image saved as {filename}";
+            Debug.Log(msg);
+            EditorUtility.DisplayDialog("Image saved!", msg, "OK");
         }
 
         [Button("Clear", enabledMode: EButtonEnableMode.Editor)]
