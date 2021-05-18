@@ -9,11 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152bbc9f3ec3732bf8cc965126869956, type: 3}
-  m_Name: FaultConfig___1
+  m_Script: {fileID: 11500000, guid: 7ae08090b23338419bb43c7ec5c3f583, type: 3}
+  m_Name: DiamondSquareConfig___0
   m_EditorClassIdentifier: 
   useSeed: 0
   seed: 0
-  numFaults: 100
-  meanDepth: 1
-  decreaseDistance: 0
+  maxInitHeight: 1
+  roughness: 0.75

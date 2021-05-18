@@ -60,6 +60,99 @@ namespace LibGameAI.PCG
             }
         }
 
+        // Diamond-Square algorithm
+        // Seems to be working, needs verification / testing
+        public static void DiamondSquare(float[,] landscape,
+            float maxInitHeight, float roughness, Func<float> randFloat)
+        {
+            int tileSide;
+            float randness = maxInitHeight;
+            int vSide = 1;
+            int height = landscape.GetLength(0);
+            int width = landscape.GetLength(1);
+            int largerSize = Math.Max(height, width);
+
+            Func<float> rand = () => 2 * (randFloat() - 0.5f);
+
+            // Get the smallest 2^n + 1 value larger than the largest size of
+            // the landscape
+            for (int n = 1; vSide < largerSize; n++)
+            {
+                vSide <<= 1;
+            }
+            vSide += 1;
+
+            // Flatten height map
+            for (int i = 0; i < landscape.GetLength(0); i++)
+            {
+                for (int j = 0; j < landscape.GetLength(1); j++)
+                {
+                    landscape[i, j] = 0f;
+                }
+            }
+
+            // Set virtual corners of the landscape to a random value within the
+            // specified limit
+            landscape[0, 0] = randFloat() * randness;
+            landscape[0, Wrap(vSide - 1, width)] = landscape[0, 0];
+            landscape[Wrap(vSide - 1, height), 0] = landscape[0, 0];
+            landscape[Wrap(vSide - 1, height), Wrap(vSide - 1, width)] =
+                landscape[0, 0];
+
+            tileSide = vSide - 1;
+
+            // UnityEngine.Debug.Log($"({height},{width})");
+
+            while (tileSide >  1)
+            {
+                int halfSide = tileSide / 2;
+                randness *= roughness;
+
+                // Diamond step
+                for (int r = 0; r < vSide; r += tileSide)
+                {
+                    for (int c = 0; c < vSide; c += tileSide)
+                    {
+                        // UnityEngine.Debug.Log($"({Wrap(r, height)},{Wrap(c, width)}) -- ({Wrap(r + tileSide, height)},{Wrap(c, width)}) -- ({Wrap(r, height)},{Wrap(c + tileSide, width)}) -- ({Wrap(r + tileSide, height)},{Wrap(c + tileSide, width)})");
+                        float cornerSum =
+                            landscape[Wrap(r, height), Wrap(c, width)]
+                            + landscape[Wrap(r + tileSide, height), Wrap(c, width)]
+                            + landscape[Wrap(r, height), Wrap(c + tileSide, width)]
+                            + landscape[Wrap(r + tileSide, height), Wrap(c + tileSide, width)];
+
+                        landscape[Wrap(r + halfSide, height), Wrap(c + halfSide, width)] =
+                            cornerSum / 4f + rand() * randness;
+                    }
+                }
+
+                // Square step
+                for (int r = 0; r < vSide; r += halfSide)
+                {
+                    for (int c = (r + halfSide) % tileSide; c < vSide; c += tileSide)
+                    {
+                        float sideSum =
+                            landscape[Wrap((r - halfSide + vSide - 1) % (vSide - 1), height), Wrap(c, width)]
+                            + landscape[Wrap((r + halfSide) % (vSide - 1), height), Wrap(c, width)]
+                            + landscape[Wrap(r, height), Wrap((c + halfSide) % (vSide - 1), width)]
+                            + landscape[Wrap(r, height), Wrap((c - halfSide + vSide - 1) % (vSide - 1), width)];
+
+                        landscape[Wrap(r, height), Wrap(c, width)] = sideSum / 4f + rand() * randness;
+
+                        if (r == 0)
+                        {
+                            landscape[Wrap(vSide - 1, height), Wrap(c, width)] = landscape[r, Wrap(c, width)];
+                        }
+                        if (c == 0)
+                        {
+                            landscape[Wrap(r, height), Wrap(vSide - 1, width)] = landscape[Wrap(r, height), c];
+                        }
+                    }
+                }
+
+                tileSide /= 2;
+            }
+        }
+
         // Per Bak sandpile model
         public static void Sandpile(float[,] landscape, float threshold,
             float increment, float decrement, float grainDropDensity,
@@ -112,6 +205,13 @@ namespace LibGameAI.PCG
                 }
             }
 
+        }
+
+        private static int Wrap(int pos, int max)
+        {
+            while (pos < 0) pos = max + pos;
+            while (pos >= max) pos = pos - max;
+            return pos;
         }
 
         // Public domain code from https://www.johndcook.com/blog/csharp_phi/
