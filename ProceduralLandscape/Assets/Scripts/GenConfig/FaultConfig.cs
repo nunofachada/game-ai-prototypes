@@ -6,7 +6,7 @@
  * */
 
 using UnityEngine;
-using LibGameAI.ProcGen;
+using LibGameAI.PCG;
 
 namespace AIUnityExamples.ProceduralLandscape.GenConfig
 {
