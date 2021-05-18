@@ -41,8 +41,8 @@ namespace AIUnityExamples.Procedural2D.Scenarios
                 ? new Random(ySeed)
                 : new Halton(ySeed);
 
-            for (int i = 0; i < height * width; i++)
-                pixels[i] = Color.white;
+            // Fill image with white
+            Fill(pixels, Color.white);
 
             // Place the specified number of points
             for (int i = 0; i < numberOfPoints; i++)

@@ -65,5 +65,15 @@ namespace AIUnityExamples.Procedural2D.Scenarios
             // Return the instance of the scenario
             return scenario;
         }
+
+        /// <summary>
+        /// Fill the image with the specified color.
+        /// </summary>
+        /// <param name="pixels">Image to fill.</param>
+        /// <param name="color">Color to use.</param>
+        protected virtual void Fill(Color[] pixels, Color color)
+        {
+            for (int i = 0; i < pixels.Length; i++) pixels[i] = color;
+        }
     }
 }
