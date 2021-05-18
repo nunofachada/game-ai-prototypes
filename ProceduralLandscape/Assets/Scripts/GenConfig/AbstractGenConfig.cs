@@ -78,7 +78,9 @@ namespace AIUnityExamples.ProceduralLandscape.GenConfig
             string[] assetFolders = { FullConfigFolder };
 
             // Find how many generators are active
-            int nGens = GameObject.Find("PCG")?.GetComponents<Generator>()?.Length ?? 0;
+            int nGens = GameObject
+                .Find("Controller")
+                ?.GetComponents<Generator>()?.Length ?? 0;
 
             // For each configurator instance found....
             foreach (string asset in AssetDatabase.FindAssets("", assetFolders))

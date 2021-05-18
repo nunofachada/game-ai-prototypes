@@ -214,7 +214,7 @@ GameObject:
   - component: {fileID: 637276298}
   - component: {fileID: 637276297}
   m_Layer: 0
-  m_Name: PCG
+  m_Name: Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -233,7 +233,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrain: {fileID: 453445762}
-  maxHeight: 0.1
+  maxHeight: 0
   tSide: 513
 --- !u!4 &637276296
 Transform:
@@ -289,8 +289,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66531adbb1fd2fc0a9f236459e5a13eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generatorName: Perlin
-  generatorConfig: {fileID: 11400000, guid: 1c16bc4c4e5820aa5a93e067c286dc66, type: 2}
+  generatorName: None
+  generatorConfig: {fileID: 11400000, guid: c1668b8d4cd6fb41a8cbbfbbf132e03b, type: 2}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,7 +11,7 @@ using NaughtyAttributes;
 
 namespace AIUnityExamples.ProceduralLandscape
 {
-    public class ProcGen : MonoBehaviour
+    public class Controller : MonoBehaviour
     {
         [SerializeField]
         [OnValueChanged(nameof(ResetConfiguration))]
