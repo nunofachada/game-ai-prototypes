@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using AIUnityExamples.ProceduralLandscape.GenConfig;
 using NaughtyAttributes;
+using LibGameAI.Util;
 
 namespace AIUnityExamples.ProceduralLandscape
 {
@@ -81,7 +82,10 @@ namespace AIUnityExamples.ProceduralLandscape
                 if (generatorNames is null)
                 {
                     // Get generator names
-                    generatorNames = GenConfigManager.Instance.GeneratorNames;
+                    generatorNames = ClassManager<AbstractGenConfig>
+                        .Instance
+                        .ReplaceNames(SimpleName)
+                        .ClassNames;
                     // Sort them, but None always appears first
                     System.Array.Sort(
                         generatorNames,
@@ -114,8 +118,8 @@ namespace AIUnityExamples.ProceduralLandscape
             {
                 // Update generation method name accordingly to what is now set
                 // in the generation configurator fields
-                generatorName = GenConfigManager.Instance.GetNameFromType(
-                    generatorConfig.GetType());
+                generatorName = ClassManager<AbstractGenConfig>
+                    .Instance.GetNameFromType(generatorConfig.GetType());
             }
         }
 
@@ -123,9 +127,11 @@ namespace AIUnityExamples.ProceduralLandscape
         private void OnChangeGeneratorName()
         {
             // Make sure gen. method type is updated accordingly
-            System.Type genConfigType =
-                GenConfigManager.Instance.GetTypeFromName(generatorName);
-            generatorConfig = AbstractGenConfig.GetInstance(genConfigType, ID);
+            System.Type genConfigType = ClassManager<AbstractGenConfig>
+                .Instance
+                .GetTypeFromName(generatorName);
+            generatorConfig = AbstractGenConfig
+                .GetInstance(genConfigType, ID);
         }
 
 
@@ -144,16 +150,45 @@ namespace AIUnityExamples.ProceduralLandscape
         /// </summary>
         public void SetAsNormalizer()
         {
-            generatorName = GenConfigManager.SimpleName(
-                typeof(NormalizeConfig).FullName);
+            generatorName = SimpleName(typeof(NormalizeConfig).FullName);
             OnChangeGeneratorName();
         }
 
         private void Reset()
         {
-            generatorName = GenConfigManager.SimpleName(
-                typeof(NoneConfig).FullName);
+            generatorName = SimpleName(typeof(NoneConfig).FullName);
             OnChangeGeneratorName();
+        }
+
+        /// <summary>
+        /// Simplify the name of a generator by removing the namespace
+        /// and the "Config" substring in the end.
+        /// </summary>
+        /// <param name="fqName">
+        /// The fully qualified name of the generator.
+        /// </param>
+        /// <returns>
+        /// The simplified name of the generator.
+        /// </returns>
+        private string SimpleName(string fqName)
+        {
+            string simpleName = fqName;
+
+            // Strip namespace
+            if (simpleName.Contains("."))
+            {
+                simpleName = fqName.Substring(fqName.LastIndexOf(".") + 1);
+            }
+
+            // Strip "Config"
+            if (simpleName.EndsWith("Config"))
+            {
+                simpleName = simpleName.Substring(
+                    0, simpleName.Length - "Config".Length);
+            }
+
+            // Return simple name
+            return simpleName;
         }
     }
 }

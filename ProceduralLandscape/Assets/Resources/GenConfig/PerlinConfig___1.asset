@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 341423e1a38431e0b9108b74af11cbb6, type: 3}
   m_Name: PerlinConfig___1
   m_EditorClassIdentifier: 
-  tileSize: 10
+  tileSize: 20
