@@ -6,7 +6,7 @@
  * */
 
 using UnityEngine;
-using LibGameAI.PRNG;
+using LibGameAI.QRNG;
 using Random = System.Random;
 
 namespace AIUnityExamples.Procedural2D.Scenarios
