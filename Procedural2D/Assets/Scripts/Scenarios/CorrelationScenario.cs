@@ -16,6 +16,13 @@ namespace AIUnityExamples.Procedural2D.Scenarios
     {
         private enum SeedOptions { SameSeeds, SequentialSeeds, RandomSeeds }
 
+        private const int MAX_COLORS = 9;
+        private static readonly Color[] colors = new Color[MAX_COLORS]
+        {
+            Color.white, Color.black, Color.blue, Color.red, Color.green,
+            Color.gray, Color.magenta, Color.yellow, Color.cyan
+        };
+
         [SerializeField]
         [Dropdown(nameof(RandomNames))]
         private string randGenerator;
@@ -28,6 +35,9 @@ namespace AIUnityExamples.Procedural2D.Scenarios
 
         [SerializeField]
         private int baseSeed;
+
+        [SerializeField] [Range(2, MAX_COLORS)]
+        private int numberOfColors;
 
         // Names of known scenarios
         [NonSerialized]
@@ -49,6 +59,9 @@ namespace AIUnityExamples.Procedural2D.Scenarios
 
         public override void Generate(Color[] pixels, int width, int height)
         {
+            // Get a copy of the base seed
+            int localBaseSeed = baseSeed;
+
             // Array of seeds for seeding the random number generator instances
             int[] seeds = new int[generatorCount];
 
@@ -63,16 +76,16 @@ namespace AIUnityExamples.Procedural2D.Scenarios
             {
                 case SeedOptions.SameSeeds:
                     // Always use the same seed (bad!)
-                    seedGen = () => baseSeed;
+                    seedGen = () => localBaseSeed;
                     break;
                 case SeedOptions.SequentialSeeds:
                     // Use incremental seeds
-                    seedGen = () => baseSeed++;
+                    seedGen = () => localBaseSeed++;
                     break;
                 case SeedOptions.RandomSeeds:
                     // Use random seeds
                     Random randSeeder =
-                        PRNGHelper.PRNGInstance(randGenerator, baseSeed);
+                        PRNGHelper.PRNGInstance(randGenerator, localBaseSeed);
                     seedGen = () => randSeeder.Next();
                     break;
             }
@@ -94,14 +107,11 @@ namespace AIUnityExamples.Procedural2D.Scenarios
             {
                 for (int j = 0; j < width; j++)
                 {
-                    // Get a random value between 0 and 1
-                    double val = rnd[j % rnd.Length].NextDouble();
-
-                    // Determine color based on obtained random value
-                    Color color = val < 0.5 ? Color.white : Color.black;
+                    // Get a random value to choose a color
+                    int colorIndex = rnd[j % rnd.Length].Next(numberOfColors);
 
                     // Set color in pixels array
-                    pixels[i * width + j] = color;
+                    pixels[i * width + j] = colors[colorIndex];
                 }
             }
         }
