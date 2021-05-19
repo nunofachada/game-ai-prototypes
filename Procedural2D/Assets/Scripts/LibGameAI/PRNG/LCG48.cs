@@ -56,7 +56,6 @@ namespace LibGameAI.PRNG
             return d;
         }
 
-
         public override int Next(int minValue, int maxValue)
         {
             if (minValue > maxValue)
@@ -69,14 +68,13 @@ namespace LibGameAI.PRNG
 
             if (range <= (long)int.MaxValue)
             {
-                return InternalSample(31) + minValue;
+                return (int)(Sample() * range) + minValue;
             }
             else
             {
                 return (int)((long)(GetSampleForLargeRange() * range) + minValue);
             }
         }
-
 
         public override void NextBytes(byte[] buffer)
         {

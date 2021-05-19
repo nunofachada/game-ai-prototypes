@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08a573f07ffaf28ceb6ca7e2203feec7, type: 3}
   m_Name: MidpointDispScenario
   m_EditorClassIdentifier: 
+  randGenerator: XorShift128
   useSeed: 0
-  seed: 0
+  seed: 123
   imagePadding: 0.25
   roughness: 0.5

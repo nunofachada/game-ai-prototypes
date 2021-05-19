@@ -58,7 +58,7 @@ namespace LibGameAI.PRNG
 
             if (range <= (long)int.MaxValue)
             {
-                return Next() + minValue;
+                return (int)(Sample() * range) + minValue;
             }
             else
             {
