@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb116f7a24b59ccd4956d356dc146fe0, type: 3}
   m_Name: CorrelationScenario
   m_EditorClassIdentifier: 
-  randGenerator: XorShift128
-  generatorCount: 512
+  randGenerator: Randu
+  generatorCount: 200
   seedOptions: 2
-  baseSeed: 0
+  baseSeed: 23
+  numberOfColors: 2

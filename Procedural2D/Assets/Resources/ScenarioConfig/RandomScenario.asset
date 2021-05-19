@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1665c2739d42210389b7023250f27b9, type: 3}
   m_Name: RandomScenario
   m_EditorClassIdentifier: 
-  randGenerator: Randu
+  randGenerator: Random
   useSeed: 1
-  seed: 2
+  seed: 2222
+  blackChance: 0.5

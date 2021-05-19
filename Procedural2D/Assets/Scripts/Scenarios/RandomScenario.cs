@@ -11,6 +11,10 @@ namespace AIUnityExamples.Procedural2D.Scenarios
 {
     public class RandomScenario : StochasticScenario
     {
+        [SerializeField]
+        [Range(0, 1)]
+        private float blackChance = 0.5f;
+
         public override void Generate(Color[] pixels, int width, int height)
         {
             base.Generate(pixels, width, height);
@@ -24,7 +28,7 @@ namespace AIUnityExamples.Procedural2D.Scenarios
                     double val = PRNG.NextDouble();
 
                     // Determine color based on obtained random value
-                    Color color = val < 0.5 ? Color.white : Color.black;
+                    Color color = val > blackChance ? Color.white : Color.black;
 
                     // Set color in pixels array
                     pixels[i * width + j] = color;

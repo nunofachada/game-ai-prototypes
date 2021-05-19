@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 950aa0423fab22b2fa33619cbe082b01, type: 3}
   m_Name: CA1DScenario
   m_EditorClassIdentifier: 
-  randGenerator: Randu
-  useSeed: 1
+  randGenerator: XorShift128
+  useSeed: 0
   seed: 0
   rule: 30
-  singleCenterPixel: 0
+  singleCenterPixel: 1

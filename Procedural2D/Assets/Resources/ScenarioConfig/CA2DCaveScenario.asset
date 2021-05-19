@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d77bc4e03923013ffb1ca42aa3cb891b, type: 3}
   m_Name: CA2DCaveScenario
   m_EditorClassIdentifier: 
-  useSeed: 0
-  seed: 0
-  rockThreshold: 13
-  neighSize: 2
+  randGenerator: LCG48
+  useSeed: 1
+  seed: 12
+  rockThreshold: 5
+  neighSize: 1
   initRocks: 0.5
   steps: 4
