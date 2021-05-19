@@ -29,6 +29,7 @@ namespace AIUnityExamples.Procedural2D.Scenarios
 
         [SerializeField]
         private int ySeed = 3;
+
         public override void Generate(Color[] pixels, int width, int height)
         {
             // Instantiate random number generator for x coordinate

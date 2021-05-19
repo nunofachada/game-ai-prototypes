@@ -5,18 +5,20 @@
  * Author: Nuno Fachada
  * */
 
+using System;
+using System.Reflection;
 using UnityEngine;
 using NaughtyAttributes;
+using LibGameAI.Util;
 using Random = System.Random;
 
 namespace AIUnityExamples.Procedural2D.Scenarios
 {
     public abstract class StochasticScenario : AbstractScenario
     {
-        // public enum PRNG { System, XorShift128 }
-
-        // [SerializeField]
-        // private PRNG randomNumberGenerator = PRNG.System;
+        [SerializeField]
+        [Dropdown(nameof(RandomNames))]
+        private string randGenerator;
 
         [SerializeField]
         [EnableIf(nameof(RandActive))]
@@ -26,6 +28,27 @@ namespace AIUnityExamples.Procedural2D.Scenarios
         [EnableIf(EConditionOperator.And, nameof(useSeed), nameof(RandActive))]
         private int seed = 0;
 
+        // Names of known scenarios
+        [NonSerialized]
+        private string[] randomNames;
+
+        // Get PRNG names
+        private string[] RandomNames
+        {
+            get
+            {
+                // Did we initialize PRNG names already?
+                if (randomNames is null)
+                {
+                    // Obtain known PRNGs
+                    randomNames = PRNGHelper.KnownPRNGs;
+                }
+
+                // Return existing PRNG names
+                return randomNames;
+            }
+        }
+
         private Random random;
 
         protected Random PRNG => random;
@@ -34,7 +57,9 @@ namespace AIUnityExamples.Procedural2D.Scenarios
 
         public override void Generate(Color[] pixels, int width, int height)
         {
-            random = useSeed ? new Random(seed) : new Random();
+            random = useSeed
+                ? PRNGHelper.PRNGInstance(randGenerator, seed)
+                : PRNGHelper.PRNGInstance(randGenerator);
         }
     }
 }
