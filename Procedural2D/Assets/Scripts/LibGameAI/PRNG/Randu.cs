@@ -10,13 +10,14 @@ namespace LibGameAI.PRNG
         private const int M = 0x7FFFFFFF; // 2^31
         private const double DOUBLE_UNIT = 1.0 / (1L << 53);
 
-
         public Randu() : this(Environment.TickCount)
         {
         }
 
         public Randu(int seed)
         {
+            // RANDU doesn't work with seed == 0
+            if (seed == 0) seed = int.MaxValue / 2;
             state = seed;
         }
 
