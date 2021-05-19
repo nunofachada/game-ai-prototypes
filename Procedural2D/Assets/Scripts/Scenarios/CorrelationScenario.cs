@@ -5,22 +5,54 @@
  * Author: Nuno Fachada
  * */
 
+using System;
+using System.Reflection;
 using UnityEngine;
 using NaughtyAttributes;
-using LibGameAI.PRNG;
+using LibGameAI.Util;
 using Random = System.Random;
 
 namespace AIUnityExamples.Procedural2D.Scenarios
 {
     public class CorrelationScenario : AbstractScenario
     {
-        public enum PRNG { System, XorShift128, LCG48, RANDU }
-
         [SerializeField]
-        private PRNG randGenerator = PRNG.System;
+        [Dropdown(nameof(RandomNames))]
+        private string randGenerator;
 
         [SerializeField]
         private int[] seeds = { 1, 2, 3 };
+
+        // Names of known scenarios
+        [NonSerialized]
+        private string[] randomNames;
+
+        // Get scenario names
+        private string[] RandomNames
+        {
+            get
+            {
+                // Did we initialize scenario names already?
+                if (randomNames is null)
+                {
+                    // Spin up the scenario class manager with custom
+                    // scenario naming and get the scenario names
+                    randomNames = ClassManager<Random>
+                        .Instance
+                        .FilterTypes(t =>
+                            t.FullName.Contains("System") ||
+                            t.FullName.Contains("LibGameAI.PRNG"))
+                        .ReplaceNames(n => n.Remove(0, n.LastIndexOf(".") + 1))
+                        .ClassNames;
+
+                    // Sort them
+                    Array.Sort(randomNames);
+                }
+
+                // Return existing scenario names
+                return randomNames;
+            }
+        }
 
         public override void Generate(Color[] pixels, int width, int height)
         {
@@ -34,28 +66,20 @@ namespace AIUnityExamples.Procedural2D.Scenarios
             // Array of random number generators
             Random[] rnd = new Random[seeds.Length];
 
+            Type rndType = ClassManager<Random>.Instance.GetTypeFromName(randGenerator);
+            ConstructorInfo rndConstr = rndType.GetConstructor(new Type[] { typeof(int) });
+
+            if (rndConstr is null)
+            {
+                Debug.LogWarning(
+                    $"The {rndType} PRNG does not have a constructor which accepts int.");
+                return;
+            }
+
             // Instantiate the random number generators
             for (int i = 0; i < seeds.Length; i++)
             {
-                switch (randGenerator)
-                {
-                    case PRNG.System:
-                        rnd[i] = new Random(seeds[i]);
-                        break;
-                    case PRNG.XorShift128:
-                        rnd[i] = new XorShift128(seeds[i]);
-                        break;
-                    case PRNG.LCG48:
-                        rnd[i] = new LCG48(seeds[i]);
-                        break;
-                    case PRNG.RANDU:
-                        rnd[i] = new Randu(seeds[i]);
-                        break;
-                    default:
-                        Debug.LogWarning("Unknown PRNG, using System's");
-                        rnd[i] = new Random(seeds[i]);
-                        break;
-                }
+                rnd[i] = rndConstr.Invoke(new object[] { seeds[i] }) as Random;
             }
 
             // Fill vector of pixels with random black or white pixels

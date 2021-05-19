@@ -171,7 +171,7 @@ namespace AIUnityExamples.Procedural2D
         /// <returns>
         /// The simplified name of the scenario.
         /// </returns>
-        public static string SimplifyName(string fqName)
+        private static string SimplifyName(string fqName)
         {
             string simpleName = fqName;
 

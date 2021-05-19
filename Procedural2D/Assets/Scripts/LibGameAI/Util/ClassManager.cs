@@ -71,8 +71,24 @@ namespace LibGameAI.Util
         /// <returns>This instance, for use in fluent syntax.</returns>
         public ClassManager<T> ReplaceNames(Func<string, string> replacer)
         {
-            knownTypes = knownTypes.ToDictionary(
-                kvp => replacer(kvp.Key), kvp => kvp.Value);
+            knownTypes = knownTypes
+                .ToDictionary(kvp => replacer(kvp.Key), kvp => kvp.Value);
+            return this;
+        }
+
+        /// <summary>
+        /// Filter out types that are not of interest to the client.
+        /// </summary>
+        /// <param name="filter">
+        /// Filter to apply, returns <c>true</c> if class is to keep, or
+        /// <c>false</c> otherwise.
+        /// </param>
+        /// <returns>This instance, for use in fluent syntax.</returns>
+        public ClassManager<T> FilterTypes(Func<Type, bool> filter)
+        {
+            knownTypes = knownTypes
+                .Where(kvp => filter(kvp.Value))
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
             return this;
         }
 
