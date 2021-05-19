@@ -4,11 +4,10 @@ namespace LibGameAI.PRNG
 {
     public class Randu : Random
     {
-        private int state;
+        private ulong state;
 
-        private const int A = 65539;
-        private const int M = 0x7FFFFFFF; // 2^31
-        private const double DOUBLE_UNIT = 1.0 / (1L << 53);
+        private const ulong A = 65539;
+        private const ulong M = 0x7FFFFFFF; // 2^31
 
         public Randu() : this(Environment.TickCount)
         {
@@ -18,24 +17,29 @@ namespace LibGameAI.PRNG
         {
             // RANDU doesn't work with seed == 0
             if (seed == 0) seed = int.MaxValue / 2;
-            state = seed;
+            state = (ulong)seed;
         }
 
         protected override double Sample()
         {
-            return (((long)(Next()) << 27) + Next()) * DOUBLE_UNIT;
+            return InternalSample() * (1.0 / int.MaxValue);
+        }
+
+        private int InternalSample()
+        {
+            state = (A * state) % M;
+            return (int)(state & M);
         }
 
         public override int Next()
         {
-            state = (A * state) % M;
-            return state;
+            return InternalSample();
         }
 
         private double GetSampleForLargeRange()
         {
-            int result = Next();
-            bool negative = Next() % 2 == 0;
+            int result = InternalSample();
+            bool negative = InternalSample() % 2 == 0;
             if (negative)
             {
                 result = -result;
@@ -65,7 +69,6 @@ namespace LibGameAI.PRNG
                 return (int)((long)(GetSampleForLargeRange() * range) + minValue);
             }
         }
-
 
         public override void NextBytes(byte[] buffer)
         {
