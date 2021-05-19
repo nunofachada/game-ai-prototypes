@@ -29,13 +29,13 @@ namespace AIUnityExamples.Procedural2D
         private string scenarioName;
 
         [SerializeField]
+        [Range(0.1f, 100f)]
+        private float scale = 1;
+
+        [SerializeField]
         [Expandable]
         [OnValueChanged(nameof(OnChangeScenarioType))]
         private AbstractScenario scenarioConfig;
-
-        [SerializeField]
-        [Range(0.1f, 100f)]
-        private float scale = 1;
 
         // Names of known scenarios
         [NonSerialized]
