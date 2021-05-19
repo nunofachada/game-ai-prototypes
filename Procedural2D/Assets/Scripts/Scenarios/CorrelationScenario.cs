@@ -18,8 +18,8 @@ namespace AIUnityExamples.Procedural2D.Scenarios
         [Dropdown(nameof(RandomNames))]
         private string randGenerator;
 
-        [SerializeField]
-        private int[] seeds = { 1, 2, 3 };
+        [SerializeField] [Range(1, 1 << 10)]
+        private int generatorCount;
 
         // Names of known scenarios
         [NonSerialized]
@@ -41,12 +41,8 @@ namespace AIUnityExamples.Procedural2D.Scenarios
 
         public override void Generate(Color[] pixels, int width, int height)
         {
-            if (seeds is null || seeds.Length == 0)
-            {
-                Debug.LogWarning(
-                    $"The '{nameof(seeds)}' parameter must have at least one seed");
-                return;
-            }
+            int[] seeds = new int[generatorCount];
+            for (int i = 0; i < generatorCount; i++) seeds[i] = i;
 
             // Array of random number generators
             Random[] rnd = new Random[seeds.Length];
