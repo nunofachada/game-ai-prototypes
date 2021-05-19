@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: CorrelationScenario
   m_EditorClassIdentifier: 
   randGenerator: XorShift128
-  generatorCount: 128
+  generatorCount: 512
+  seedOptions: 2
+  baseSeed: 0

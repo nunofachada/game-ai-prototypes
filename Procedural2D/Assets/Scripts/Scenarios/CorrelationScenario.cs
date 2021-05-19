@@ -14,12 +14,20 @@ namespace AIUnityExamples.Procedural2D.Scenarios
 {
     public class CorrelationScenario : AbstractScenario
     {
+        private enum SeedOptions { SameSeeds, SequentialSeeds, RandomSeeds }
+
         [SerializeField]
         [Dropdown(nameof(RandomNames))]
         private string randGenerator;
 
         [SerializeField] [Range(1, 1 << 10)]
         private int generatorCount;
+
+        [SerializeField]
+        private SeedOptions seedOptions;
+
+        [SerializeField]
+        private int baseSeed;
 
         // Names of known scenarios
         [NonSerialized]
@@ -41,11 +49,39 @@ namespace AIUnityExamples.Procedural2D.Scenarios
 
         public override void Generate(Color[] pixels, int width, int height)
         {
+            // Array of seeds for seeding the random number generator instances
             int[] seeds = new int[generatorCount];
-            for (int i = 0; i < generatorCount; i++) seeds[i] = i;
 
-            // Array of random number generators
+            // Array of random number generator instances
             Random[] rnd = new Random[seeds.Length];
+
+            // Seed generator for seeding the random number generator instances
+            Func<int> seedGen = null;
+
+            // Determine the method of obtaining seeds
+            switch (seedOptions)
+            {
+                case SeedOptions.SameSeeds:
+                    // Always use the same seed (bad!)
+                    seedGen = () => baseSeed;
+                    break;
+                case SeedOptions.SequentialSeeds:
+                    // Use incremental seeds
+                    seedGen = () => baseSeed++;
+                    break;
+                case SeedOptions.RandomSeeds:
+                    // Use random seeds
+                    Random randSeeder =
+                        PRNGHelper.PRNGInstance(randGenerator, baseSeed);
+                    seedGen = () => randSeeder.Next();
+                    break;
+            }
+
+            // Obtain seeds for the random number generator instances
+            for (int i = 0; i < generatorCount; i++)
+            {
+                seeds[i] = seedGen?.Invoke() ?? 0;
+            }
 
             // Instantiate the random number generators
             for (int i = 0; i < seeds.Length; i++)
