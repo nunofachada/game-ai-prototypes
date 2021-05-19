@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
 using NaughtyAttributes;
+using LibGameAI.Util;
 using AIUnityExamples.Procedural2D.Scenarios;
 
 namespace AIUnityExamples.Procedural2D
@@ -52,10 +53,15 @@ namespace AIUnityExamples.Procedural2D
                 // Did we initialize scenario names already?
                 if (scenarioNames is null)
                 {
-                    // Get scenario names
-                    scenarioNames = ScenarioManager.Instance.ScenarioNames;
+                    // Spin up the scenario class manager with custom
+                    // scenario naming and get the scenario names
+                    scenarioNames = ClassManager<AbstractScenario>
+                        .Instance
+                        .ReplaceNames(SimplifyName)
+                        .ClassNames;
+
                     // Sort them
-                    System.Array.Sort(scenarioNames);
+                    Array.Sort(scenarioNames);
                 }
 
                 // Return existing scenario names
@@ -82,8 +88,9 @@ namespace AIUnityExamples.Procedural2D
             {
                 // Update scenario name accordingly to what is now set
                 // in the generation configurator fields
-                scenarioName = ScenarioManager.Instance.GetNameFromType(
-                    scenarioConfig.GetType());
+                scenarioName = ClassManager<AbstractScenario>
+                    .Instance
+                    .GetNameFromType(scenarioConfig.GetType());
             }
         }
 
@@ -91,8 +98,9 @@ namespace AIUnityExamples.Procedural2D
         private void OnChangeScenarioName()
         {
             // Make sure scenario type is updated accordingly
-            System.Type scenarioType =
-                ScenarioManager.Instance.GetTypeFromName(scenarioName);
+            Type scenarioType = ClassManager<AbstractScenario>
+                .Instance
+                .GetTypeFromName(scenarioName);
             scenarioConfig = AbstractScenario.GetInstance(scenarioType);
         }
 
@@ -151,6 +159,37 @@ namespace AIUnityExamples.Procedural2D
         private void Clear()
         {
             image.texture = null;
+        }
+
+        /// <summary>
+        /// Simplify the name of a scenario by removing the namespace
+        /// and the "Scenario" substring in the end.
+        /// </summary>
+        /// <param name="fqName">
+        /// The fully qualified name of the scenario.
+        /// </param>
+        /// <returns>
+        /// The simplified name of the scenario.
+        /// </returns>
+        public static string SimplifyName(string fqName)
+        {
+            string simpleName = fqName;
+
+            // Strip namespace
+            if (simpleName.Contains("."))
+            {
+                simpleName = fqName.Substring(fqName.LastIndexOf(".") + 1);
+            }
+
+            // Strip "Config"
+            if (simpleName.EndsWith("Scenario"))
+            {
+                simpleName = simpleName.Substring(
+                    0, simpleName.Length - "Scenario".Length);
+            }
+
+            // Return simple name
+            return simpleName;
         }
     }
 }
