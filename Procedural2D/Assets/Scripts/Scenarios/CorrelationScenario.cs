@@ -62,11 +62,8 @@ namespace AIUnityExamples.Procedural2D.Scenarios
             // Get a copy of the base seed
             int localBaseSeed = baseSeed;
 
-            // Array of seeds for seeding the random number generator instances
-            int[] seeds = new int[generatorCount];
-
             // Array of random number generator instances
-            Random[] rnd = new Random[seeds.Length];
+            Random[] rnd = new Random[generatorCount];
 
             // Seed generator for seeding the random number generator instances
             Func<int> seedGen = null;
@@ -90,16 +87,11 @@ namespace AIUnityExamples.Procedural2D.Scenarios
                     break;
             }
 
-            // Obtain seeds for the random number generator instances
+            // Instantiate the random number generators
             for (int i = 0; i < generatorCount; i++)
             {
-                seeds[i] = seedGen?.Invoke() ?? 0;
-            }
-
-            // Instantiate the random number generators
-            for (int i = 0; i < seeds.Length; i++)
-            {
-                rnd[i] = PRNGHelper.PRNGInstance(randGenerator, seeds[i]);
+                rnd[i] = PRNGHelper.PRNGInstance(
+                    randGenerator, seedGen.Invoke());
             }
 
             // Fill vector of pixels with random black or white pixels
