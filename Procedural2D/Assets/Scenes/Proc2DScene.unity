@@ -305,7 +305,7 @@ MonoBehaviour:
   image: {fileID: 1882121597}
   scenarioName: Correlation
   scenarioConfig: {fileID: 11400000, guid: 4ebdfe254d69006e9bce80416de08a13, type: 2}
-  scale: 2
+  scale: 0.5
 --- !u!4 &1726461150
 Transform:
   m_ObjectHideFlags: 0

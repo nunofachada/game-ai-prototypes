@@ -2,7 +2,7 @@ using System;
 
 namespace LibGameAI.PRNG
 {
-    public class LCG : Random
+    public class LCG48 : Random
     {
         private long state;
 
@@ -13,15 +13,15 @@ namespace LibGameAI.PRNG
         private const double DOUBLE_UNIT = 1.0 / (1L << 53);
 
 
-        public LCG() : this(Environment.TickCount)
+        public LCG48() : this(Environment.TickCount)
         {
         }
 
-        public LCG(int seed) : this((long)seed << 32 | (long)seed)
+        public LCG48(int seed) : this((long)seed << 32 | (long)seed)
         {
 
         }
-        public LCG(long seed)
+        public LCG48(long seed)
         {
             state = (seed ^ multiplier) & mask;
         }
@@ -45,7 +45,7 @@ namespace LibGameAI.PRNG
         private double GetSampleForLargeRange()
         {
             int result = InternalSample(31);
-            bool negative = (InternalSample(31) % 2 == 0) ? true : false;
+            bool negative = InternalSample(1) == 1;
             if (negative)
             {
                 result = -result;
@@ -69,7 +69,7 @@ namespace LibGameAI.PRNG
 
             if (range <= (long)int.MaxValue)
             {
-                return ((int)(Sample() * range) + minValue);
+                return InternalSample(31) + minValue;
             }
             else
             {
