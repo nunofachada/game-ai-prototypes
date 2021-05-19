@@ -17,6 +17,7 @@ namespace AIUnityExamples.Procedural2D.Scenarios
     public abstract class StochasticScenario : AbstractScenario
     {
         [SerializeField]
+        [EnableIf(nameof(RandActive))]
         [Dropdown(nameof(RandomNames))]
         private string randGenerator;
 
