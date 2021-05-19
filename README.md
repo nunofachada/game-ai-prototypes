@@ -8,7 +8,7 @@ Currently a work in progress. More information soon.
 
 ## Compatibility
 
-* Unity 2019.2 or higher
+* Unity 2020.1 or higher
 
 ## License
 
