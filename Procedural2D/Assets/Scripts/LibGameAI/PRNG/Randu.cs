@@ -2,6 +2,44 @@ using System;
 
 namespace LibGameAI.PRNG
 {
+    /// <summary>
+    /// Example of a bad random number generator for testing purposes.
+    /// </summary>
+    /// <remarks>
+    /// Useful links:
+    /// <list type="bullet">
+    /// <item><description>
+    /// <seealso href="http://en.wikipedia.org/wiki/RANDU">
+    /// RANDU - Wikipedia
+    /// </seealso>
+    /// </description></item>
+    /// <item><description>
+    /// <seealso href="https://scruss.com/wordpress/wp-content/uploads/2013/06/randu.c">
+    /// A bad implementation in C of a bad algorithm
+    /// </seealso>
+    /// </description></item>
+    /// <item><description>
+    /// <seealso href="https://github.com/fakenmc/pphpc/blob/master/java/src/org/laseeb/pphpc/RanduRNG.java">
+    /// Implementation of the RANDU random number generator in Java
+    /// </seealso>
+    /// </description></item>
+    /// <item><description>
+    /// <seealso href="https://github.com/dotnet/corefx/blob/master/src/Common/src/CoreLib/System/Random.cs">
+    /// .NET Core implementation of the Random class
+    /// </seealso>
+    /// </description></item>
+    /// <item><description>
+    /// <seealso href="https://github.com/Microsoft/referencesource/blob/master/mscorlib/system/random.cs">
+    /// .NET Framework implementation of the Random class
+    /// </seealso>
+    /// </description></item>
+    /// <item><description>
+    /// <seealso href="https://docs.microsoft.com/en-us/dotnet/api/system.random?view=net-5.0#notes-to-inheritors">
+    /// Documentation on how to extend the Random class
+    /// </seealso>
+    /// </description></item>
+    /// </list>
+    /// </remarks>
     public class Randu : Random
     {
         private ulong state;

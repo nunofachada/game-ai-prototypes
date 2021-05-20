@@ -2,6 +2,50 @@ using System;
 
 namespace LibGameAI.PRNG
 {
+    /// <summary>
+    /// C# reimplementation of Java's PRNG, a linear congruential generator
+    /// (LCG).
+    /// </summary>
+    /// <remarks>
+    /// Useful links:
+    /// <list type="bullet">
+    /// <item><description>
+    /// <seealso href="https://en.wikipedia.org/wiki/Linear_congruential_generator">
+    /// Linear congruential generator - Wikipedia
+    /// </seealso>
+    /// </description></item>
+    /// <item><description>
+    /// <seealso href="https://github.com/fakenmc/cl_ops/blob/master/src/cl_ops/rng/clo_rng_lcg.cl">
+    /// Implementation of this particular LCG in OpenCL
+    /// </seealso>
+    /// </description></item>
+    /// <item><description>
+    /// <seealso href="https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/Random.java">
+    /// Java's implementation
+    /// </seealso>
+    /// </description></item>
+    /// <item><description>
+    /// <seealso href="https://docs.oracle.com/javase/8/docs/api/java/util/Random.html">
+    /// Java's documentation of the Random class
+    /// </seealso>
+    /// </description></item>
+    /// <item><description>
+    /// <seealso href="https://github.com/dotnet/corefx/blob/master/src/Common/src/CoreLib/System/Random.cs">
+    /// .NET Core implementation of the Random class
+    /// </seealso>
+    /// </description></item>
+    /// <item><description>
+    /// <seealso href="https://github.com/Microsoft/referencesource/blob/master/mscorlib/system/random.cs">
+    /// .NET Framework implementation of the Random class
+    /// </seealso>
+    /// </description></item>
+    /// <item><description>
+    /// <seealso href="https://docs.microsoft.com/en-us/dotnet/api/system.random?view=net-5.0#notes-to-inheritors">
+    /// Documentation on how to extend the Random class
+    /// </seealso>
+    /// </description></item>
+    /// </list>
+    /// </remarks>
     public class LCG48 : Random
     {
         private long state;

@@ -9,6 +9,39 @@ using System;
 
 namespace LibGameAI.PRNG
 {
+    /// <summary>
+    /// A 128-bit implementation of a XorShift pseudo-random number generator.
+    /// </summary>
+    /// <remarks>
+    /// Useful links:
+    /// <list type="bullet">
+    /// <item><description>
+    /// <seealso href="http://en.wikipedia.org/wiki/Xorshift">
+    /// Xorshift - Wikipedia
+    /// </seealso>
+    /// </description></item>
+    /// <item><description>
+    /// <seealso href="https://github.com/fakenmc/cl_ops/blob/master/src/cl_ops/rng/clo_rng_xorshift128.cl">
+    /// Implementation of this particular XorShift in OpenCL
+    /// </seealso>
+    /// </description></item>
+    /// <item><description>
+    /// <seealso href="https://github.com/dotnet/corefx/blob/master/src/Common/src/CoreLib/System/Random.cs">
+    /// .NET Core implementation of the Random class
+    /// </seealso>
+    /// </description></item>
+    /// <item><description>
+    /// <seealso href="https://github.com/Microsoft/referencesource/blob/master/mscorlib/system/random.cs">
+    /// .NET Framework implementation of the Random class
+    /// </seealso>
+    /// </description></item>
+    /// <item><description>
+    /// <seealso href="https://docs.microsoft.com/en-us/dotnet/api/system.random?view=net-5.0#notes-to-inheritors">
+    /// Documentation on how to extend the Random class
+    /// </seealso>
+    /// </description></item>
+    /// </list>
+    /// </remarks>
     public class XorShift128 : Random
     {
         private uint x, y, z, w;
