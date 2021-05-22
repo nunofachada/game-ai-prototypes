@@ -29,7 +29,7 @@ namespace AIUnityExamples.Procedural2D
         private string scenarioName;
 
         [SerializeField]
-        [Range(0.1f, 100f)]
+        [Range(0.1f, 200f)]
         private float scale = 1;
 
         [SerializeField]
