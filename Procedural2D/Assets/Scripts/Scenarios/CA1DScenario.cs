@@ -21,6 +21,7 @@ namespace AIUnityExamples.Procedural2D.Scenarios
 
         protected override bool RandActive => !singleCenterPixel;
 
+        // TODO Move CA1D generic functionality to libGameAI
         public override void Generate(Color[] pixels, int width, int height)
         {
             base.Generate(pixels, width, height);

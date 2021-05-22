@@ -40,6 +40,7 @@ namespace AIUnityExamples.Procedural2D.Scenarios
         private readonly Color FLOOR = Color.grey;
         private readonly Color BORDER = Color.red;
 
+        // TODO Move CA2D generic functionality to libGameAI
         public override void Generate(Color[] pixels, int width, int height)
         {
             base.Generate(pixels, width, height);
