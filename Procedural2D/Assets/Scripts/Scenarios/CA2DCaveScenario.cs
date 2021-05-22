@@ -6,11 +6,13 @@
  * */
 
 using UnityEngine;
-
+using NaughtyAttributes;
 namespace AIUnityExamples.Procedural2D.Scenarios
 {
     public class CA2DCaveScenario : StochasticScenario
     {
+        private enum CellType { Rock, Floor }
+
         [SerializeField]
         private int rockThreshold = 5;
 
@@ -24,6 +26,15 @@ namespace AIUnityExamples.Procedural2D.Scenarios
 
         [SerializeField]
         private int steps = 5;
+
+        [SerializeField]
+        private bool drawRockOutline = true;
+
+        [SerializeField]
+        private bool toroidal = true;
+
+        [SerializeField] [DisableIf(nameof(toroidal))]
+        private CellType nonToroidalBorderCells;
 
         private readonly Color ROCK = Color.white;
         private readonly Color FLOOR = Color.grey;
@@ -71,19 +82,22 @@ namespace AIUnityExamples.Procedural2D.Scenarios
             }
 
             // Post-process border rocks for visual effect
-            for (int i = 0; i < height; i++)
+            if (drawRockOutline)
             {
-                for (int j = 0; j < width; j++)
+                for (int i = 0; i < height; i++)
                 {
-                    if (buf1[i * width + j] == ROCK)
+                    for (int j = 0; j < width; j++)
                     {
-                        // How many rocks around here?
-                        int numRocks = CountRocks(buf1, width, height, i, j, 1);
-
-                        if (numRocks < 9)
+                        if (buf1[i * width + j] == ROCK)
                         {
-                            // Put border rock
-                            buf1[i * width + j] = BORDER;
+                            // How many rocks around here?
+                            int numRocks = CountRocks(buf1, width, height, i, j, 1);
+
+                            if (numRocks < 9)
+                            {
+                                // Put border rock
+                                buf1[i * width + j] = BORDER;
+                            }
                         }
                     }
                 }
@@ -97,23 +111,44 @@ namespace AIUnityExamples.Procedural2D.Scenarios
         private int CountRocks(Color[] pixels, int width, int height, int row, int col, int nSize)
         {
             int numRocks = 0;
+
             for (int i = -nSize; i <= nSize; i++)
             {
                 for (int j = -nSize; j <= nSize; j++)
                 {
-                    int r = Wrap(row + i, height);
-                    int c = Wrap(col + j, width);
+                    bool wrapRow, wrapCol;
+                    int r = Wrap(row + i, height, out wrapRow);
+                    int c = Wrap(col + j, width, out wrapCol);
 
-                    if (pixels[r * width + c] != FLOOR) numRocks++;
+                    if (!toroidal && (wrapRow || wrapCol))
+                    {
+                        if (nonToroidalBorderCells == CellType.Rock)
+                        {
+                            numRocks++;
+                        }
+                    }
+                    else if (pixels[r * width + c] != FLOOR)
+                    {
+                        numRocks++;
+                    }
                 }
             }
             return numRocks;
         }
 
-        private int Wrap(int pos, int max)
+        private int Wrap(int pos, int max, out bool wrap)
         {
-            if (pos < 0) pos = max + pos;
-            else if (pos >= max) pos = pos - max;
+            wrap = false;
+            if (pos < 0)
+            {
+                pos = max + pos;
+                wrap = true;
+            }
+            else if (pos >= max)
+            {
+                pos = pos - max;
+                wrap = true;
+            }
             return pos;
         }
     }
