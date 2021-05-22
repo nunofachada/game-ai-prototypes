@@ -19,3 +19,6 @@ MonoBehaviour:
   neighSize: 1
   initRocks: 0.5
   steps: 4
+  drawRockOutline: 0
+  toroidal: 0
+  nonToroidalBorderCells: 0
