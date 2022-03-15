@@ -18,6 +18,7 @@ public class World : MonoBehaviour
 
     // Names of boxes containing parameters
     private const string worldParams = "World";
+    private const string movementParams = "Movement";
     private const string pathFindingParams = "General Pathfinding";
     private const string aStarParams = "AStar Pathfinding";
 
@@ -34,8 +35,14 @@ public class World : MonoBehaviour
 
     // How long between each movement
     [SerializeField]
-    [BoxGroup(worldParams)]
-    private float moveDuration = 0.5f;
+    [Range(0.1f, 10f)]
+    [BoxGroup(movementParams)]
+    private float moveSpeed = 2f;
+
+    // Is paused?
+    [SerializeField]
+    [BoxGroup(movementParams)]
+    private bool pause = false;
 
     // Show fill?
     [SerializeField]
@@ -111,6 +118,12 @@ public class World : MonoBehaviour
     // Offset for all tiles
     private Vector2 offset;
 
+    // Is the player moving?
+    private bool isMoving;
+
+    // Last time the FindPath coroutine ran
+    private float lastFindPathTime;
+
     // Awake is called when the script instance is being loaded
     private void Awake()
     {
@@ -161,6 +174,9 @@ public class World : MonoBehaviour
     {
         // Goal hasn't been reached yet
         GoalReached = false;
+
+        // Player is not moving initially
+        isMoving = false;
 
         // Generate level
         GenerateLevel();
@@ -301,8 +317,13 @@ public class World : MonoBehaviour
     // to perform player movement animation
     private IEnumerator FindPath()
     {
-        // Coroutine will be called again in moveDuration seconds
-        YieldInstruction wfs = new WaitForSeconds(moveDuration);
+        // Player movement status before this coroutine yields
+        bool wasMoving = false;
+
+        // Coroutine will be called again in a few millisseconds or when the
+        // player is not moving but previously was
+        CustomYieldInstruction wfs = new WaitUntil(
+            () => (!isMoving && wasMoving) || Time.time < lastFindPathTime + 0.2f);
 
         // The graph representation of our tile world
         TileWorldGraph graph = new TileWorldGraph(world);
@@ -358,12 +379,22 @@ public class World : MonoBehaviour
                     if (conns.MoveNext())
                     {
                         // If so, move player towards the destination node in
-                        // the first connection
-                        StartCoroutine(MovePlayer(
-                            conns.Current.ToNode, moveDuration / 2));
+                        // the first connection, but only if player is not
+                        // moving and if simulation is not paused
+                        if (!isMoving && !pause)
+                        {
+                            StartCoroutine(MovePlayer(
+                                conns.Current.ToNode, moveSpeed));
+                        }
                     }
                 }
             }
+
+            // Keep track of time and player movement status before
+            // coroutine yields
+            lastFindPathTime = Time.time;
+            wasMoving = isMoving;
+
             // Return again after some fixed amount of time
             yield return wfs;
         }
@@ -373,7 +404,7 @@ public class World : MonoBehaviour
     }
 
     // Co-routine that performs the player movement animation
-    private IEnumerator MovePlayer(int toNode, float duration)
+    private IEnumerator MovePlayer(int toNode, float speed)
     {
         // Final position of player sprite
         Vector3 finalPos;
@@ -382,7 +413,7 @@ public class World : MonoBehaviour
         // Animation start time
         float startTime = Time.time;
         // Animation end time
-        float endTime = startTime + duration;
+        float endTime = startTime + 1 / speed;
 
         // Set player tile position to its final position
         PlayerPos = Ind2Vec(toNode, world.GetLength(0));
@@ -392,6 +423,9 @@ public class World : MonoBehaviour
             PlayerPos.x - offset.x,
             PlayerPos.y - offset.y,
             player.transform.position.z);
+
+        // Set moving flag to true
+        isMoving = true;
 
         // Perform animation
         while (Time.time < endTime)
@@ -411,6 +445,9 @@ public class World : MonoBehaviour
 
         // Make sure player sprite ends up in the final position
         player.transform.position = finalPos;
+
+        // Set moving flag to false
+        isMoving = false;
     }
 
     // Draw gizmos around player, goal and along found path
