@@ -10,7 +10,7 @@ public abstract class WaypointCycler : MonoBehaviour
 {
     // Array of waypoints
     [SerializeField]
-    private Vector3[] waypoints = null;
+    private Vector3[] waypoints;
 
     // Current waypoint index
     private int currentWaypoint;

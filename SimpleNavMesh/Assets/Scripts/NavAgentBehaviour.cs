@@ -10,7 +10,7 @@ using UnityEngine.AI;
 public class NavAgentBehaviour : MonoBehaviour
 {
     // Current goal of navigation agent
-    [SerializeField] private Transform goal = null;
+    [SerializeField] private Transform goal;
 
     // Reference to the NavMeshAgent component
     private NavMeshAgent agent;
