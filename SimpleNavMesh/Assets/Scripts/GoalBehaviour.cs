@@ -13,7 +13,7 @@ public class GoalBehaviour : WaypointCycler
     private void Update()
     {
         // Rotate goal
-        transform.Rotate(new Vector3(1f, 1f, 1f));
+        transform.Rotate(Vector3.one * 100 * Time.deltaTime);
     }
 
     // If nav agent collides with goal, move goal to next waypoint

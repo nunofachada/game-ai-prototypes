@@ -10,8 +10,8 @@ public class ObstacleBehaviour : WaypointCycler
 {
 
     // Speed of obstacle movement between waypoints
-    [SerializeField] [Range(0f, 1f)]
-    private float speed = 1f;
+    [SerializeField] [Range(0f, 20f)]
+    private float speed = 10f;
 
     // Minimum distance to waypoint to trigger a new waypoint
     [SerializeField]
@@ -42,6 +42,6 @@ public class ObstacleBehaviour : WaypointCycler
         vel = (CurrentWaypoint - transform.position).normalized * speed;
 
         // Move towards the next waypoint at the calculated velocity
-        rb.MovePosition(transform.position + vel);
+        rb.MovePosition(transform.position + vel * Time.fixedDeltaTime);
     }
 }
