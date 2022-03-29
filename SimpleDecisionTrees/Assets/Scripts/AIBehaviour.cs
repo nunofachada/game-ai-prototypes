@@ -12,8 +12,8 @@ public class AIBehaviour : WaypointCycler
 {
     // Speed of AI agent movement
     [SerializeField]
-    [Range(0f, 1f)]
-    private float speed = 1f;
+    [Range(0f, 20f)]
+    private float speed = 6f;
 
     // Minimum distance to waypoint to trigger a new waypoint
     [SerializeField]
@@ -25,10 +25,7 @@ public class AIBehaviour : WaypointCycler
 
     // Random decision duration
     [SerializeField]
-    private int randomDecisionDurationInFrames = 240;
-
-    // Reference to the agent's rigid body
-    private Rigidbody rb;
+    private float randomDecisionDurationInSeconds = 1.5f;
 
     // References the player
     private GameObject player;
@@ -45,9 +42,8 @@ public class AIBehaviour : WaypointCycler
     // Get reference to the agent's rigid body, the player and the wtf object
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
         player = GameObject.Find("PlayerAgent");
-        wtf = GameObject.Find("WTF");
+        wtf = transform.GetChild(0).gameObject;
         wtf.SetActive(false);
     }
 
@@ -65,8 +61,8 @@ public class AIBehaviour : WaypointCycler
         // Create the random decision behaviour node
         RandomDecisionBehaviour rdb = new RandomDecisionBehaviour(
             () => Random.value,
-            () => Time.frameCount,
-            randomDecisionDurationInFrames,
+            () => Time.time,
+            randomDecisionDurationInSeconds,
             0.55f);
         IDecisionTreeNode rndNode = new DecisionNode(
             rdb.RandomDecision, seek, nothing);
@@ -126,7 +122,7 @@ public class AIBehaviour : WaypointCycler
         Vector3 vel = (targetPos - transform.position).normalized * speed;
 
         // Move towards the target  at the calculated velocity
-        rb.MovePosition(transform.position + vel);
+        transform.position += vel * Time.deltaTime;
 
         // Agent is moving, thus it's not surprised
         wtf.SetActive(false);
