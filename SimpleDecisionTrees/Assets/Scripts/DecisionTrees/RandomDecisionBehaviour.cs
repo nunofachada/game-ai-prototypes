@@ -47,7 +47,7 @@ namespace LibGameAI.DecisionTrees
         /// <param name="getTimeFunc">
         /// A function which returns the current time.
         /// </param>
-        /// <param name="timeOutDuration">
+        /// <param name="timeoutDuration">
         /// How many seconds before this decision times out.
         /// </param>
         /// <param name="trueProb">
@@ -55,9 +55,9 @@ namespace LibGameAI.DecisionTrees
         /// </param>
         public RandomDecisionBehaviour(
             Func<float> nextRandValFunc, Func<float> getTimeFunc,
-            float timeOutDuration, float trueProb = 0.5f)
+            float timeoutDuration, float trueProb = 0.5f)
         {
-            this.timeoutDuration = timeOutDuration;
+            this.timeoutDuration = timeoutDuration;
             this.nextRandValFunc = nextRandValFunc;
             this.getTimeFunc = getTimeFunc;
             this.trueProb = trueProb;
