@@ -57,7 +57,7 @@ public class RandomWaypointsBehaviour : MonoBehaviour
     // Draw waypoint
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(waypoint, 0.2f);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(waypoint, 0.4f);
     }
 }
