@@ -12,7 +12,7 @@ public class PlayerBehaviour : MonoBehaviour
 {
     // Player speed
     [SerializeField]
-    private float speed = 0.4f;
+    private float speed = 15f;
 
     // Simple player controller
     private void Update()
@@ -24,6 +24,6 @@ public class PlayerBehaviour : MonoBehaviour
             Input.GetAxis("Vertical"));
 
         // Move player
-        transform.position += direction * speed;
+        transform.Translate(direction * speed * Time.deltaTime);
     }
 }
