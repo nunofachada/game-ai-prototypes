@@ -42,7 +42,7 @@ namespace AIUnityExamples.Procedural2D.Scenarios
                 if (randomNames is null)
                 {
                     // Obtain known PRNGs
-                    randomNames = PRNGHelper.KnownPRNGs;
+                    randomNames = PRNGHelper.Instance.KnownPRNGs;
                 }
 
                 // Return existing PRNG names
@@ -59,8 +59,8 @@ namespace AIUnityExamples.Procedural2D.Scenarios
         public override void Generate(Color[] pixels, int width, int height)
         {
             random = useSeed
-                ? PRNGHelper.PRNGInstance(randGenerator, seed)
-                : PRNGHelper.PRNGInstance(randGenerator);
+                ? PRNGHelper.Instance.CreatePRNG(randGenerator, seed)
+                : PRNGHelper.Instance.CreatePRNG(randGenerator);
         }
     }
 }

@@ -50,7 +50,7 @@ namespace AIUnityExamples.Procedural2D.Scenarios
             {
                 // Did we initialize scenario names already?
                 if (randomNames is null)
-                    randomNames = PRNGHelper.KnownPRNGs;
+                    randomNames = PRNGHelper.Instance.KnownPRNGs;
 
                 // Return existing scenario names
                 return randomNames;
@@ -82,7 +82,7 @@ namespace AIUnityExamples.Procedural2D.Scenarios
                 case SeedOptions.RandomSeeds:
                     // Use random seeds
                     Random randSeeder =
-                        PRNGHelper.PRNGInstance(randGenerator, localBaseSeed);
+                        PRNGHelper.Instance.CreatePRNG(randGenerator, localBaseSeed);
                     seedGen = () => randSeeder.Next();
                     break;
             }
@@ -90,7 +90,7 @@ namespace AIUnityExamples.Procedural2D.Scenarios
             // Instantiate the random number generators
             for (int i = 0; i < generatorCount; i++)
             {
-                rnd[i] = PRNGHelper.PRNGInstance(
+                rnd[i] = PRNGHelper.Instance.CreatePRNG(
                     randGenerator, seedGen.Invoke());
             }
 

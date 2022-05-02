@@ -53,6 +53,9 @@ namespace AIUnityExamples.Procedural2D
                 // Did we initialize scenario names already?
                 if (scenarioNames is null)
                 {
+                    // Make sure PRNG helper is initialized
+                    PRNGHelper.Instance.Init();
+
                     // Spin up the scenario class manager with custom
                     // scenario naming and get the scenario names
                     scenarioNames = ClassManager<AbstractScenario>
