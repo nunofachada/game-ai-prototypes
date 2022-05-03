@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useSeed: 0
   seed: 0
-  numFaults: 100
+  numFaults: 2
   meanDepth: 1
   decreaseDistance: 0

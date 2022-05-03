@@ -10,32 +10,32 @@ using LibGameAI.PCG;
 
 namespace AIUnityExamples.ProceduralLandscape.GenConfig
 {
-    public class SandpileConfig : StochasticGenConfig
+    public class SandpileConfig //: StochasticGenConfig
     {
 
-        [SerializeField]
-        private float threshold = 4;
+        // [SerializeField]
+        // private float threshold = 4;
 
-        [SerializeField]
-        private float increment = 1;
+        // [SerializeField]
+        // private float increment = 1;
 
-        [SerializeField]
-        private float decrement = 4;
+        // [SerializeField]
+        // private float decrement = 4;
 
-        [SerializeField]
-        private float grainDropDensity = 10;
+        // [SerializeField]
+        // private float grainDropDensity = 10;
 
-        [SerializeField]
-        private bool staticDrop = true;
+        // [SerializeField]
+        // private bool staticDrop = true;
 
-        [SerializeField]
-        private bool stochastic = true;
+        // [SerializeField]
+        // private bool stochastic = true;
 
-        public override void Generate(float[,] heights)
-        {
-            Landscape.Sandpile(heights, threshold, increment, decrement,
-                grainDropDensity, staticDrop, stochastic, PRNG.Next,
-                PRNG.NextDouble);
-        }
+        // public override void Generate(float[,] heights)
+        // {
+        //     Landscape.Sandpile(heights, threshold, increment, decrement,
+        //         grainDropDensity, staticDrop, stochastic, PRNG.Next,
+        //         PRNG.NextDouble);
+        // }
     }
 }

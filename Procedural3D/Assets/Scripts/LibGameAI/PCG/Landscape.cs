@@ -218,16 +218,16 @@ namespace LibGameAI.PCG
         }
 
         // TODO Not working properly
-        // Check https://github.com/creativitRy/Erosion
+        // Check https://github.com/Ernyoke/fractal-erosion/blob/master/src/DiamondSquareFractal.cpp
         // and "Fast Hydraulic Erosion Simulation and Visualization on GPU" by Xing Mei, Philippe Decaudin, Bao-Gang Hu
         // "Fast Hydraulic and Thermal Erosion on the GPU" by Balazs Jako
-        public static void ThermalErosion(float[,] landscape, float threshold)
+        public static void ThermalErosion(float[,] landscape, float impact)
         {
             // This should be updated to use System.ReadOnlySpan when
             // Unity supports .NET Standard 2.1 in order to avoid heap
             // allocations
-            (int, int)[] neighbors =
-                new (int, int)[] { (1, 0), (-1, 0), (0, 1), (0, -1) };
+            // (int, int)[] neighbors =
+            //     new (int, int)[] { (1, 0), (-1, 0), (0, 1), (0, -1) };
 
             // Create a copy of the landscape
             float[,] landscapeCopy =
@@ -235,33 +235,67 @@ namespace LibGameAI.PCG
             Array.Copy(landscape, landscapeCopy,
                 landscape.GetLength(0) * landscape.GetLength(1));
 
-            // Apply erosion
-            for (int x = 1; x < landscape.GetLength(0) - 1; x++)
-            {
-                for (int y = 1; y < landscape.GetLength(1) - 1; y++)
-                {
-                    float height = landscapeCopy[x, y];
-                    float limit = height - threshold;
 
-                    foreach ((int x, int y) d in neighbors)
+            float min = landscape[0, 0], max = landscape[0, 0];
+
+            for (int i = 0; i < landscape.GetLength(0); i++)
+            {
+                for (int j = 0; j < landscape.GetLength(1); j++)
+                {
+                    if (landscape[i, j] > max) max = landscape[i, j];
+                    if (landscape[i, j] < min) min = landscape[i, j];
+                }
+            }
+
+            float erosion_height = (max - min) * impact;
+
+            // Apply erosion
+            for (int x = 0; x < landscape.GetLength(0); x++)
+            {
+                for (int y = 0; y < landscape.GetLength(1); y++)
+                {
+                    for (int i = -1; i <= 1; i++)
                     {
-                        int nx = x + d.x;
-                        int ny = y + d.y;
-                        float nHeight = landscapeCopy[nx, ny];
+                        for (int j = -1; j <= 1; j++)
+                        {
+                            if (x + i >= 0 &&
+                                x + i < landscape.GetLength(0) &&
+                                y + j >= 0 &&
+                                y + j < landscape.GetLength(1))
+                            {
+                                if (landscape[x + i, y + j] < landscape[x, y])
+                                {
+                                    landscape[x + i, y + j] += erosion_height;
+                                    landscape[x, y] -= erosion_height;
+                                }
+                            }
+                        }
+
+                    // float height = landscape[x, y];
+                    // float limit = height - threshold;
+
+                        // foreach ((int x, int y) d in neighbors)
+                        // {
+
+                        // int nx = x + d.x;
+                        // int ny = y + d.y;
+                        // float nHeight = landscape[nx, ny];
 
                         // Is the neighbor below the threshold?
-                        if (nHeight < limit)
-                        {
-                            // Some of the height moves, from 0 to 1/4 of the
-                            // threshold, depending on the height difference
-                            float delta = (limit - nHeight) / threshold;
-                            if (delta > 2) delta = 2;
-                            float change = delta * threshold / 8;
+                        // if (nHeight < limit)
+                        // {
+                        //     // Some of the height moves, from 0 to 1/4 of the
+                        //     // threshold, depending on the height difference
+                        //     float delta = (limit - nHeight) / threshold;
+                        //     if (delta > 2) delta = 2;
+                        //     float change = delta * threshold / 8;
 
-                            // Write new height to original landscape
-                            landscape[x, y] = -change;
-                            landscape[nx, ny] += change;
-                        }
+                        //     // Write new height to original landscape
+                        //     landscape[x, y] -= change;
+                        //     landscape[nx, ny] += change;
+                        // }
+                        // }
+                        // }
                     }
                 }
             }
