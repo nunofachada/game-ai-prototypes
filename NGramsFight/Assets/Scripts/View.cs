@@ -37,6 +37,6 @@ namespace AIUnityExample.NGramsFight
 
         }
 
-        public event Action<KnownInput> PressedInput;
+        public event Action<InputType> PressedInput;
     }
 }

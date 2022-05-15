@@ -7,6 +7,6 @@ namespace AIUnityExample.NGramsFight
 {
     public interface IView
     {
-        event Action<KnownInput> PressedInput;
+        event Action<InputType> PressedInput;
     }
 }

@@ -1,27 +1,30 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using NaughtyAttributes;
 
 namespace AIUnityExample.NGramsFight
 {
     public class Controller : MonoBehaviour
     {
-
         [SerializeField]
+        [HideInInspector]
         private GameObject viewGameObject;
 
-        private KnownInput[] buffer;
-        private int index;
-        private IView view;
+        [SerializeField]
+        [ReorderableList]
+        private List<AttackPattern> patterns;
 
-        private const int BUFFER_SIZE = 5;
+        private LinkedList<InputType> buffer;
+        private IView view;
+        private InputActionNode inputMatchingTreeRoot;
+
+        private const int MIN_BUFFER_SIZE = 3;
+        private const int MAX_BUFFER_SIZE = 5;
 
         // Start is called before the first frame update
         private void Awake()
         {
-            buffer = new KnownInput[BUFFER_SIZE];
-            index = 0;
+            buffer = new LinkedList<InputType>();
             view = viewGameObject.GetComponent<IView>();
         }
 
@@ -35,22 +38,29 @@ namespace AIUnityExample.NGramsFight
             view.PressedInput -= HandleInput;
         }
 
-        // Update is called once per frame
-        private void Update()
+        private void FixedUpdate()
         {
-
+            if (buffer.Count >= MIN_BUFFER_SIZE && buffer.Count <= MAX_BUFFER_SIZE)
+            {
+                InputActionNode actionNode = inputMatchingTreeRoot.Match(buffer);
+                if (actionNode is null)
+                {
+                    // Input didn't match anything
+                }
+                else if (actionNode.IsLeaf)
+                {
+                    // Action found, schedule it
+                }
+            }
         }
 
-        private void HandleInput(KnownInput input)
+        private void HandleInput(InputType input)
         {
-            index++;
-            if (index >= BUFFER_SIZE)
+            buffer.AddLast(input);
+            if (buffer.Count > MAX_BUFFER_SIZE)
             {
-                Array.Clear(buffer, 0, BUFFER_SIZE);
-                index = 0;
+                buffer.RemoveFirst();
             }
-
-
         }
     }
 }

@@ -279,6 +279,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewGameObject: {fileID: 478238278}
+  patterns:
+  - pattern: dwww
+    attack: 2
+  - pattern: dadd
+    attack: 1
+  - pattern: dsss
+    attack: 0
+  - pattern: dwwdd
+    attack: 3
+  - pattern: dadww
+    attack: 4
+  - pattern: dssws
+    attack: 5
 --- !u!4 &1522205893
 Transform:
   m_ObjectHideFlags: 0

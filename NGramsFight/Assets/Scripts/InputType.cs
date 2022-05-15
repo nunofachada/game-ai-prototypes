@@ -1,7 +1,7 @@
 namespace AIUnityExample.NGramsFight
 {
 
-    public enum KnownInput
+    public enum InputType
     {
         Up,
         Down,

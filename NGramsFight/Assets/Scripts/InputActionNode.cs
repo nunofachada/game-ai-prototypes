@@ -5,26 +5,26 @@ namespace AIUnityExample.NGramsFight
 {
     public class InputActionNode
     {
-        private readonly IDictionary<KnownInput, InputActionNode> children;
+        private readonly IDictionary<InputType, InputActionNode> children;
 
-        public Action FightAction { get; }
+        public AttackType? Attack { get; }
 
-        public bool IsLeaf => FightAction != null;
+        public bool IsLeaf => Attack != null;
 
-        public InputActionNode(Action fightAction = null)
+        public InputActionNode(AttackType? attack = null)
         {
-            if (fightAction is null)
+            if (!attack.HasValue)
             {
-                children = new Dictionary<KnownInput, InputActionNode>();
-                FightAction = null;
+                children = new Dictionary<InputType, InputActionNode>();
+                Attack = null;
             }
             else
             {
-                FightAction = fightAction;
+                Attack = attack;
             }
         }
 
-        public void AddChild(KnownInput input, InputActionNode node)
+        public void AddChild(InputType input, InputActionNode node)
         {
             if (IsLeaf)
             {
@@ -37,7 +37,7 @@ namespace AIUnityExample.NGramsFight
             }
         }
 
-        public InputActionNode Match(LinkedList<KnownInput> inputQueue)
+        public InputActionNode Match(LinkedList<InputType> inputQueue)
         {
             InputActionNode matchedActionNode = null;
 
@@ -47,7 +47,7 @@ namespace AIUnityExample.NGramsFight
             }
             else if (children.ContainsKey(inputQueue.First.Value))
             {
-                LinkedListNode<KnownInput> matchedInput = inputQueue.First;
+                LinkedListNode<InputType> matchedInput = inputQueue.First;
                 inputQueue.RemoveFirst();
                 matchedActionNode = children[matchedInput.Value].Match(inputQueue);
                 inputQueue.AddFirst(matchedInput);
