@@ -11,56 +11,124 @@ namespace AIUnityExample.NGramsFight
         private GameObject viewGameObject;
 
         [SerializeField]
+        private float keyValidDuration = 1f;
+
+        [SerializeField]
         [ReorderableList]
         private List<AttackPattern> patterns;
 
-        private LinkedList<InputType> buffer;
+        private LinkedList<TimedInput> buffer;
         private IView view;
-        private InputActionNode inputMatchingTreeRoot;
+        private PatternTreeNode patternMatchTreeRoot;
 
-        private const int MIN_BUFFER_SIZE = 3;
-        private const int MAX_BUFFER_SIZE = 5;
+        private (int min, int max) bufferSize;
 
-        // Start is called before the first frame update
         private void Awake()
         {
-            buffer = new LinkedList<InputType>();
             view = viewGameObject.GetComponent<IView>();
+
+            buffer = new LinkedList<TimedInput>();
+
+            patternMatchTreeRoot = new PatternTreeNode();
+
+            bufferSize = (int.MaxValue, 0);
+        }
+
+        private void Start()
+        {
+            ISet<string> validInputs = new HashSet<string>();
+
+            foreach (AttackPattern pattern in patterns)
+            {
+                IReadOnlyCollection<string> patStrings = pattern.Preprocess();
+                if (patStrings.Count < bufferSize.min) bufferSize.min = patStrings.Count;
+                if (patStrings.Count > bufferSize.max) bufferSize.max = patStrings.Count;
+                validInputs.UnionWith(patStrings);
+                patternMatchTreeRoot.AddPattern(pattern);
+            }
+
+            view.SetValidInputs(validInputs);
         }
 
         private void OnEnable()
         {
-            view.PressedInput += HandleInput;
+            view.OnPressedInput += HandleInput;
         }
 
         private void OnDisable()
         {
-            view.PressedInput -= HandleInput;
+            view.OnPressedInput -= HandleInput;
+        }
+
+        private void Update()
+        {
+            if (buffer.Count > 0)
+            {
+                while (Time.time > buffer.First.Value.Time + keyValidDuration)
+                {
+                    buffer.RemoveFirst();
+                }
+            }
         }
 
         private void FixedUpdate()
         {
-            if (buffer.Count >= MIN_BUFFER_SIZE && buffer.Count <= MAX_BUFFER_SIZE)
+            if (buffer.Count >= bufferSize.min && buffer.Count <= bufferSize.max)
             {
-                InputActionNode actionNode = inputMatchingTreeRoot.Match(buffer);
-                if (actionNode is null)
+                PatternTreeNode attackNode = patternMatchTreeRoot.Match(buffer);
+                if (attackNode is null)
                 {
                     // Input didn't match anything
                 }
-                else if (actionNode.IsLeaf)
+                else if (attackNode.IsLeaf)
                 {
                     // Action found, schedule it
+                    Debug.Log(attackNode.Attack);
                 }
             }
         }
 
-        private void HandleInput(InputType input)
+        private void HandleInput(string input)
         {
-            buffer.AddLast(input);
-            if (buffer.Count > MAX_BUFFER_SIZE)
+            buffer.AddLast(new TimedInput(Time.time, input));
+            if (buffer.Count > bufferSize.max)
             {
                 buffer.RemoveFirst();
             }
+            Debug.Log($"Pressed '{input}'");
+        }
+
+        [Button]
+        private void ClearPatterns()
+        {
+            if (patterns is null)
+            {
+                patterns = new List<AttackPattern>();
+            }
+            else
+            {
+                patterns.Clear();
+            }
+        }
+
+        [Button]
+        private void SetPatternsToDefault()
+        {
+            ClearPatterns();
+
+            // Low attack
+            patterns.Add(new AttackPattern("d,s,s,s", AttackType.Low));
+            // Med attack
+            patterns.Add(new AttackPattern("d,a,d,d", AttackType.Med));
+            // High attack
+            patterns.Add(new AttackPattern("d,w,w,w", AttackType.High));
+            // Mega attack
+            patterns.Add(new AttackPattern("d,w,w,d,d", AttackType.Mega));
+            // Super attack
+            patterns.Add(new AttackPattern("d,a,d,w,w", AttackType.Super));
+            // Hyper attack
+            patterns.Add(new AttackPattern("d,s,s,w,s", AttackType.Hyper));
+
         }
     }
 }

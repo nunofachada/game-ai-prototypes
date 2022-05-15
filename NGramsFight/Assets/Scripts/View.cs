@@ -1,42 +1,42 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using NaughtyAttributes;
 namespace AIUnityExample.NGramsFight
 {
 
     public class View : MonoBehaviour, IView
     {
+        private ISet<string> validInputs;
 
         // Start is called before the first frame update
-        private void Start()
+        private void Awake()
         {
+            validInputs = null;
         }
 
         // Update is called once per frame
         private void Update()
         {
-
-            if (Input.GetKeyUp(KeyCode.W))
+            foreach (string input in validInputs)
             {
-                Debug.Log("up!");
+                if (Input.GetKeyUp(input))
+                {
+                    OnPressedInput?.Invoke(input);
+                }
             }
-            else if (Input.GetKeyUp(KeyCode.S))
-            {
-                Debug.Log("down!");
-            }
-            else if (Input.GetKeyUp(KeyCode.D))
-            {
-                Debug.Log("right!");
-            }
-            else if (Input.GetKeyUp(KeyCode.A))
-            {
-                Debug.Log("left!");
-            }
-
         }
 
-        public event Action<InputType> PressedInput;
+        public void SetValidInputs(ISet<string> validInputs)
+        {
+            if (this.validInputs != null)
+            {
+                throw new InvalidOperationException(
+                    "Valid inputs can only be set once in the view.");
+            }
+            this.validInputs = validInputs;
+        }
+
+        public event Action<string> OnPressedInput;
     }
 }

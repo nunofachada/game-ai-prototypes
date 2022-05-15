@@ -279,18 +279,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewGameObject: {fileID: 478238278}
+  keyValidDuration: 1
   patterns:
-  - pattern: dwww
-    attack: 2
-  - pattern: dadd
-    attack: 1
-  - pattern: dsss
+  - pattern: d,s,s,s
     attack: 0
-  - pattern: dwwdd
+  - pattern: d,a,d,d
+    attack: 1
+  - pattern: d,w,w,w
+    attack: 2
+  - pattern: d,w,w,d,d
     attack: 3
-  - pattern: dadww
+  - pattern: d,a,d,w,w
     attack: 4
-  - pattern: dssws
+  - pattern: d,s,s,w,s
     attack: 5
 --- !u!4 &1522205893
 Transform:
