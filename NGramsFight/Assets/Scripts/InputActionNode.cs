@@ -1,34 +1,59 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AIUnityExample.NGramsFight
 {
     public class InputActionNode
     {
-        private IDictionary<KnownInput, InputActionNode> children;
+        private readonly IDictionary<KnownInput, InputActionNode> children;
 
-        private Action FightAction;
+        public Action FightAction { get; }
 
-
-        public bool IsLeaf => (children?.Count ?? 0) == 0 && FightAction is null;
+        public bool IsLeaf => FightAction != null;
 
         public InputActionNode(Action fightAction = null)
         {
             if (fightAction is null)
             {
                 children = new Dictionary<KnownInput, InputActionNode>();
+                FightAction = null;
+            }
+            else
+            {
+                FightAction = fightAction;
             }
         }
 
         public void AddChild(KnownInput input, InputActionNode node)
         {
-            children.Add(input, node);
+            if (IsLeaf)
+            {
+                throw new InvalidOperationException(
+                    "Cannot add children to leaf nodes");
+            }
+            else
+            {
+                children.Add(input, node);
+            }
         }
 
-        public InputActionNode Match(KnownInput input)
+        public InputActionNode Match(LinkedList<KnownInput> inputQueue)
         {
+            InputActionNode matchedActionNode = null;
+
+            if (IsLeaf || inputQueue.Count == 0)
+            {
+                matchedActionNode = this;
+            }
+            else if (children.ContainsKey(inputQueue.First.Value))
+            {
+                LinkedListNode<KnownInput> matchedInput = inputQueue.First;
+                inputQueue.RemoveFirst();
+                matchedActionNode = children[matchedInput.Value].Match(inputQueue);
+                inputQueue.AddFirst(matchedInput);
+            }
+
+            return matchedActionNode;
 
         }
     }
