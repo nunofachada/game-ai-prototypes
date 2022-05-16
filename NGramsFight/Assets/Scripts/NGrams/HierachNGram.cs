@@ -6,6 +6,7 @@
  * */
 
 using System.Collections.Generic;
+using LibGameAI.Util;
 
 namespace LibGameAI.NGrams
 {

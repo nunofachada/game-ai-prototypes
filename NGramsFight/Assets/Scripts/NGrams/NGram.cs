@@ -5,9 +5,9 @@
  * Author: Nuno Fachada
  * */
 
-using System;
 using System.Collections.Generic;
 using System.Text;
+using LibGameAI.Util;
 
 namespace LibGameAI.NGrams
 {

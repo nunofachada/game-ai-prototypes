@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace LibGameAI.NGrams
+namespace LibGameAI.Util
 {
     public struct ReadOnlyListSegment<T> : IReadOnlyList<T>
     {
