@@ -55,12 +55,12 @@ namespace AIUnityExample.NGramsFight
             {
                 matchedActionNode = this;
             }
-            else if (children.ContainsKey(inputQueue.First.Value.Input))
+            else if (children.ContainsKey(inputQueue.Last.Value.Input))
             {
-                LinkedListNode<TimedInput> matchedInput = inputQueue.First;
-                inputQueue.RemoveFirst();
+                LinkedListNode<TimedInput> matchedInput = inputQueue.Last;
+                inputQueue.RemoveLast();
                 matchedActionNode = children[matchedInput.Value.Input].Match(inputQueue);
-                inputQueue.AddFirst(matchedInput);
+                inputQueue.AddLast(matchedInput);
             }
 
             return matchedActionNode;

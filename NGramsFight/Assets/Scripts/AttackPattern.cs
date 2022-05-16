@@ -13,9 +13,9 @@ namespace AIUnityExample.NGramsFight
         [SerializeField]
         private AttackType attack;
 
-        private Queue<string> patQueue;
+        private Stack<string> patStack;
 
-        public string Next => patQueue.Count > 0 ? patQueue.Dequeue() : null;
+        public string Next => patStack.Count > 0 ? patStack.Pop() : null;
 
         public string Pattern => pattern;
 
@@ -23,13 +23,13 @@ namespace AIUnityExample.NGramsFight
 
         public IReadOnlyCollection<string> Preprocess()
         {
-            patQueue = new Queue<string>();
+            patStack = new Stack<string>();
             foreach (string s in pattern.Split(','))
             {
-                patQueue.Enqueue(s.Trim());
+                patStack.Push(s.Trim());
             }
 
-            return patQueue;
+            return patStack;
         }
 
         public AttackPattern(string pattern, AttackType attack)
