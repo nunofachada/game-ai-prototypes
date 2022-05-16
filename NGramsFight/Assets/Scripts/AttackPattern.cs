@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,38 +8,71 @@ namespace AIUnityExample.NGramsFight
     [Serializable]
     public class AttackPattern
     {
+        private class RevPatEnumer : IEnumerator<KeyCode>
+        {
+            private int index;
+            private readonly IReadOnlyList<KeyCode> pattern;
+
+            public KeyCode Current => pattern[index];
+
+            object IEnumerator.Current => Current;
+
+            public bool MoveNext()
+            {
+                index--;
+                return index >= 0;
+            }
+
+            public void Reset()
+            {
+                index = pattern.Count;
+            }
+
+            public void Dispose() { }
+
+            public RevPatEnumer(IReadOnlyList<KeyCode> pattern)
+            {
+                index = pattern.Count;
+                this.pattern = pattern;
+            }
+        }
+
         [SerializeField]
-        private string pattern;
+        private string patternStr;
 
         [SerializeField]
         private AttackType attack;
 
-        private Stack<KeyCode> patStack;
-
-        public KeyCode Next => patStack.Count > 0 ? patStack.Pop() : KeyCode.None;
-
-        public string Pattern => pattern;
+        [SerializeField]
+        private List<KeyCode> pattern;
 
         public AttackType Attack => attack;
 
-        public IReadOnlyCollection<KeyCode> Preprocess()
+        public int Size => pattern.Count;
+
+        public IEnumerator<KeyCode> ReversePatternEnumerator => new RevPatEnumer(pattern);
+
+        public IEnumerable<KeyCode> Pattern => pattern;
+
+        public AttackPattern(string patternStr, AttackType attack)
         {
-            patStack = new Stack<KeyCode>();
-            foreach (string keyStr in pattern.Split(','))
+            this.patternStr = patternStr;
+            this.attack = attack;
+
+            pattern = new List<KeyCode>();
+
+            foreach (string patStr in patternStr.Split(','))
             {
-                if (!string.IsNullOrEmpty(keyStr))
+                if (!string.IsNullOrEmpty(patStr))
                 {
-                    patStack.Push(Event.KeyboardEvent(keyStr.Trim()).keyCode);
+                    pattern.Add(Event.KeyboardEvent(patStr.Trim()).keyCode);
                 }
             }
-
-            return patStack;
         }
 
-        public AttackPattern(string pattern, AttackType attack)
+        public override string ToString()
         {
-            this.pattern = pattern;
-            this.attack = attack;
+            return patternStr;
         }
     }
 }

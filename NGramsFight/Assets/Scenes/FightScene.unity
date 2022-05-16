@@ -279,20 +279,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewGameObject: {fileID: 478238278}
+  patterns: {fileID: 11400000, guid: a5f7e44c88cb3edd387155b64beb7ef2, type: 2}
   keyValidDuration: 1.5
-  patterns:
-  - pattern: d,s,s,s
-    attack: 0
-  - pattern: d,a,d,d
-    attack: 1
-  - pattern: d,w,w,w
-    attack: 2
-  - pattern: d,w,w,d,d
-    attack: 3
-  - pattern: d,a,d,w,w
-    attack: 4
-  - pattern: d,s,s,w,s
-    attack: 5
 --- !u!4 &1522205893
 Transform:
   m_ObjectHideFlags: 0
@@ -336,10 +324,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b66e56a177681eae91390f386293c7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewGameObject: {fileID: 478238278}
   nValue: 4
   hierarchical: 1
   threshold: 3
-  viewGameObject: {fileID: 478238278}
 --- !u!4 &1611770039
 Transform:
   m_ObjectHideFlags: 0

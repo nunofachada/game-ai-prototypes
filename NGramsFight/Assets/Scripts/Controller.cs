@@ -11,11 +11,11 @@ namespace AIUnityExample.NGramsFight
         private GameObject viewGameObject;
 
         [SerializeField]
-        private float keyValidDuration = 1.5f;
+        [Expandable]
+        private AttackPatternSet patterns;
 
         [SerializeField]
-        [ReorderableList]
-        private List<AttackPattern> patterns;
+        private float keyValidDuration = 1.5f;
 
         private LinkedList<TimedInput> buffer;
         private IView view;
@@ -38,13 +38,13 @@ namespace AIUnityExample.NGramsFight
         {
             ISet<KeyCode> validInputs = new HashSet<KeyCode>();
 
-            foreach (AttackPattern pattern in patterns)
+            foreach (AttackPattern pattern in patterns.Patterns)
             {
-                IReadOnlyCollection<KeyCode> patKeyCodes = pattern.Preprocess();
-                if (patKeyCodes.Count < bufferSize.min) bufferSize.min = patKeyCodes.Count;
-                if (patKeyCodes.Count > bufferSize.max) bufferSize.max = patKeyCodes.Count;
-                validInputs.UnionWith(patKeyCodes);
-                patternMatchTreeRoot.AddPattern(pattern);
+                Debug.Log(pattern + ", size=" + pattern.Size);
+                if (pattern.Size < bufferSize.min) bufferSize.min = pattern.Size;
+                if (pattern.Size > bufferSize.max) bufferSize.max = pattern.Size;
+                validInputs.UnionWith(pattern.Pattern);
+                patternMatchTreeRoot.AddPattern(pattern.ReversePatternEnumerator, pattern.Attack);
             }
 
             view.SetValidInputs(validInputs);
@@ -93,40 +93,7 @@ namespace AIUnityExample.NGramsFight
             {
                 buffer.RemoveFirst();
             }
-            Debug.Log($"Pressed '{input}'");
-        }
-
-        [Button]
-        private void ClearPatterns()
-        {
-            if (patterns is null)
-            {
-                patterns = new List<AttackPattern>();
-            }
-            else
-            {
-                patterns.Clear();
-            }
-        }
-
-        [Button]
-        private void SetPatternsToDefault()
-        {
-            ClearPatterns();
-
-            // Low attack
-            patterns.Add(new AttackPattern("d,s,s,s", AttackType.Low));
-            // Med attack
-            patterns.Add(new AttackPattern("d,a,d,d", AttackType.Med));
-            // High attack
-            patterns.Add(new AttackPattern("d,w,w,w", AttackType.High));
-            // Mega attack
-            patterns.Add(new AttackPattern("d,w,w,d,d", AttackType.Mega));
-            // Super attack
-            patterns.Add(new AttackPattern("d,a,d,w,w", AttackType.Super));
-            // Hyper attack
-            patterns.Add(new AttackPattern("d,s,s,w,s", AttackType.Hyper));
-
+            Debug.Log($"Pressed '{input}' (buffer size is {buffer.Count})");
         }
     }
 }

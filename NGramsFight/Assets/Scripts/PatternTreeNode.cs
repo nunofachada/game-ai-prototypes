@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+
 namespace AIUnityExample.NGramsFight
 {
     public class PatternTreeNode
@@ -11,21 +12,12 @@ namespace AIUnityExample.NGramsFight
 
         public bool IsLeaf => Attack != null;
 
-        public void AddPattern(AttackPattern pattern)
+        public void AddPattern(IEnumerator<KeyCode> revPatEnumerator, AttackType attack)
         {
-            KeyCode input = pattern.Next;
+            if (revPatEnumerator.MoveNext())
+            {
+                KeyCode input = revPatEnumerator.Current;
 
-            if (input == KeyCode.None)
-            {
-                if (Attack.HasValue)
-                {
-                    throw new InvalidOperationException(
-                        $"Repeated pattern '{pattern.Pattern}'");
-                }
-                Attack = pattern.Attack;
-            }
-            else
-            {
                 PatternTreeNode node;
 
                 if (children is null)
@@ -43,7 +35,16 @@ namespace AIUnityExample.NGramsFight
                     children.Add(input, node);
                 }
 
-                node.AddPattern(pattern);
+                node.AddPattern(revPatEnumerator, attack);
+            }
+            else
+            {
+                if (Attack.HasValue)
+                {
+                    throw new InvalidOperationException(
+                        $"Repeated pattern '{revPatEnumerator}'");
+                }
+                Attack = attack;
             }
         }
 
