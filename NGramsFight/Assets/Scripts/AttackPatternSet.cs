@@ -14,7 +14,7 @@ namespace AIUnityExample.NGramsFight
         public IEnumerable<AttackPattern> Patterns => patterns;
 
         [Button]
-        private void ClearPatterns()
+        private void Clear()
         {
             if (patterns is null)
             {
@@ -27,9 +27,9 @@ namespace AIUnityExample.NGramsFight
         }
 
         [Button]
-        private void SetPatternsToDefault()
+        private void Reset()
         {
-            ClearPatterns();
+            Clear();
 
             // Low attack
             patterns.Add(new AttackPattern("d,s,s,s", AttackType.Low));
