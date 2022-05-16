@@ -11,7 +11,7 @@ namespace AIUnityExample.NGramsFight
         private GameObject viewGameObject;
 
         [SerializeField]
-        private float keyValidDuration = 1f;
+        private float keyValidDuration = 1.5f;
 
         [SerializeField]
         [ReorderableList]
@@ -62,12 +62,9 @@ namespace AIUnityExample.NGramsFight
 
         private void Update()
         {
-            if (buffer.Count > 0)
+            while (buffer.Count > 0 && Time.time > buffer.First.Value.Time + keyValidDuration)
             {
-                while (Time.time > buffer.First.Value.Time + keyValidDuration)
-                {
-                    buffer.RemoveFirst();
-                }
+                buffer.RemoveFirst();
             }
         }
 
@@ -83,6 +80,7 @@ namespace AIUnityExample.NGramsFight
                 else if (attackNode.IsLeaf)
                 {
                     // Action found, schedule it
+                    buffer.Clear();
                     Debug.Log(attackNode.Attack);
                 }
             }
