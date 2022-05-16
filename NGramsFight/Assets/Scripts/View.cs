@@ -7,7 +7,7 @@ namespace AIUnityExample.NGramsFight
 
     public class View : MonoBehaviour, IView
     {
-        private ISet<string> validInputs;
+        private ISet<KeyCode> validInputs;
 
         // Start is called before the first frame update
         private void Awake()
@@ -18,7 +18,7 @@ namespace AIUnityExample.NGramsFight
         // Update is called once per frame
         private void Update()
         {
-            foreach (string input in validInputs)
+            foreach (KeyCode input in validInputs)
             {
                 if (Input.GetKeyUp(input))
                 {
@@ -27,7 +27,7 @@ namespace AIUnityExample.NGramsFight
             }
         }
 
-        public void SetValidInputs(ISet<string> validInputs)
+        public void SetValidInputs(ISet<KeyCode> validInputs)
         {
             if (this.validInputs != null)
             {
@@ -37,6 +37,6 @@ namespace AIUnityExample.NGramsFight
             this.validInputs = validInputs;
         }
 
-        public event Action<string> OnPressedInput;
+        public event Action<KeyCode> OnPressedInput;
     }
 }

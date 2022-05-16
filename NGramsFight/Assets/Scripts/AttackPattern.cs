@@ -13,20 +13,23 @@ namespace AIUnityExample.NGramsFight
         [SerializeField]
         private AttackType attack;
 
-        private Stack<string> patStack;
+        private Stack<KeyCode> patStack;
 
-        public string Next => patStack.Count > 0 ? patStack.Pop() : null;
+        public KeyCode Next => patStack.Count > 0 ? patStack.Pop() : KeyCode.None;
 
         public string Pattern => pattern;
 
         public AttackType Attack => attack;
 
-        public IReadOnlyCollection<string> Preprocess()
+        public IReadOnlyCollection<KeyCode> Preprocess()
         {
-            patStack = new Stack<string>();
-            foreach (string s in pattern.Split(','))
+            patStack = new Stack<KeyCode>();
+            foreach (string keyStr in pattern.Split(','))
             {
-                patStack.Push(s.Trim());
+                if (!string.IsNullOrEmpty(keyStr))
+                {
+                    patStack.Push(Event.KeyboardEvent(keyStr.Trim()).keyCode);
+                }
             }
 
             return patStack;

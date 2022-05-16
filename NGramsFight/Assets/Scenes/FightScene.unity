@@ -279,7 +279,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewGameObject: {fileID: 478238278}
-  keyValidDuration: 1
+  keyValidDuration: 1.5
   patterns:
   - pattern: d,s,s,s
     attack: 0

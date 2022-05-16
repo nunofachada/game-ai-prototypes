@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-
+using UnityEngine;
 namespace AIUnityExample.NGramsFight
 {
     public class PatternTreeNode
     {
-        private IDictionary<string, PatternTreeNode> children;
+        private IDictionary<KeyCode, PatternTreeNode> children;
 
         public AttackType? Attack { get; private set; }
 
@@ -13,9 +13,9 @@ namespace AIUnityExample.NGramsFight
 
         public void AddPattern(AttackPattern pattern)
         {
-            string input = pattern.Next;
+            KeyCode input = pattern.Next;
 
-            if (input is null)
+            if (input == KeyCode.None)
             {
                 if (Attack.HasValue)
                 {
@@ -30,7 +30,7 @@ namespace AIUnityExample.NGramsFight
 
                 if (children is null)
                 {
-                    children = new Dictionary<string, PatternTreeNode>();
+                    children = new Dictionary<KeyCode, PatternTreeNode>();
                 }
 
                 if (children.ContainsKey(input))

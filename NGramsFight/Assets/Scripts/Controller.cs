@@ -36,14 +36,14 @@ namespace AIUnityExample.NGramsFight
 
         private void Start()
         {
-            ISet<string> validInputs = new HashSet<string>();
+            ISet<KeyCode> validInputs = new HashSet<KeyCode>();
 
             foreach (AttackPattern pattern in patterns)
             {
-                IReadOnlyCollection<string> patStrings = pattern.Preprocess();
-                if (patStrings.Count < bufferSize.min) bufferSize.min = patStrings.Count;
-                if (patStrings.Count > bufferSize.max) bufferSize.max = patStrings.Count;
-                validInputs.UnionWith(patStrings);
+                IReadOnlyCollection<KeyCode> patKeyCodes = pattern.Preprocess();
+                if (patKeyCodes.Count < bufferSize.min) bufferSize.min = patKeyCodes.Count;
+                if (patKeyCodes.Count > bufferSize.max) bufferSize.max = patKeyCodes.Count;
+                validInputs.UnionWith(patKeyCodes);
                 patternMatchTreeRoot.AddPattern(pattern);
             }
 
@@ -86,7 +86,7 @@ namespace AIUnityExample.NGramsFight
             }
         }
 
-        private void HandleInput(string input)
+        private void HandleInput(KeyCode input)
         {
             buffer.AddLast(new TimedInput(Time.time, input));
             if (buffer.Count > bufferSize.max)
