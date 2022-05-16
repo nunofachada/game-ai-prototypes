@@ -11,7 +11,39 @@ namespace AIUnityExample.NGramsFight
         [ReorderableList]
         private List<AttackPattern> patterns;
 
+        private PatternTreeNode patternMatchTreeRoot;
+
+        private ISet<KeyCode> knownInputs;
+
+        public ISet<KeyCode> KnownInputs => knownInputs;
+
         public IEnumerable<AttackPattern> Patterns => patterns;
+
+        public int MinLength { get; private set; }
+        public int MaxLength { get; private set; }
+
+        public AttackType? Match(LinkedList<TimedInput> inputQueue)
+        {
+            return patternMatchTreeRoot.Match(inputQueue)?.Attack;
+        }
+
+        private void OnEnable()
+        {
+            patternMatchTreeRoot = new PatternTreeNode();
+            knownInputs = new HashSet<KeyCode>();
+            MinLength = int.MaxValue;
+            MaxLength = 0;
+
+            foreach (AttackPattern pattern in patterns)
+            {
+                Debug.Log(pattern + ", size=" + pattern.Size);
+                if (pattern.Size < MinLength) MinLength = pattern.Size;
+                if (pattern.Size > MaxLength) MaxLength = pattern.Size;
+                knownInputs.UnionWith(pattern.Pattern);
+                patternMatchTreeRoot.AddPattern(
+                    pattern.ReversePatternEnumerator, pattern.Attack);
+            }
+        }
 
         [Button]
         private void Clear()

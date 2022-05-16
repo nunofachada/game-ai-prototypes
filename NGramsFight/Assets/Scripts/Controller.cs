@@ -19,7 +19,6 @@ namespace AIUnityExample.NGramsFight
 
         private LinkedList<TimedInput> buffer;
         private IView view;
-        private PatternTreeNode patternMatchTreeRoot;
 
         private (int min, int max) bufferSize;
 
@@ -29,25 +28,16 @@ namespace AIUnityExample.NGramsFight
 
             buffer = new LinkedList<TimedInput>();
 
-            patternMatchTreeRoot = new PatternTreeNode();
-
             bufferSize = (int.MaxValue, 0);
         }
 
         private void Start()
         {
-            ISet<KeyCode> validInputs = new HashSet<KeyCode>();
+            bufferSize = (patterns.MinLength, patterns.MaxLength);
 
-            foreach (AttackPattern pattern in patterns.Patterns)
-            {
-                Debug.Log(pattern + ", size=" + pattern.Size);
-                if (pattern.Size < bufferSize.min) bufferSize.min = pattern.Size;
-                if (pattern.Size > bufferSize.max) bufferSize.max = pattern.Size;
-                validInputs.UnionWith(pattern.Pattern);
-                patternMatchTreeRoot.AddPattern(pattern.ReversePatternEnumerator, pattern.Attack);
-            }
+            Debug.Log(patterns.KnownInputs);
 
-            view.SetValidInputs(validInputs);
+            view.SetKnownInputs(patterns.KnownInputs);
         }
 
         private void OnEnable()
@@ -72,16 +62,12 @@ namespace AIUnityExample.NGramsFight
         {
             if (buffer.Count >= bufferSize.min && buffer.Count <= bufferSize.max)
             {
-                PatternTreeNode attackNode = patternMatchTreeRoot.Match(buffer);
-                if (attackNode is null)
-                {
-                    // Input didn't match anything
-                }
-                else if (attackNode.IsLeaf)
+                AttackType? attack = patterns.Match(buffer);
+                if (attack.HasValue)
                 {
                     // Action found, schedule it
                     buffer.Clear();
-                    Debug.Log(attackNode.Attack);
+                    Debug.Log(attack);
                 }
             }
         }

@@ -7,18 +7,18 @@ namespace AIUnityExample.NGramsFight
 
     public class View : MonoBehaviour, IView
     {
-        private ISet<KeyCode> validInputs;
+        private ISet<KeyCode> knownInputs;
 
         // Start is called before the first frame update
         private void Awake()
         {
-            validInputs = null;
+            knownInputs = null;
         }
 
         // Update is called once per frame
         private void Update()
         {
-            foreach (KeyCode input in validInputs)
+            foreach (KeyCode input in knownInputs)
             {
                 if (Input.GetKeyUp(input))
                 {
@@ -27,14 +27,14 @@ namespace AIUnityExample.NGramsFight
             }
         }
 
-        public void SetValidInputs(ISet<KeyCode> validInputs)
+        public void SetKnownInputs(ISet<KeyCode> knownInputs)
         {
-            if (this.validInputs != null)
+            if (this.knownInputs != null)
             {
                 throw new InvalidOperationException(
                     "Valid inputs can only be set once in the view.");
             }
-            this.validInputs = validInputs;
+            this.knownInputs = knownInputs;
         }
 
         public event Action<KeyCode> OnPressedInput;

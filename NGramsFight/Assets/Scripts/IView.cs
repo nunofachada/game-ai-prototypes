@@ -6,7 +6,7 @@ namespace AIUnityExample.NGramsFight
 {
     public interface IView
     {
-        void SetValidInputs(ISet<KeyCode> validInputs);
+        void SetKnownInputs(ISet<KeyCode> validInputs);
         event Action<KeyCode> OnPressedInput;
     }
 }
