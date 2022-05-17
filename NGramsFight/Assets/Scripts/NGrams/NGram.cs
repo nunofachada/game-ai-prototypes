@@ -28,7 +28,7 @@ namespace LibGameAI.NGrams
         }
 
         // Converts a sequence of actions to a string
-        public static string ListToStringKey(IReadOnlyList<T> actions)
+        public static string ListToStringKey(IEnumerable<T> actions)
         {
             StringBuilder builder = new StringBuilder();
             foreach (T a in actions)
@@ -42,7 +42,6 @@ namespace LibGameAI.NGrams
         // The actions array should be of size N
         public void RegisterSequence(IReadOnlyList<T> actions)
         {
-
             // Can only register sequence if its size N
             if (actions.Count == NValue)
             {
@@ -51,14 +50,10 @@ namespace LibGameAI.NGrams
                     new ReadOnlyListSegment<T>(actions, 0, NValue - 1);
 
                 // Previous actions in key form
-                string prevActionsKey;
+                string prevActionsKey = ListToStringKey(prevActions);
 
                 // Action performed
-                T actionPerformed;
-
-                // Split the sequence into a key and value
-                actionPerformed = actions[NValue - 1];
-                prevActionsKey = ListToStringKey(prevActions);
+                T actionPerformed = actions[NValue - 1];
 
                 // Check if our data contains the key (i.e. sequence of actions)
                 // If not, create a new record for this sequence of actions
@@ -100,7 +95,7 @@ namespace LibGameAI.NGrams
 
         // Return the number of times this sequence has been seen
         // The actions array should be of size N-1
-        public int GetActionsFrequency(IReadOnlyList<T> actions)
+        public int GetActionsFrequency(IReadOnlyCollection<T> actions)
         {
             // Number of times this sequence of actions has been seen
             int actionCount = 0;

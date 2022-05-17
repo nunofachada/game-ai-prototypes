@@ -56,7 +56,6 @@ namespace LibGameAI.NGrams
                     predictors[i].RegisterSequence(subactions);
                 }
             }
-
         }
 
         // Get the most likely action given a sequence of actions
