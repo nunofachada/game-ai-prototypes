@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using LibGameAI.NGrams;
+using LibGameAI.Util;
 using NaughtyAttributes;
 
 namespace AIUnityExample.NGramsFight
@@ -35,7 +36,7 @@ namespace AIUnityExample.NGramsFight
         private INGram<KeyCode> predictor;
 
         // List of key presses
-        private List<KeyCode> keyPresses;
+        private RingList<KeyCode> keyPresses;
 
         // Last prediction
         private KeyCode prediction;
@@ -54,7 +55,7 @@ namespace AIUnityExample.NGramsFight
                 : new NGram<KeyCode>(nValue) as INGram<KeyCode>;
 
             // Initialize list of key presses
-            keyPresses = new List<KeyCode>();
+            keyPresses = new RingList<KeyCode>(nValue);
 
             // Initialize prediction to none
             prediction = default;
@@ -73,18 +74,16 @@ namespace AIUnityExample.NGramsFight
         // Handle input
         private void HandleInput(KeyCode keyCode)
         {
-            // Add key code to sequence
+            // Add key code to sequence (older ones are automatically discarded)
             keyPresses.Add(keyCode);
 
             // Register sequence
             predictor.RegisterSequence(keyPresses);
 
-            // Remove first if list equal or larger than nValue
-            if (keyPresses.Count >= nValue)
-                keyPresses.RemoveAt(0);
-
             // Make prediction for next input
             prediction = predictor.GetMostLikely(keyPresses);
+
+            Debug.Log($"PREDICTION: {prediction}");
         }
     }
 }

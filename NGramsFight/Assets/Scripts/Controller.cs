@@ -35,8 +35,6 @@ namespace AIUnityExample.NGramsFight
         {
             bufferSize = (patterns.MinLength, patterns.MaxLength);
 
-            Debug.Log(patterns.KnownInputs);
-
             view.SetKnownInputs(patterns.KnownInputs);
         }
 
