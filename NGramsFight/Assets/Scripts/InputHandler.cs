@@ -1,18 +1,17 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using NaughtyAttributes;
 namespace AIUnityExample.NGramsFight
 {
 
-    public class View : MonoBehaviour, IView
+    public class InputHandler : MonoBehaviour
     {
         private ISet<KeyCode> knownInputs;
 
         // Start is called before the first frame update
         private void Awake()
         {
-            knownInputs = null;
+
         }
 
         // Update is called once per frame

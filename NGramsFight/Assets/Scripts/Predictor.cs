@@ -8,11 +8,6 @@ namespace AIUnityExample.NGramsFight
 {
     public class Predictor : MonoBehaviour
     {
-        // Reference to the view game object
-        [HideInInspector]
-        [SerializeField]
-
-        private GameObject viewGameObject;
         [Tooltip("The N value in the N-Gram")]
         [Range(0, 12)]
         [SerializeField]
@@ -29,9 +24,6 @@ namespace AIUnityExample.NGramsFight
         [ShowIf(nameof(hierarchical))]
         private int threshold = 3;
 
-        // Reference to the view script
-        private IView view;
-
         // Reference to the N-Gram predictor
         private INGram<KeyCode> predictor;
 
@@ -41,9 +33,12 @@ namespace AIUnityExample.NGramsFight
         // Last prediction
         private KeyCode prediction;
 
+        // Input handler
+        private InputHandler inputHandler;
+
         private void Awake()
         {
-            view = viewGameObject.GetComponent<IView>();
+            inputHandler = GetComponentInParent<InputHandler>();
         }
 
         // Use this for initialization
@@ -63,12 +58,12 @@ namespace AIUnityExample.NGramsFight
 
         private void OnEnable()
         {
-            view.OnPressedInput += HandleInput;
+            inputHandler.OnPressedInput += HandleInput;
         }
 
         private void OnDisable()
         {
-            view.OnPressedInput -= HandleInput;
+            inputHandler.OnPressedInput -= HandleInput;
         }
 
         // Handle input

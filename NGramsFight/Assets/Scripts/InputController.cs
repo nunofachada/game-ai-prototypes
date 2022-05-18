@@ -1,51 +1,44 @@
 using System.Collections.Generic;
 using UnityEngine;
-using NaughtyAttributes;
 
 namespace AIUnityExample.NGramsFight
 {
-    public class Controller : MonoBehaviour
+    public class InputController : MonoBehaviour
     {
-        [SerializeField]
-        [HideInInspector]
-        private GameObject viewGameObject;
-
-        [SerializeField]
-        [Expandable]
-        private AttackPatternSet patterns;
-
         [SerializeField]
         private float keyValidDuration = 1.5f;
 
         private LinkedList<TimedInput> buffer;
-        private IView view;
+        private MoveConfig moveConfig;
+        private InputHandler inputHandler;
 
         private (int min, int max) bufferSize;
 
         private void Awake()
         {
-            view = viewGameObject.GetComponent<IView>();
+            inputHandler = GetComponentInParent<InputHandler>();
+
+            moveConfig = GetComponent<MoveConfig>();
 
             buffer = new LinkedList<TimedInput>();
 
             bufferSize = (int.MaxValue, 0);
+
+            bufferSize = (moveConfig.Patterns.MinLength, moveConfig.Patterns.MaxLength);
         }
 
         private void Start()
         {
-            bufferSize = (patterns.MinLength, patterns.MaxLength);
-
-            view.SetKnownInputs(patterns.KnownInputs);
         }
 
         private void OnEnable()
         {
-            view.OnPressedInput += HandleInput;
+            inputHandler.OnPressedInput += HandleInput;
         }
 
         private void OnDisable()
         {
-            view.OnPressedInput -= HandleInput;
+            inputHandler.OnPressedInput -= HandleInput;
         }
 
         private void Update()
@@ -60,7 +53,7 @@ namespace AIUnityExample.NGramsFight
         {
             if (buffer.Count >= bufferSize.min && buffer.Count <= bufferSize.max)
             {
-                AttackType? attack = patterns.Match(buffer);
+                AttackType? attack = moveConfig.Patterns.Match(buffer);
                 if (attack.HasValue)
                 {
                     // Action found, schedule it
