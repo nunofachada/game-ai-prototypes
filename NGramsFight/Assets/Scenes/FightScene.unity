@@ -149,7 +149,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 478238278}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ff5e2ca598cf877ea5d355032089245, type: 3}
+  m_Script: {fileID: 11500000, guid: 90d47bc93f7dfbe298eb6f8ede0b3f5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &478238280
@@ -260,8 +260,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1522205893}
-  - component: {fileID: 1522205892}
   - component: {fileID: 1522205894}
+  - component: {fileID: 1522205892}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -278,7 +278,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1522205891}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bb4f0b46ade9df01a63410db5fa7552, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ff5e2ca598cf877ea5d355032089245, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   keyValidDuration: 1.5
@@ -305,10 +305,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1522205891}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8278822416044353192b1ec78ed37514, type: 3}
+  m_Script: {fileID: 11500000, guid: 6ed3d766c6639b3ffb273148bf43cb16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  patterns: {fileID: 11400000, guid: a5f7e44c88cb3edd387155b64beb7ef2, type: 2}
+  patternsConfig: {fileID: 11400000, guid: e4647b6b9aef0e92a820bf6ff5cc8072, type: 2}
 --- !u!1 &1611770037
 GameObject:
   m_ObjectHideFlags: 0

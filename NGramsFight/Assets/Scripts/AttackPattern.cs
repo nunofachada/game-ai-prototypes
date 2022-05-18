@@ -44,13 +44,12 @@ namespace AIUnityExample.NGramsFight
         private AttackType attack;
 
         [SerializeField]
+        [HideInInspector]
         private List<KeyCode> pattern;
 
         public AttackType Attack => attack;
 
         public int Size => pattern.Count;
-
-        public IEnumerator<KeyCode> ReversePatternEnumerator => new RevPatEnumer(pattern);
 
         public IEnumerable<KeyCode> Pattern => pattern;
 
@@ -68,6 +67,11 @@ namespace AIUnityExample.NGramsFight
                     pattern.Add(Event.KeyboardEvent(patStr.Trim()).keyCode);
                 }
             }
+        }
+
+        public IEnumerator<KeyCode> GetReverseEnumerator()
+        {
+            return new RevPatEnumer(pattern);
         }
 
         public override string ToString()

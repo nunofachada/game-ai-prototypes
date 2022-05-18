@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using LibGameAI.NGrams;
 using LibGameAI.Util;
@@ -34,11 +33,15 @@ namespace AIUnityExample.NGramsFight
         private KeyCode prediction;
 
         // Input handler
-        private InputHandler inputHandler;
+        private InputFrontend inputFrontend;
+
+        // Move configuration
+        private Patterns patterns;
 
         private void Awake()
         {
-            inputHandler = GetComponentInParent<InputHandler>();
+            inputFrontend = GetComponentInParent<InputFrontend>();
+            patterns = transform.parent.GetComponentInChildren<Patterns>();
         }
 
         // Use this for initialization
@@ -58,12 +61,12 @@ namespace AIUnityExample.NGramsFight
 
         private void OnEnable()
         {
-            inputHandler.OnPressedInput += HandleInput;
+            inputFrontend.OnPressedInput += HandleInput;
         }
 
         private void OnDisable()
         {
-            inputHandler.OnPressedInput -= HandleInput;
+            inputFrontend.OnPressedInput -= HandleInput;
         }
 
         // Handle input

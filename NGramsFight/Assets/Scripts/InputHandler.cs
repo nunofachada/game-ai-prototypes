@@ -1,41 +1,73 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
+
 namespace AIUnityExample.NGramsFight
 {
-
     public class InputHandler : MonoBehaviour
     {
-        private ISet<KeyCode> knownInputs;
+        [SerializeField]
+        private float keyValidDuration = 1.5f;
 
-        // Start is called before the first frame update
+        private LinkedList<TimedInput> buffer;
+        private Patterns patterns;
+        private InputFrontend inputFrontend;
+
+        private (int min, int max) bufferSize;
+
         private void Awake()
         {
+            inputFrontend = GetComponentInParent<InputFrontend>();
 
+            patterns = GetComponent<Patterns>();
+
+            buffer = new LinkedList<TimedInput>();
         }
 
-        // Update is called once per frame
+        private void Start()
+        {
+            bufferSize = (patterns.MinLength, patterns.MaxLength);
+        }
+
+        private void OnEnable()
+        {
+            inputFrontend.OnPressedInput += HandleInput;
+        }
+
+        private void OnDisable()
+        {
+            inputFrontend.OnPressedInput -= HandleInput;
+        }
+
         private void Update()
         {
-            foreach (KeyCode input in knownInputs)
+            while (buffer.Count > 0 && Time.time > buffer.First.Value.Time + keyValidDuration)
             {
-                if (Input.GetKeyUp(input))
+                buffer.RemoveFirst();
+            }
+        }
+
+        private void FixedUpdate()
+        {
+            if (buffer.Count >= bufferSize.min && buffer.Count <= bufferSize.max)
+            {
+                AttackType? attack = patterns.Match(buffer);
+                if (attack.HasValue)
                 {
-                    OnPressedInput?.Invoke(input);
+                    // Action found, schedule it
+                    buffer.Clear();
+                    Debug.Log(attack);
                 }
             }
         }
 
-        public void SetKnownInputs(ISet<KeyCode> knownInputs)
+        private void HandleInput(KeyCode input)
         {
-            if (this.knownInputs != null)
+            buffer.AddLast(new TimedInput(Time.time, input));
+            if (buffer.Count > bufferSize.max)
             {
-                throw new InvalidOperationException(
-                    "Valid inputs can only be set once in the view.");
+                buffer.RemoveFirst();
             }
-            this.knownInputs = knownInputs;
+            Debug.Log($"Pressed '{input}' (buffer size is {buffer.Count})");
         }
-
-        public event Action<KeyCode> OnPressedInput;
     }
 }
