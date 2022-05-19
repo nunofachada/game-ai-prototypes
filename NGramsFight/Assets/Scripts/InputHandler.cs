@@ -5,9 +5,7 @@ namespace AIUnityExample.NGramsFight
 {
     public class InputHandler : MonoBehaviour
     {
-        [SerializeField]
-        private float keyValidDuration = 1.5f;
-
+        private float keyValidDuration;
         private LinkedList<TimedInput> buffer;
         private Patterns patterns;
         private InputFrontend inputFrontend;
@@ -17,6 +15,8 @@ namespace AIUnityExample.NGramsFight
         private void Awake()
         {
             inputFrontend = GetComponentInParent<InputFrontend>();
+
+            keyValidDuration = inputFrontend.KeyValidDuration;
 
             patterns = GetComponent<Patterns>();
 
