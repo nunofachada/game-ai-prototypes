@@ -81,7 +81,7 @@ namespace AIUnityExample.NGramsFight
             // Make prediction for next input
             prediction = predictor.GetMostLikely(keyPresses);
 
-            Debug.Log($"PREDICTION: {prediction}");
+            //Debug.Log($"PREDICTION: {prediction}");
         }
     }
 }

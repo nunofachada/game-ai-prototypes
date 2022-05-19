@@ -19,9 +19,9 @@ namespace AIUnityExample.NGramsFight
         public int MinLength { get; private set; }
         public int MaxLength { get; private set; }
 
-        public AttackType? Match(LinkedList<TimedInput> inputQueue)
+        public AttackType? Match(IReadOnlyList<KeyCode> inputList)
         {
-            return patternMatchTreeRoot.Match(inputQueue)?.Attack;
+            return patternMatchTreeRoot.Match(inputList)?.Attack;
         }
 
         private void Awake()
@@ -33,7 +33,7 @@ namespace AIUnityExample.NGramsFight
 
             foreach (AttackPattern pattern in patternsConfig)
             {
-                Debug.Log(pattern + ", size=" + pattern.Size);
+                //Debug.Log(pattern + ", size=" + pattern.Size);
                 if (pattern.Size < MinLength) MinLength = pattern.Size;
                 if (pattern.Size > MaxLength) MaxLength = pattern.Size;
                 knownInputs.UnionWith(pattern.Pattern);

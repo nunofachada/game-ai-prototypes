@@ -12,6 +12,8 @@ namespace AIUnityExample.NGramsFight
 
         private (int min, int max) bufferSize;
 
+        private List<KeyCode> auxList;
+
         private void Awake()
         {
             inputFrontend = GetComponentInParent<InputFrontend>();
@@ -26,6 +28,8 @@ namespace AIUnityExample.NGramsFight
         private void Start()
         {
             bufferSize = (patterns.MinLength, patterns.MaxLength);
+
+            auxList = new List<KeyCode>(patterns.MaxLength + 1);
         }
 
         private void OnEnable()
@@ -50,7 +54,13 @@ namespace AIUnityExample.NGramsFight
         {
             if (buffer.Count >= bufferSize.min && buffer.Count <= bufferSize.max)
             {
-                AttackType? attack = patterns.Match(buffer);
+                auxList.Clear();
+                foreach (TimedInput timedInput in buffer)
+                {
+                    auxList.Add(timedInput.Input);
+                }
+
+                AttackType? attack = patterns.Match(auxList);
                 if (attack.HasValue)
                 {
                     // Action found, schedule it
@@ -67,7 +77,8 @@ namespace AIUnityExample.NGramsFight
             {
                 buffer.RemoveFirst();
             }
-            Debug.Log($"Pressed '{input}' (buffer size is {buffer.Count})");
+            //Debug.Log($"Pressed '{input}' (buffer size is {buffer.Count})");
         }
+
     }
 }

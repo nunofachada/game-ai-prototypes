@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using LibGameAI.Util;
 
 namespace AIUnityExample.NGramsFight
 {
@@ -48,20 +49,19 @@ namespace AIUnityExample.NGramsFight
             }
         }
 
-        public PatternTreeNode Match(LinkedList<TimedInput> inputQueue)
+        public PatternTreeNode Match(IReadOnlyList<KeyCode> inputList)
         {
             PatternTreeNode matchedActionNode = null;
+            int n = inputList.Count;
 
-            if (IsLeaf || inputQueue.Count == 0)
+            if (IsLeaf || n == 0)
             {
                 matchedActionNode = this;
             }
-            else if (children.ContainsKey(inputQueue.Last.Value.Input))
+            else if (children.ContainsKey(inputList[n - 1]))
             {
-                LinkedListNode<TimedInput> matchedInput = inputQueue.Last;
-                inputQueue.RemoveLast();
-                matchedActionNode = children[matchedInput.Value.Input].Match(inputQueue);
-                inputQueue.AddLast(matchedInput);
+                var subList = new ReadOnlyListSegment<KeyCode>(inputList, 0, n - 1);
+                matchedActionNode = children[inputList[n - 1]].Match(subList);
             }
 
             return matchedActionNode;
