@@ -82,6 +82,17 @@ namespace AIUnityExample.NGramsFight
             prediction = predictor.GetMostLikely(keyPresses);
 
             //Debug.Log($"PREDICTION: {prediction}");
+
+            // Compose the collection with sequence plus prediction
+            var seqPlusPred = new ListPlusOneWrapper<KeyCode>(keyPresses, prediction);
+
+            // Does the key prediction predict an attack?
+            AttackType? attack = patterns.Match(seqPlusPred);
+
+            if (attack.HasValue)
+            {
+                Debug.Log($"Attack Prediction: {attack}");
+            }
         }
     }
 }
