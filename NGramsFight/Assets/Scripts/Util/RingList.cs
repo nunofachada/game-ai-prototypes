@@ -12,6 +12,19 @@ namespace LibGameAI.Util
 
         public bool IsReadOnly => false;
 
+        private int startIndex;
+        private int count;
+        private readonly int size;
+        private readonly T[] items;
+
+        public RingList(int size)
+        {
+            startIndex = 0;
+            count = 0;
+            this.size = size;
+            items = new T[size];
+        }
+
         public T this[int index]
         {
             get
@@ -80,12 +93,11 @@ namespace LibGameAI.Util
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-
         private int ReIndex(int index)
         {
             if (index < 0)
             {
-                index = index + size;
+                index += size;
             }
             else if (count == size)
             {
@@ -93,19 +105,5 @@ namespace LibGameAI.Util
             }
             return index;
         }
-
-        private int startIndex;
-        private int count;
-        private readonly int size;
-        private readonly T[] items;
-
-        public RingList(int size)
-        {
-            startIndex = 0;
-            count = 0;
-            this.size = size;
-            items = new T[size];
-        }
-
     }
 }
