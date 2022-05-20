@@ -31,15 +31,6 @@ namespace AIUnityExample.NGramsFight
             this.damageToPlayerIfFail = damageToPlayerIfFail;
         }
 
-        public override bool Equals(object other)
-        {
-            AttackDefenseDamage otherAttDefDam = other as AttackDefenseDamage;
-            if (otherAttDefDam is null) return false;
-            return attack == otherAttDefDam.Attack;
-        }
-
-        public override int GetHashCode() => attack.GetHashCode();
-
         public override string ToString() => attack.ToString();
     }
 }

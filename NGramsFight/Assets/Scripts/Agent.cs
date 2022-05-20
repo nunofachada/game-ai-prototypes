@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 namespace AIUnityExample.NGramsFight
 {
-    public class Agent : MonoBehaviour
+    public abstract class Agent : MonoBehaviour
     {
         [SerializeField]
         private float initHealth = 100;
@@ -16,15 +15,16 @@ namespace AIUnityExample.NGramsFight
             Health = initHealth;
         }
 
-        private bool TakeDamage(float damage)
+        protected void TakeDamage(float damage)
         {
             Health -= damage;
-            if (Health < 0)
+            if (Health <= 0)
             {
                 Health = 0;
-                return true;
+                OnDie?.Invoke();
             }
-            return false;
         }
+
+        public event Action OnDie;
     }
 }

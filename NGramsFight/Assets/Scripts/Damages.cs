@@ -10,30 +10,33 @@ namespace AIUnityExample.NGramsFight
         [ReorderableList]
         private List<AttackDefenseDamage> damages;
 
+        private IDictionary<AttackType, AttackDefenseDamage> damagePlaybook;
+
         private void Awake()
         {
-            var set = new HashSet<AttackDefenseDamage>(damages);
-            var toRemove = new List<AttackDefenseDamage>(damages.Count);
+            damagePlaybook = new Dictionary<AttackType, AttackDefenseDamage>();
 
-            int expectedSetSize = 0;
-
-            for (int i = 0; i < damages.Count; i++)
+            foreach (AttackDefenseDamage attDefDam in damages)
             {
-                set.Add(damages[i]);
-                expectedSetSize++;
-                if (set.Count < expectedSetSize)
+                if (damagePlaybook.ContainsKey(attDefDam.Attack))
                 {
-                    toRemove.Add(damages[i]);
-                    expectedSetSize--;
+                    Debug.LogWarning(
+                        $"Ignoring repeated attack '{attDefDam}' from damage configuration.");
+                }
+                else
+                {
+                    damagePlaybook.Add(attDefDam.Attack, attDefDam);
                 }
             }
-            foreach (AttackDefenseDamage attDefDam in toRemove)
+        }
+
+        public AttackDefenseDamage GetAttackDefenseDamage(AttackType attack)
+        {
+            if (damagePlaybook.TryGetValue(attack, out AttackDefenseDamage attDefDam))
             {
-                int lastIndex = damages.LastIndexOf(attDefDam);
-                damages.RemoveAt(lastIndex);
-                Debug.LogWarning(
-                    $"Ignoring repeated attack '{attDefDam}' from damage configuration.");
+                return attDefDam;
             }
+            return null;
         }
 
         [Button]

@@ -40,10 +40,14 @@ namespace AIUnityExample.NGramsFight
         // Input handler
         private InputFrontend inputFrontend;
 
+        // Enemy state
+        private Enemy enemy;
+
         private void Awake()
         {
             inputFrontend = GetComponentInParent<InputFrontend>();
             patterns = transform.parent.GetComponentInChildren<Patterns>();
+            enemy = GetComponent<Enemy>();
         }
 
         // Use this for initialization
