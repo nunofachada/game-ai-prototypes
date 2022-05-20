@@ -23,6 +23,11 @@ namespace AIUnityExample.NGramsFight
         [ShowIf(nameof(hierarchical))]
         private int threshold = 3;
 
+        // Pattern configuration
+        [SerializeField]
+        [HideInInspector]
+        private Patterns patterns;
+
         // Reference to the N-Gram predictor
         private INGram<KeyCode> predictor;
 
@@ -34,9 +39,6 @@ namespace AIUnityExample.NGramsFight
 
         // Input handler
         private InputFrontend inputFrontend;
-
-        // Move configuration
-        private Patterns patterns;
 
         private void Awake()
         {
