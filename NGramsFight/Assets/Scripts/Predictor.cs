@@ -97,7 +97,7 @@ namespace AIUnityExample.NGramsFight
 
             if (attack.HasValue)
             {
-                Debug.Log($"Attack Prediction: {attack}");
+                enemy.SendPrediction(attack.Value);
             }
         }
     }

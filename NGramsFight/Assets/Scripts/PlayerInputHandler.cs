@@ -12,6 +12,7 @@ namespace AIUnityExample.NGramsFight
         private float keyValidDuration;
         private LinkedList<TimedInput> buffer;
         private InputFrontend inputFrontend;
+        private Player player;
 
         private (int min, int max) bufferSize;
 
@@ -20,6 +21,8 @@ namespace AIUnityExample.NGramsFight
         private void Awake()
         {
             inputFrontend = GetComponentInParent<InputFrontend>();
+
+            player = GetComponent<Player>();
 
             keyValidDuration = inputFrontend.KeyValidDuration;
 

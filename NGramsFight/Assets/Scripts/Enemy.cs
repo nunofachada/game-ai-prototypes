@@ -20,12 +20,29 @@ namespace AIUnityExample.NGramsFight
             defenseUp = new WaitForSeconds(defenseDuration);
         }
 
-        public void ReceivePrediction(AttackType attack)
+        public void SendPrediction(AttackType attack)
         {
             if (!Defense.HasValue)
             {
                 AttackDefenseDamage attDefDam = damages.GetAttackDefenseDamage(attack);
                 StartCoroutine(DefenseUp(attDefDam.ProperDefense));
+                Debug.Log($"Activate defense: {attDefDam.ProperDefense}");
+            }
+        }
+
+        public bool TakeHit(AttackType attack)
+        {
+            AttackDefenseDamage attDefDam = damages.GetAttackDefenseDamage(attack);
+            if (Defense.HasValue && Defense.Value == attDefDam.ProperDefense)
+            {
+                // Defense was successful, attack failed
+                return false;
+            }
+            else
+            {
+                // Defense unsuccessful, attack succeeded
+                TakeDamage(attDefDam.DamageToEnemyIfSuccess);
+                return true;
             }
         }
 
