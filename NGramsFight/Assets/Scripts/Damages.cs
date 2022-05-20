@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
@@ -14,18 +13,26 @@ namespace AIUnityExample.NGramsFight
         private void Awake()
         {
             var set = new HashSet<AttackDefenseDamage>(damages);
+            var toRemove = new List<AttackDefenseDamage>(damages.Count);
+
             int expectedSetSize = 0;
+
             for (int i = 0; i < damages.Count; i++)
             {
                 set.Add(damages[i]);
                 expectedSetSize++;
                 if (set.Count < expectedSetSize)
                 {
-                    damages.RemoveAt(i);
+                    toRemove.Add(damages[i]);
                     expectedSetSize--;
-                    Debug.LogWarning(
-                        $"Removing repeated attack '{damages[i]}' from damage configuration.");
                 }
+            }
+            foreach (AttackDefenseDamage attDefDam in toRemove)
+            {
+                int lastIndex = damages.LastIndexOf(attDefDam);
+                damages.RemoveAt(lastIndex);
+                Debug.LogWarning(
+                    $"Ignoring repeated attack '{attDefDam}' from damage configuration.");
             }
         }
 
@@ -43,7 +50,7 @@ namespace AIUnityExample.NGramsFight
         }
 
         [Button]
-        private void SetDefaults()
+        private void Reset()
         {
             Clear();
 

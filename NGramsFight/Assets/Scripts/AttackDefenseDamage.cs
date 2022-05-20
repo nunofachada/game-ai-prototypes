@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace AIUnityExample.NGramsFight
@@ -33,7 +30,6 @@ namespace AIUnityExample.NGramsFight
             this.damageToEnemyIfSuccess = damageToEnemyIfSuccess;
             this.damageToPlayerIfFail = damageToPlayerIfFail;
         }
-
 
         public override bool Equals(object other)
         {

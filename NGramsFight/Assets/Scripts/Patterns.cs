@@ -24,7 +24,7 @@ namespace AIUnityExample.NGramsFight
         }
 
         [Button]
-        private void SetDefaults()
+        private void Reset()
         {
             Clear();
 
