@@ -133,6 +133,8 @@ GameObject:
   m_Component:
   - component: {fileID: 478238280}
   - component: {fileID: 478238279}
+  - component: {fileID: 478238282}
+  - component: {fileID: 478238281}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -164,12 +166,79 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 704752608}
   - {fileID: 1522205893}
   - {fileID: 1611770039}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &478238281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 478238278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70fc9a648d18d043a8be89eca6593ebb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damages:
+  - attack: 2
+    properDefense: 2
+    damageToEnemyIfSuccess: 2
+    damageToPlayerIfFail: 1.8
+  - attack: 1
+    properDefense: 1
+    damageToEnemyIfSuccess: 1.5
+    damageToPlayerIfFail: 1.1
+  - attack: 0
+    properDefense: 0
+    damageToEnemyIfSuccess: 1.2
+    damageToPlayerIfFail: 0.6
+  - attack: 3
+    properDefense: 2
+    damageToEnemyIfSuccess: 5
+    damageToPlayerIfFail: 6
+  - attack: 4
+    properDefense: 1
+    damageToEnemyIfSuccess: 5.5
+    damageToPlayerIfFail: 7
+  - attack: 5
+    properDefense: 0
+    damageToEnemyIfSuccess: 6
+    damageToPlayerIfFail: 8
+--- !u!114 &478238282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 478238278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ed3d766c6639b3ffb273148bf43cb16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  patterns:
+  - patternStr: d,s,s,s
+    attack: 0
+    pattern: 64000000730000007300000073000000
+  - patternStr: d,a,d,d
+    attack: 1
+    pattern: 64000000610000006400000064000000
+  - patternStr: d,w,w,w
+    attack: 2
+    pattern: 64000000770000007700000077000000
+  - patternStr: d,w,w,d,d
+    attack: 3
+    pattern: 6400000077000000770000006400000064000000
+  - patternStr: d,a,d,w,w
+    attack: 4
+    pattern: 6400000061000000640000007700000077000000
+  - patternStr: d,s,s,w,s
+    attack: 5
+    pattern: 6400000073000000730000007700000073000000
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -253,106 +322,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &704752606
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 704752608}
-  - component: {fileID: 704752607}
-  - component: {fileID: 704752609}
-  m_Layer: 0
-  m_Name: Config
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &704752607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 704752606}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ed3d766c6639b3ffb273148bf43cb16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  patterns:
-  - patternStr: d,s,s,s
-    attack: 0
-    pattern: 64000000730000007300000073000000
-  - patternStr: d,a,d,d
-    attack: 1
-    pattern: 64000000610000006400000064000000
-  - patternStr: d,w,w,w
-    attack: 2
-    pattern: 64000000770000007700000077000000
-  - patternStr: d,w,w,d,d
-    attack: 3
-    pattern: 6400000077000000770000006400000064000000
-  - patternStr: d,a,d,w,w
-    attack: 4
-    pattern: 6400000061000000640000007700000077000000
-  - patternStr: d,s,s,w,s
-    attack: 5
-    pattern: 6400000073000000730000007700000073000000
---- !u!4 &704752608
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 704752606}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 478238280}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &704752609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 704752606}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70fc9a648d18d043a8be89eca6593ebb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damages:
-  - attack: 2
-    properDefense: 2
-    damageToEnemyIfSuccess: 2
-    damageToPlayerIfFail: 1.8
-  - attack: 1
-    properDefense: 1
-    damageToEnemyIfSuccess: 1.5
-    damageToPlayerIfFail: 1.1
-  - attack: 0
-    properDefense: 0
-    damageToEnemyIfSuccess: 1.2
-    damageToPlayerIfFail: 0.6
-  - attack: 3
-    properDefense: 2
-    damageToEnemyIfSuccess: 5
-    damageToPlayerIfFail: 6
-  - attack: 4
-    properDefense: 1
-    damageToEnemyIfSuccess: 5.5
-    damageToPlayerIfFail: 7
-  - attack: 5
-    properDefense: 0
-    damageToEnemyIfSuccess: 6
-    damageToPlayerIfFail: 8
 --- !u!1 &1522205891
 GameObject:
   m_ObjectHideFlags: 0
@@ -383,7 +352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aefd1aaa7188d17c9b91542cd3c8e903, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  patterns: {fileID: 704752607}
+  patterns: {fileID: 0}
 --- !u!4 &1522205893
 Transform:
   m_ObjectHideFlags: 0
@@ -396,7 +365,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 478238280}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1522205894
 MonoBehaviour:
@@ -444,7 +413,7 @@ MonoBehaviour:
   nValue: 5
   hierarchical: 1
   threshold: 3
-  patterns: {fileID: 704752607}
+  patterns: {fileID: 0}
 --- !u!4 &1611770039
 Transform:
   m_ObjectHideFlags: 0
@@ -457,7 +426,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 478238280}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1611770040
 MonoBehaviour:
@@ -472,3 +441,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initHealth: 100
+  defenseDuration: 0.5

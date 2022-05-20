@@ -12,7 +12,7 @@ namespace AIUnityExample.NGramsFight
 
         private void Awake()
         {
-            damages = transform.parent.GetComponentInChildren<Damages>();
+            damages = GetComponentInParent<Damages>();
             enemy = transform.parent.GetComponentInChildren<Enemy>();
         }
 

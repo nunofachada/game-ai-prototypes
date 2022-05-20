@@ -24,8 +24,6 @@ namespace AIUnityExample.NGramsFight
         private int threshold = 3;
 
         // Pattern configuration
-        [SerializeField]
-        [HideInInspector]
         private Patterns patterns;
 
         // Reference to the N-Gram predictor
@@ -46,7 +44,7 @@ namespace AIUnityExample.NGramsFight
         private void Awake()
         {
             inputFrontend = GetComponentInParent<InputFrontend>();
-            patterns = transform.parent.GetComponentInChildren<Patterns>();
+            patterns = GetComponentInParent<Patterns>();
             enemy = GetComponent<Enemy>();
         }
 

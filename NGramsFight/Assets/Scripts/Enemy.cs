@@ -16,7 +16,7 @@ namespace AIUnityExample.NGramsFight
 
         private void Awake()
         {
-            damages = transform.parent.GetComponentInChildren<Damages>();
+            damages = GetComponentInParent<Damages>();
             defenseUp = new WaitForSeconds(defenseDuration);
         }
 
