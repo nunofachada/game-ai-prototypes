@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace AIUnityExample.NGramsFight
 {
-    public class InputHandler : MonoBehaviour
+    public class PlayerInputHandler : MonoBehaviour
     {
         [SerializeField]
         [HideInInspector]
