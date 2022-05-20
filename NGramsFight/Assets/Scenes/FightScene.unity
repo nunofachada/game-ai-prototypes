@@ -283,7 +283,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ed3d766c6639b3ffb273148bf43cb16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  patternsConfig: {fileID: 11400000, guid: e4647b6b9aef0e92a820bf6ff5cc8072, type: 2}
+  patterns:
+  - patternStr: d,s,s,s
+    attack: 0
+    pattern: 64000000730000007300000073000000
+  - patternStr: d,a,d,d
+    attack: 1
+    pattern: 64000000610000006400000064000000
+  - patternStr: d,w,w,w
+    attack: 2
+    pattern: 64000000770000007700000077000000
+  - patternStr: d,w,w,d,d
+    attack: 3
+    pattern: 6400000077000000770000006400000064000000
+  - patternStr: d,a,d,w,w
+    attack: 4
+    pattern: 6400000061000000640000007700000077000000
+  - patternStr: d,s,s,w,s
+    attack: 5
+    pattern: 6400000073000000730000007700000073000000
 --- !u!4 &704752608
 Transform:
   m_ObjectHideFlags: 0
@@ -310,7 +328,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70fc9a648d18d043a8be89eca6593ebb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damagesConfig: {fileID: 11400000, guid: ee927784d53f772978a685b3039a76e1, type: 2}
+  damages:
+  - attack: 2
+    properDefense: 2
+    damageToEnemyIfSuccess: 2
+    damageToPlayerIfFail: 1.8
+  - attack: 1
+    properDefense: 1
+    damageToEnemyIfSuccess: 1.5
+    damageToPlayerIfFail: 1.1
+  - attack: 0
+    properDefense: 0
+    damageToEnemyIfSuccess: 1.2
+    damageToPlayerIfFail: 0.6
+  - attack: 3
+    properDefense: 2
+    damageToEnemyIfSuccess: 5
+    damageToPlayerIfFail: 6
+  - attack: 4
+    properDefense: 1
+    damageToEnemyIfSuccess: 5.5
+    damageToPlayerIfFail: 7
+  - attack: 5
+    properDefense: 0
+    damageToEnemyIfSuccess: 6
+    damageToPlayerIfFail: 8
 --- !u!1 &1522205891
 GameObject:
   m_ObjectHideFlags: 0
