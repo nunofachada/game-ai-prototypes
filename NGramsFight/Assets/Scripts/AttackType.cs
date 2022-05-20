@@ -5,8 +5,8 @@ namespace AIUnityExample.NGramsFight
         Low,
         Med,
         High,
-        Mega,
-        Super,
-        Hyper,
+        MegaTop,
+        SuperMean,
+        HyperUnder,
     }
 }
