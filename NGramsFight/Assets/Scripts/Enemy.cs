@@ -26,7 +26,7 @@ namespace AIUnityExample.NGramsFight
             {
                 AttackDefenseDamage attDefDam = damages.GetAttackDefenseDamage(attack);
                 StartCoroutine(DefenseUp(attDefDam.ProperDefense));
-                Debug.Log($"Activate defense: {attDefDam.ProperDefense}");
+                Debug.Log($"[ENEMY] Activate defense {attDefDam.ProperDefense}");
             }
         }
 
@@ -36,12 +36,14 @@ namespace AIUnityExample.NGramsFight
             if (Defense.HasValue && Defense.Value == attDefDam.ProperDefense)
             {
                 // Defense was successful, attack failed
+                Debug.Log($"[ENEMY] Succesfully defended {attack} attack with {Defense.Value} defense!");
                 return false;
             }
             else
             {
                 // Defense unsuccessful, attack succeeded
                 TakeDamage(attDefDam.DamageToEnemyIfSuccess);
+                Debug.Log($"[ENEMY] Suffered an {attack} attack and my health is now {Health}");
                 return true;
             }
         }

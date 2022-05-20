@@ -68,20 +68,19 @@ namespace AIUnityExample.NGramsFight
                 {
                     // Action found, schedule it
                     buffer.Clear();
-                    Debug.Log(attack);
+                    player.PerformAttack(attack.Value);
                 }
             }
         }
 
         private void HandleInput(KeyCode input)
         {
+            if (input != KeyCode.None) player.TakeKeyPressDamage();
             buffer.AddLast(new TimedInput(Time.time, input));
             if (buffer.Count > bufferSize.max)
             {
                 buffer.RemoveFirst();
             }
-            //Debug.Log($"Pressed '{input}' (buffer size is {buffer.Count})");
         }
-
     }
 }
