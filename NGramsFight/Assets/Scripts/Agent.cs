@@ -23,8 +23,11 @@ namespace AIUnityExample.NGramsFight
                 Health = 0;
                 OnDie?.Invoke();
             }
+            OnHealthChange?.Invoke();
         }
 
         public event Action OnDie;
+
+        public event Action OnHealthChange;
     }
 }

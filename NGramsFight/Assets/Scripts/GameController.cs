@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,14 +6,15 @@ using UnityEngine;
 namespace AIUnityExample.NGramsFight
 {
 
-    public class Controller : MonoBehaviour
+    public class GameController : MonoBehaviour
     {
-        private int level;
+        public int Level { get; private set; }
 
         // Start is called before the first frame update
         private void Start()
         {
-            level = 1;
+            Level = 1;
+            OnLevelChange?.Invoke();
         }
 
         // Update is called once per frame
@@ -20,5 +22,7 @@ namespace AIUnityExample.NGramsFight
         {
 
         }
+
+        public event Action OnLevelChange;
     }
 }
