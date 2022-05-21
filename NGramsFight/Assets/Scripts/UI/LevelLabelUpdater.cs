@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -30,7 +28,7 @@ namespace AIUnityExample.NGramsFight.UI
 
         private void UpdateLevelLabel()
         {
-            text.SetText($"Level {gameController.Level:d3}");
+            text?.SetText($"Level {gameController.Level:d3}");
         }
     }
 }

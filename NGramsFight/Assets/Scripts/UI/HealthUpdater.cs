@@ -28,7 +28,7 @@ namespace AIUnityExample.NGramsFight.UI
 
         private void UpdateHealth()
         {
-            text.SetText($"{agent.Health:f2}");
+            text?.SetText($"{agent.Health:f2}");
         }
     }
 }
