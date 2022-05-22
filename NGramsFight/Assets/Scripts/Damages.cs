@@ -64,11 +64,11 @@ namespace AIUnityExample.NGramsFight
             // Low attack
             damages.Add(new AttackDefenseDamage(AttackType.Low, DefenseType.Low, 1.2f, 0.6f));
             // MegaTop attack
-            damages.Add(new AttackDefenseDamage(AttackType.MegaTop, DefenseType.High, 5f, 6f));
+            damages.Add(new AttackDefenseDamage(AttackType.MegaMean, DefenseType.Med, 5f, 6f));
             // SuperMean attack
-            damages.Add(new AttackDefenseDamage(AttackType.SuperMean, DefenseType.Med, 5.5f, 7f));
+            damages.Add(new AttackDefenseDamage(AttackType.SuperUnder, DefenseType.Low, 5.5f, 7f));
             // HyperUnder attack
-            damages.Add(new AttackDefenseDamage(AttackType.HyperUnder, DefenseType.Low, 6f, 8f));
+            damages.Add(new AttackDefenseDamage(AttackType.HyperTop, DefenseType.High, 6f, 8f));
 
         }
 

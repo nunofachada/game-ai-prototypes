@@ -49,7 +49,7 @@ namespace AIUnityExample.NGramsFight
         }
 
         // Use this for initialization
-        private void Start()
+        public void Start()
         {
             // Initialize N-Gram
             predictor = hierarchical

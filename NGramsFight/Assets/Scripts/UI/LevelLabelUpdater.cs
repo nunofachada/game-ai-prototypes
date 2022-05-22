@@ -18,12 +18,12 @@ namespace AIUnityExample.NGramsFight.UI
 
         private void OnEnable()
         {
-            gameController.OnNextLevel += UpdateLevelLabel;
+            gameController.OnChangeLevel += UpdateLevelLabel;
         }
 
         private void OnDisable()
         {
-            gameController.OnNextLevel -= UpdateLevelLabel;
+            gameController.OnChangeLevel -= UpdateLevelLabel;
         }
 
         private void UpdateLevelLabel()

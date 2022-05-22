@@ -35,11 +35,11 @@ namespace AIUnityExample.NGramsFight
             // High attack
             patterns.Add(new AttackPattern("d,w,w,w", AttackType.High));
             // Mega attack
-            patterns.Add(new AttackPattern("d,w,w,d,d", AttackType.MegaTop));
+            patterns.Add(new AttackPattern("d,w,w,d,d", AttackType.MegaMean));
             // Super attack
-            patterns.Add(new AttackPattern("d,a,d,w,w", AttackType.SuperMean));
+            patterns.Add(new AttackPattern("d,a,d,w,w", AttackType.SuperUnder));
             // Hyper attack
-            patterns.Add(new AttackPattern("d,s,s,w,s", AttackType.HyperUnder));
+            patterns.Add(new AttackPattern("d,s,s,w,s", AttackType.HyperTop));
 
         }
 

@@ -14,14 +14,27 @@ namespace AIUnityExample.NGramsFight
 
         private Agent player, enemy;
 
+        private Predictor predictor;
+
         private InputFrontend inputFrontend;
 
-        public int Level { get; private set; }
+        private int level;
+
+        public int Level
+        {
+            get => level;
+            private set
+            {
+                level = value;
+                OnChangeLevel?.Invoke();
+            }
+        }
 
         private void Awake()
         {
             player = GetComponentInChildren<Player>();
             enemy = GetComponentInChildren<Enemy>();
+            predictor = GetComponentInChildren<Predictor>();
             inputFrontend = GetComponent<InputFrontend>();
             inputFrontend.enabled = false;
         }
@@ -29,9 +42,7 @@ namespace AIUnityExample.NGramsFight
         // Start is called before the first frame update
         private void Start()
         {
-            Level = 1;
-            OnNextLevel?.Invoke();
-            dialogManager.Dialog("NGrams Fight!", "Start game?", StartLevel);
+            dialogManager.Dialog("NGrams Fight!", "Start game?", BeginGame);
         }
 
         private void OnEnable()
@@ -46,35 +57,31 @@ namespace AIUnityExample.NGramsFight
             enemy.OnDie -= WinLevel;
         }
 
-        private void StartLevel()
+        private void NextLevel()
         {
+            Level++;
             player.ResetHealth();
             enemy.ResetHealth();
             inputFrontend.enabled = true;
         }
 
+        private void BeginGame()
+        {
+            Level = 0;
+            predictor.Start();
+            NextLevel();
+        }
+
         private void GameOver()
         {
             inputFrontend.enabled = false;
-            dialogManager.Dialog("Game Over!", "Start new game?", StartLevel);
+            dialogManager.Dialog("Game Over!", "Start new game?", BeginGame);
         }
 
         private void WinLevel()
         {
             inputFrontend.enabled = false;
             dialogManager.Dialog("Enemy defeated!", "Continue to next level?", NextLevel);
-        }
-
-        private void NextLevel()
-        {
-            // Increment level
-            Level++;
-
-            // Notify listeners that the level was incremented
-            OnNextLevel?.Invoke();
-
-            // Start level
-            StartLevel();
         }
 
         public void Quit()
@@ -89,6 +96,6 @@ namespace AIUnityExample.NGramsFight
 #endif
         }
 
-        public event Action OnNextLevel;
+        public event Action OnChangeLevel;
     }
 }

@@ -456,15 +456,15 @@ MonoBehaviour:
     damageToEnemyIfSuccess: 1.2
     damageToPlayerIfFail: 0.6
   - attack: 3
-    properDefense: 2
+    properDefense: 1
     damageToEnemyIfSuccess: 5
     damageToPlayerIfFail: 6
   - attack: 4
-    properDefense: 1
+    properDefense: 0
     damageToEnemyIfSuccess: 5.5
     damageToPlayerIfFail: 7
   - attack: 5
-    properDefense: 0
+    properDefense: 2
     damageToEnemyIfSuccess: 6
     damageToPlayerIfFail: 8
 --- !u!114 &478238282
