@@ -10,9 +10,15 @@ namespace AIUnityExample.NGramsFight
 
         public float Health { get; private set; }
 
-        private void OnEnable()
+        private void Start()
+        {
+            ResetHealth();
+        }
+
+        public void ResetHealth()
         {
             Health = initHealth;
+            OnHealthChange?.Invoke();
         }
 
         protected void TakeDamage(float damage)

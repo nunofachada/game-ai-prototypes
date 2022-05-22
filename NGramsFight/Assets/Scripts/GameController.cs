@@ -2,13 +2,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using AIUnityExample.NGramsFight.UI;
 
 namespace AIUnityExample.NGramsFight
 {
 
     public class GameController : MonoBehaviour
     {
+        [SerializeField]
+        private DialogManager dialogManager;
+
         private Agent player, enemy;
+
+        private InputFrontend inputFrontend;
 
         public int Level { get; private set; }
 
@@ -16,6 +22,8 @@ namespace AIUnityExample.NGramsFight
         {
             player = GetComponentInChildren<Player>();
             enemy = GetComponentInChildren<Enemy>();
+            inputFrontend = GetComponent<InputFrontend>();
+            inputFrontend.enabled = false;
         }
 
         // Start is called before the first frame update
@@ -23,40 +31,64 @@ namespace AIUnityExample.NGramsFight
         {
             Level = 1;
             OnNextLevel?.Invoke();
+            dialogManager.Dialog("NGrams Fight!", "Start game?", StartLevel);
         }
 
         private void OnEnable()
         {
             player.OnDie += GameOver;
-            enemy.OnDie += NextLevel;
+            enemy.OnDie += WinLevel;
         }
 
         private void OnDisable()
         {
             player.OnDie -= GameOver;
-            enemy.OnDie -= NextLevel;
+            enemy.OnDie -= WinLevel;
+        }
+
+        private void StartLevel()
+        {
+            player.ResetHealth();
+            enemy.ResetHealth();
+            inputFrontend.enabled = true;
         }
 
         private void GameOver()
         {
-            // Disable input
+            inputFrontend.enabled = false;
+            dialogManager.Dialog("Game Over!", "Start new game?", StartLevel);
+        }
 
-
-            // Notify listeners
-
+        private void WinLevel()
+        {
+            inputFrontend.enabled = false;
+            dialogManager.Dialog("Enemy defeated!", "Continue to next level?", NextLevel);
         }
 
         private void NextLevel()
         {
-            // Disable input
+            // Increment level
+            Level++;
 
+            // Notify listeners that the level was incremented
+            OnNextLevel?.Invoke();
 
-            // Notify listeners
+            // Start level
+            StartLevel();
+        }
 
+        public void Quit()
+        {
+#if UNITY_STANDALONE
+            // Quit application if running standalone
+            Application.Quit();
+#endif
+#if UNITY_EDITOR
+            // Stop game if running in editor
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
         }
 
         public event Action OnNextLevel;
-
-        public event Action OnGameOver;
     }
 }
