@@ -43,7 +43,7 @@ namespace AIUnityExample.NGramsFight
                 if (Attack.HasValue)
                 {
                     throw new InvalidOperationException(
-                        $"Repeated pattern '{revPatEnumerator}'");
+                        $"Repeated pattern leading to '{Attack}' attack");
                 }
                 Attack = attack;
             }
