@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using AIUnityExample.NGramsFight.UI;
 
@@ -36,12 +34,12 @@ namespace AIUnityExample.NGramsFight
             enemy = GetComponentInChildren<Enemy>();
             predictor = GetComponentInChildren<Predictor>();
             inputFrontend = GetComponent<InputFrontend>();
-            inputFrontend.enabled = false;
         }
 
         // Start is called before the first frame update
         private void Start()
         {
+            DisableGameElements();
             dialogManager.Dialog("NGrams Fight!", "Start game?", BeginGame);
         }
 
@@ -57,12 +55,26 @@ namespace AIUnityExample.NGramsFight
             enemy.OnDie -= WinLevel;
         }
 
+        private void EnableGameElements()
+        {
+            player.Visible = true;
+            enemy.Visible = true;
+            inputFrontend.enabled = true;
+        }
+
+        private void DisableGameElements()
+        {
+            inputFrontend.enabled = false;
+            player.Visible = false;
+            enemy.Visible = false;
+        }
+
         private void NextLevel()
         {
             Level++;
+            EnableGameElements();
             player.ResetHealth();
             enemy.ResetHealth();
-            inputFrontend.enabled = true;
         }
 
         private void BeginGame()
@@ -74,13 +86,13 @@ namespace AIUnityExample.NGramsFight
 
         private void GameOver()
         {
-            inputFrontend.enabled = false;
+            DisableGameElements();
             dialogManager.Dialog("Game Over!", "Start new game?", BeginGame);
         }
 
         private void WinLevel()
         {
-            inputFrontend.enabled = false;
+            DisableGameElements();
             dialogManager.Dialog("Enemy defeated!", "Continue to next level?", NextLevel);
         }
 

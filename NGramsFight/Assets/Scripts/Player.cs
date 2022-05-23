@@ -7,12 +7,11 @@ namespace AIUnityExample.NGramsFight
         [SerializeField]
         private float damageByKeyPress = 0.1f;
 
-        private Damages damages;
         private Enemy enemy;
 
-        private void Awake()
+        protected override void Awake()
         {
-            damages = GetComponentInParent<Damages>();
+            base.Awake();
             enemy = transform.parent.GetComponentInChildren<Enemy>();
         }
 
@@ -21,7 +20,7 @@ namespace AIUnityExample.NGramsFight
             Debug.Log($"[PLAYER] Performing {attack} attack");
             if (!enemy.TakeHit(attack))
             {
-                TakeDamage(damages.GetAttackDefenseDamage(attack).DamageToPlayerIfFail);
+                TakeDamage(GetAttackDefenseDamage(attack).DamageToPlayerIfFail);
                 Debug.Log($"[PLAYER] Enemy predicted attack, my health is now {Health}");
             }
         }

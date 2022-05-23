@@ -8,9 +8,29 @@ namespace AIUnityExample.NGramsFight
         [SerializeField]
         private float initHealth = 100;
 
+        private Damages damages;
+
+        private SpriteRenderer spriteRenderer;
+
+        private const float EPSILON = 0.001f;
+
         public float Health { get; private set; }
 
-        private void Start()
+        public bool Visible
+        {
+            set
+            {
+                spriteRenderer.enabled = value;
+            }
+        }
+
+        protected virtual void Awake()
+        {
+            damages = GetComponentInParent<Damages>();
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+
+        protected virtual void Start()
         {
             ResetHealth();
         }
@@ -24,13 +44,16 @@ namespace AIUnityExample.NGramsFight
         protected void TakeDamage(float damage)
         {
             Health -= damage;
-            if (Health <= 0)
+            if (Health < EPSILON)
             {
                 Health = 0;
                 OnDie?.Invoke();
             }
             OnHealthChange?.Invoke();
         }
+
+        protected AttackDefenseDamage GetAttackDefenseDamage(AttackType attack)
+            => damages.GetAttackDefenseDamage(attack);
 
         public event Action OnDie;
 
