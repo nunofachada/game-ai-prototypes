@@ -7,7 +7,7 @@ namespace AIUnityExample.NGramsFight
     public class Shot : MonoBehaviour
     {
         [SerializeField]
-        private float speed = 1;
+        private float speed = 0.2f;
 
         private SpriteRenderer spriteRenderer;
 
@@ -25,9 +25,20 @@ namespace AIUnityExample.NGramsFight
             rb.bodyType = RigidbodyType2D.Kinematic;
         }
 
-        public void Fire()
+        public void Fire(DefenseType defense)
         {
             originalPosition = transform.localPosition;
+
+            float y = defense switch
+            {
+                DefenseType.High => 0.172f,
+                DefenseType.Med => -0.010f,
+                DefenseType.Low => -0.191f,
+                _ => 0
+            };
+
+            transform.localPosition += new Vector3(0, y, 0);
+
             displace = StartCoroutine(Displace());
         }
 

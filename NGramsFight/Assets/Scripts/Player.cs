@@ -28,14 +28,11 @@ namespace AIUnityExample.NGramsFight
 
         public void PerformAttack(AttackType attack)
         {
-            if (attack <= AttackType.High)
-            {
-                normalShot.Fire();
-            }
-            else
-            {
-                specialShot.Fire();
-            }
+            Shot shotToTake = attack <= AttackType.High ? normalShot : specialShot;
+
+            AttackDefenseDamage attDefDam = GetAttackDefenseDamage(attack);
+
+            shotToTake.Fire(attDefDam.ProperDefense);
 
             Debug.Log($"[PLAYER] Performing {attack} attack");
             if (!enemy.TakeHit(attack))
