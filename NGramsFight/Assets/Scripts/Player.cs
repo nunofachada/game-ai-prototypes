@@ -32,7 +32,7 @@ namespace AIUnityExample.NGramsFight
 
             AttackDefenseDamage attDefDam = GetAttackDefenseDamage(attack);
 
-            shotToTake.Fire(attDefDam.ProperDefense);
+            shotToTake.Fire(attDefDam);
 
             Debug.Log($"[PLAYER] Performing {attack} attack");
             if (!enemy.TakeHit(attack))

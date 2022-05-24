@@ -15,8 +15,11 @@ namespace AIUnityExample.NGramsFight
 
         private Coroutine displace;
 
+        private Agent shooter;
+
         private void Awake()
         {
+            shooter = GetComponentInParent<Agent>();
             spriteRenderer = GetComponent<SpriteRenderer>();
             spriteRenderer.enabled = false;
 
@@ -25,11 +28,11 @@ namespace AIUnityExample.NGramsFight
             rb.bodyType = RigidbodyType2D.Kinematic;
         }
 
-        public void Fire(DefenseType defense)
+        public void Fire(AttackDefenseDamage attDefDam)
         {
             originalPosition = transform.localPosition;
 
-            float y = defense switch
+            float y = attDefDam.ProperDefense switch
             {
                 DefenseType.High => 0.172f,
                 DefenseType.Med => -0.010f,
@@ -55,13 +58,10 @@ namespace AIUnityExample.NGramsFight
 
         private void OnTriggerEnter2D(Collider2D collider)
         {
-            if (collider.GetComponent<Shot>() is null)
-            {
-                Debug.Log("SHOT TRIGGER!!");
-                StopCoroutine(displace);
-                spriteRenderer.enabled = false;
-                transform.localPosition = originalPosition;
-            }
+            Debug.Log("SHOT TRIGGER!!");
+            StopCoroutine(displace);
+            spriteRenderer.enabled = false;
+            transform.localPosition = originalPosition;
         }
     }
 }
