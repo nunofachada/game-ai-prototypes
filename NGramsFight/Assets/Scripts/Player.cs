@@ -8,23 +8,35 @@ namespace AIUnityExample.NGramsFight
         private float damageByKeyPress = 0.1f;
 
         [SerializeField]
-        private GameObject normalAttack;
+        private Shot normalShot;
 
         [SerializeField]
-        private GameObject specialAttack;
+        private Shot specialShot;
 
         private Enemy enemy;
 
         protected override void Awake()
         {
             base.Awake();
-            normalAttack.SetActive(false);
-            specialAttack.SetActive(false);
             enemy = transform.parent.GetComponentInChildren<Enemy>();
+        }
+
+        protected override void Start()
+        {
+            base.Start();
         }
 
         public void PerformAttack(AttackType attack)
         {
+            if (attack <= AttackType.High)
+            {
+                normalShot.Fire();
+            }
+            else
+            {
+                specialShot.Fire();
+            }
+
             Debug.Log($"[PLAYER] Performing {attack} attack");
             if (!enemy.TakeHit(attack))
             {
