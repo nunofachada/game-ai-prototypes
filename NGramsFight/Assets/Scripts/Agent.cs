@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace AIUnityExample.NGramsFight
@@ -11,6 +12,8 @@ namespace AIUnityExample.NGramsFight
         private Damages damages;
 
         private SpriteRenderer spriteRenderer;
+
+        private HitAnimate hitAnimate;
 
         private const float EPSILON = 0.001f;
 
@@ -28,6 +31,7 @@ namespace AIUnityExample.NGramsFight
         {
             damages = GetComponentInParent<Damages>();
             spriteRenderer = GetComponent<SpriteRenderer>();
+            hitAnimate = GetComponent<HitAnimate>();
         }
 
         protected virtual void Start()
@@ -41,7 +45,7 @@ namespace AIUnityExample.NGramsFight
             OnHealthChange?.Invoke();
         }
 
-        public void TakeDamage(float damage)
+        public void TakeDamage(float damage, bool animate = true)
         {
             Health -= damage;
             if (Health < EPSILON)
@@ -50,6 +54,11 @@ namespace AIUnityExample.NGramsFight
                 OnDie?.Invoke();
             }
             OnHealthChange?.Invoke();
+
+            if (animate)
+            {
+                hitAnimate?.Animate();
+            }
         }
 
         protected AttackDefenseDamage GetAttackDefenseDamage(AttackType attack)

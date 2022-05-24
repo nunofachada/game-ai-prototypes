@@ -27,6 +27,6 @@ namespace AIUnityExample.NGramsFight
             shotToTake.Fire(attDefDam);
         }
 
-        public void TakeKeyPressDamage() => TakeDamage(damageByKeyPress);
+        public void TakeKeyPressDamage() => TakeDamage(damageByKeyPress, false);
     }
 }

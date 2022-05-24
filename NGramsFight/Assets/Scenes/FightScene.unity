@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 57409441}
   - component: {fileID: 57409440}
   - component: {fileID: 57409442}
+  - component: {fileID: 57409443}
   m_Layer: 0
   m_Name: Shield
   m_TagString: Untagged
@@ -246,6 +247,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40bfb87e28bb7de2a9218bfde8587856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &57409443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 57409438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64bc5031d6bc7badb945f9a670574d69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxScaleWhenHit: 1.2
+  hitAnimSeconds: 0.5
 --- !u!1 &152157929
 GameObject:
   m_ObjectHideFlags: 0
@@ -1359,7 +1374,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68f08838858d43f9183c66b579aa6c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
+  speed: 2
 --- !u!1 &644574304
 GameObject:
   m_ObjectHideFlags: 0
@@ -2081,6 +2096,7 @@ GameObject:
   - component: {fileID: 1522205894}
   - component: {fileID: 1522205892}
   - component: {fileID: 1522205895}
+  - component: {fileID: 1522205896}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2184,6 +2200,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1522205896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1522205891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64bc5031d6bc7badb945f9a670574d69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxScaleWhenHit: 1.2
+  hitAnimSeconds: 0.5
 --- !u!1 &1541979735
 GameObject:
   m_ObjectHideFlags: 0
@@ -2263,6 +2293,7 @@ GameObject:
   - component: {fileID: 1611770038}
   - component: {fileID: 1611770041}
   - component: {fileID: 1611770042}
+  - component: {fileID: 1611770043}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -2427,6 +2458,20 @@ PolygonCollider2D:
       - {x: 0.29, y: 0.14}
       - {x: 0.13, y: 0.14}
       - {x: 0.11, y: 0.13}
+--- !u!114 &1611770043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1611770037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64bc5031d6bc7badb945f9a670574d69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxScaleWhenHit: 1.2
+  hitAnimSeconds: 0.5
 --- !u!1 &1674370483
 GameObject:
   m_ObjectHideFlags: 0
