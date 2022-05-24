@@ -1,5 +1,5 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace AIUnityExample.NGramsFight
@@ -17,6 +17,8 @@ namespace AIUnityExample.NGramsFight
 
         private Agent shooter;
 
+        private AttackDefenseDamage attDefDam;
+
         private void Awake()
         {
             shooter = GetComponentInParent<Agent>();
@@ -30,6 +32,8 @@ namespace AIUnityExample.NGramsFight
 
         public void Fire(AttackDefenseDamage attDefDam)
         {
+            this.attDefDam = attDefDam;
+
             originalPosition = transform.localPosition;
 
             float y = attDefDam.ProperDefense switch
@@ -58,10 +62,24 @@ namespace AIUnityExample.NGramsFight
 
         private void OnTriggerEnter2D(Collider2D collider)
         {
-            Debug.Log("SHOT TRIGGER!!");
             StopCoroutine(displace);
             spriteRenderer.enabled = false;
             transform.localPosition = originalPosition;
+
+            if (collider.gameObject.name.Equals("Shield"))
+            {
+                Debug.Log($"{attDefDam.Attack} attack unsuccessful, enemy predicted proper {attDefDam.ProperDefense} defense!");
+                shooter.TakeDamage(attDefDam.DamageToPlayerIfFail);
+            }
+            else if (collider.gameObject.name.Equals("Enemy"))
+            {
+                Debug.Log($"{attDefDam.Attack} attack SUCCESSFUL!");
+                collider.gameObject.GetComponent<Agent>().TakeDamage(attDefDam.DamageToEnemyIfSuccess);
+            }
+            else
+            {
+                throw new InvalidProgramException("Shot hit something unexpected!");
+            }
         }
     }
 }

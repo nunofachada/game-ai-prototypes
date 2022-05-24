@@ -41,7 +41,7 @@ namespace AIUnityExample.NGramsFight
             OnHealthChange?.Invoke();
         }
 
-        protected void TakeDamage(float damage)
+        public void TakeDamage(float damage)
         {
             Health -= damage;
             if (Health < EPSILON)
