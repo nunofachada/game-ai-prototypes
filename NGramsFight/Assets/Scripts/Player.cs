@@ -7,11 +7,19 @@ namespace AIUnityExample.NGramsFight
         [SerializeField]
         private float damageByKeyPress = 0.1f;
 
+        [SerializeField]
+        private GameObject normalAttack;
+
+        [SerializeField]
+        private GameObject specialAttack;
+
         private Enemy enemy;
 
         protected override void Awake()
         {
             base.Awake();
+            normalAttack.SetActive(false);
+            specialAttack.SetActive(false);
             enemy = transform.parent.GetComponentInChildren<Enemy>();
         }
 

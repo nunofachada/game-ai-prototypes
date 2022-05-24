@@ -8,7 +8,12 @@ namespace AIUnityExample.NGramsFight
         [SerializeField]
         private float defenseDuration = 0.5f;
 
+        [SerializeField]
+        private GameObject shield;
+
         private YieldInstruction defenseUp;
+
+        private Vector3 shieldBasePos;
 
         public DefenseType? Defense { get; private set; }
 
@@ -16,6 +21,8 @@ namespace AIUnityExample.NGramsFight
         {
             base.Awake();
             defenseUp = new WaitForSeconds(defenseDuration);
+            shieldBasePos = shield.transform.localPosition;
+            shield.SetActive(false);
         }
 
         public void SendPrediction(AttackType attack)
@@ -48,9 +55,12 @@ namespace AIUnityExample.NGramsFight
 
         private IEnumerator DefenseUp(DefenseType defense)
         {
+            shield.SetActive(true);
+            shield.transform.localPosition = shieldBasePos + new Vector3(0, 0.181f * (int)defense , 0);
             Defense = defense;
             yield return defenseUp;
             Defense = null;
+            shield.SetActive(false);
         }
     }
 }
