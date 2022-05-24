@@ -58,17 +58,17 @@ namespace AIUnityExample.NGramsFight
             Clear();
 
             // High attack
-            damages.Add(new AttackDefenseDamage(AttackType.High, DefenseType.High, 2f, 1.8f));
+            damages.Add(new AttackDefenseDamage(AttackType.High, DefenseType.High, 2f, 1.2f));
             // Med attack
-            damages.Add(new AttackDefenseDamage(AttackType.Med, DefenseType.Med, 1.5f, 1.1f));
+            damages.Add(new AttackDefenseDamage(AttackType.Med, DefenseType.Med, 1.5f, 0.8f));
             // Low attack
             damages.Add(new AttackDefenseDamage(AttackType.Low, DefenseType.Low, 1.2f, 0.6f));
             // MegaTop attack
-            damages.Add(new AttackDefenseDamage(AttackType.MegaMean, DefenseType.Med, 5f, 6f));
+            damages.Add(new AttackDefenseDamage(AttackType.MegaMean, DefenseType.Med, 3f, 1.5f));
             // SuperMean attack
-            damages.Add(new AttackDefenseDamage(AttackType.SuperUnder, DefenseType.Low, 5.5f, 7f));
+            damages.Add(new AttackDefenseDamage(AttackType.SuperUnder, DefenseType.Low, 3.5f, 1.8f));
             // HyperUnder attack
-            damages.Add(new AttackDefenseDamage(AttackType.HyperTop, DefenseType.High, 6f, 8f));
+            damages.Add(new AttackDefenseDamage(AttackType.HyperTop, DefenseType.High, 4f, 2f));
 
         }
 
