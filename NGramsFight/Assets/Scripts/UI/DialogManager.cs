@@ -1,26 +1,38 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
 
 namespace AIUnityExample.NGramsFight.UI
 {
+    /// <summary>
+    /// Manages the dialog box that appears to the user.
+    /// </summary>
     public class DialogManager : MonoBehaviour
     {
+        // Reference to the dialog box title label
         [SerializeField]
         private TextMeshProUGUI titleLabel;
 
+        // Reference to the dialog box text label
         [SerializeField]
         private TextMeshProUGUI textLabel;
 
+        // Reference to the dialog box OK button
         [SerializeField]
         private Button buttonOK;
 
+        // Current callback attached to the dialog box OK button
         private Action currentCallback;
 
+        /// <summary>
+        /// Show the dialog box to the user.
+        /// </summary>
+        /// <param name="title">Dialog box title.</param>
+        /// <param name="text">Dialog box text.</param>
+        /// <param name="callback">
+        /// Callback to be invoked when the OK button is pressed.
+        /// </param>
         public void Dialog(string title, string text, Action callback)
         {
             currentCallback = callback;
@@ -29,10 +41,16 @@ namespace AIUnityExample.NGramsFight.UI
             gameObject.SetActive(true);
         }
 
+        /// <summary>
+        /// This method is invoked when the OK button is pressed.
+        /// </summary>
         public void ClickOK()
         {
+            // Invoke the callback and then set it to null
             currentCallback?.Invoke();
             currentCallback = null;
+
+            // Disable/hide the dialog
             gameObject.SetActive(false);
         }
     }
