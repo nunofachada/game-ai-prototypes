@@ -10,7 +10,10 @@ using LibGameAI.Util;
 
 namespace LibGameAI.NGrams
 {
-    // Implementation of an hierarchical N-Gram
+    /// <summary>
+    /// Hierarchical N-Gram.
+    /// </summary>
+    /// <typeparam name="T">The type of the actions.</typeparam>
     public class HierarchNGram<T> : INGram<T>
     {
         // Threshold: minimum frequency for sequence of actions to be considered
@@ -19,25 +22,39 @@ namespace LibGameAI.NGrams
         // Array of N-Grams
         private readonly NGram<T>[] predictors;
 
-        // The N in N-Gram (window size + 1)
+        /// <inheritdoc/>
         public int NValue { get; }
 
-        // Constructor
+        /// <summary>
+        /// Creates a new hierarchical N-Gram.
+        /// </summary>
+        /// <param name="nValue">The N in N-Gram (window size + 1).</param>
+        /// <param name="threshold">
+        /// Minimum number of observations for a specific N-Gram to return a
+        /// prediction.
+        /// </param>
         public HierarchNGram(int nValue, int threshold)
         {
             // Keep the N value
             NValue = nValue;
+
             // Keep the threshold
             this.threshold = threshold;
+
             // Instantiate the array of N-Grams
             predictors = new NGram<T>[nValue];
+
             // Instantiate the individual N-Grams
             for (int i = 0; i < nValue; i++)
                 predictors[i] = new NGram<T>(i + 1);
         }
 
-        // Register a sequence of actions
-        // The actions array should be at least of size 1
+        /// <summary>
+        /// Register a sequence of actions.
+        /// </summary>
+        /// <param name="actions">
+        /// The actions list, which should be at least of size 1.
+        /// </param>
         public void RegisterSequence(IReadOnlyList<T> actions)
         {
             // Register the sequence of actions in each Ni-Gram
@@ -58,8 +75,15 @@ namespace LibGameAI.NGrams
             }
         }
 
-        // Get the most likely action given a sequence of actions
-        // The actions array should be at least of size 1
+        /// <summary>
+        /// Get the most likely action given a sequence of actions.
+        /// </summary>
+        /// <param name="actions">
+        /// The actions list, which should be at least of size 1.
+        /// </param>
+        /// <returns>
+        /// The most likely action for the given a sequence of actions.
+        /// </returns>
         public T GetMostLikely(IReadOnlyList<T> actions)
         {
             // Declare variable for best action and set it to its default value
@@ -94,6 +118,7 @@ namespace LibGameAI.NGrams
                     }
                 }
             }
+
             // Return the best action
             return bestAction;
         }
