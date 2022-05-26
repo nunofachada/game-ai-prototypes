@@ -1,17 +1,31 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+//
+// Author: Nuno Fachada
+
 using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
 
 namespace AIUnityExample.NGramsFight
 {
+    /// <summary>
+    /// An list of <see cref="AttackDefenseDamage"/> which can be edited in the
+    /// editor.
+    /// </summary>
     public class Damages : MonoBehaviour
     {
+        // The actual list of attack-proper defense-damages relations
         [SerializeField]
         [ReorderableList]
         private List<AttackDefenseDamage> damages;
 
+        // Relates an attack with its respective attack-proper defense-damages
+        // relation
         private IDictionary<AttackType, AttackDefenseDamage> damagePlaybook;
 
+        // Called when the script instance is being loaded
         private void Awake()
         {
             damagePlaybook = new Dictionary<AttackType, AttackDefenseDamage>();
@@ -30,6 +44,15 @@ namespace AIUnityExample.NGramsFight
             }
         }
 
+        /// <summary>
+        /// Get the <see cref="AttackDefenseDamage"/> relation associated with
+        /// the given <paramref name="attack"/>.
+        /// </summary>
+        /// <param name="attack">The attack.</param>
+        /// <returns>
+        /// The <see cref="AttackDefenseDamage"/> relation associated with the
+        /// given <paramref name="attack"/>, or `null` if none found.
+        /// </returns>
         public AttackDefenseDamage GetAttackDefenseDamage(AttackType attack)
         {
             if (damagePlaybook.TryGetValue(attack, out AttackDefenseDamage attDefDam))
@@ -39,6 +62,7 @@ namespace AIUnityExample.NGramsFight
             return null;
         }
 
+        // Clear list of attack-defense-damages relations
         [Button]
         private void Clear()
         {
@@ -52,6 +76,8 @@ namespace AIUnityExample.NGramsFight
             }
         }
 
+        // Initialize the list of attack-defense-damage relations with
+        // sane/tested defaults
         [Button]
         private void Reset()
         {
@@ -69,8 +95,6 @@ namespace AIUnityExample.NGramsFight
             damages.Add(new AttackDefenseDamage(AttackType.SuperUnder, DefenseType.Low, 3.5f, 1.8f));
             // HyperUnder attack
             damages.Add(new AttackDefenseDamage(AttackType.HyperTop, DefenseType.High, 4f, 2f));
-
         }
-
     }
 }
