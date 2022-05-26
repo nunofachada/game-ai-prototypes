@@ -8,35 +8,6 @@ namespace AIUnityExample.NGramsFight
     [Serializable]
     public class AttackPattern
     {
-        private class RevPatEnumer : IEnumerator<KeyCode>
-        {
-            private int index;
-            private readonly IReadOnlyList<KeyCode> pattern;
-
-            public KeyCode Current => pattern[index];
-
-            object IEnumerator.Current => Current;
-
-            public bool MoveNext()
-            {
-                index--;
-                return index >= 0;
-            }
-
-            public void Reset()
-            {
-                index = pattern.Count;
-            }
-
-            public void Dispose() { }
-
-            public RevPatEnumer(IReadOnlyList<KeyCode> pattern)
-            {
-                index = pattern.Count;
-                this.pattern = pattern;
-            }
-        }
-
         [SerializeField]
         private string patternStr;
 
@@ -71,7 +42,10 @@ namespace AIUnityExample.NGramsFight
 
         public IEnumerator<KeyCode> GetReverseEnumerator()
         {
-            return new RevPatEnumer(pattern);
+            for (int i = pattern.Count - 1; i >= 0; i--)
+            {
+                yield return pattern[i];
+            }
         }
 
         public override string ToString()
