@@ -36,6 +36,8 @@ namespace AIUnityExamples.RobbyOptimize
                 (new TournamentSelection<RobbyAction>(random)).Select,
                 (new OnePointCrossover<RobbyAction>(random)).Mate,
                 (new FlipEnumMutation<RobbyAction>(0.1f)).Mutate,
+                // TODO: Fitness should obtained as the average of 100 runs per
+                // strategy, but here we're only getting it with 1 run per strategy
                 (ind) => { world.Reset(); ind.Fit = world.FullRun(200, ind.GenesView); },
                 random);
 
