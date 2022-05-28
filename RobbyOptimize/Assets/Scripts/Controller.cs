@@ -28,20 +28,20 @@ namespace AIUnityExamples.RobbyOptimize
             System.Random random = new System.Random();
             RobbyWorld world = new RobbyWorld(10, 10, 0.5f);
 
-            GeneticAlgorithm<Reaction> ga = new GeneticAlgorithm<Reaction>(
+            GeneticAlgorithm<RobbyAction> ga = new GeneticAlgorithm<RobbyAction>(
                 200,
                 0.9f,
                 0.1f,
-                () => new Ind<Reaction>(world.GenerateRandomRules()),
-                (new TournamentSelection<Reaction>(random)).Select,
-                (new OnePointCrossover<Reaction>(random)).Mate,
-                (new FlipEnumMutation<Reaction>(0.1f)).Mutate,
+                () => new Ind<RobbyAction>(world.GenerateRandomRules()),
+                (new TournamentSelection<RobbyAction>(random)).Select,
+                (new OnePointCrossover<RobbyAction>(random)).Mate,
+                (new FlipEnumMutation<RobbyAction>(0.1f)).Mutate,
                 (ind) => { world.Reset(); ind.Fit = world.FullRun(200, ind.GenesView); },
                 random);
 
             ga.Init();
 
-            Ind<Reaction> best = ga.Run(1000, float.PositiveInfinity);
+            Ind<RobbyAction> best = ga.Run(1000, float.PositiveInfinity);
 
             Debug.Log($"Best fitness is {best.Fit}");
         }
@@ -50,7 +50,7 @@ namespace AIUnityExamples.RobbyOptimize
         {
             RobbyWorld world = new RobbyWorld(10, 10, 0.5f);
 
-            IList<Reaction> rules = world.GenerateRandomRules();
+            IList<RobbyAction> rules = world.GenerateRandomRules();
 
             int score = world.FullRun(200, rules);
 
@@ -65,7 +65,7 @@ namespace AIUnityExamples.RobbyOptimize
 
             RobbyWorld world = new RobbyWorld(10, 10, 0.5f);
 
-            IList<Reaction> rules = world.GenerateRandomRules();
+            IList<RobbyAction> rules = world.GenerateRandomRules();
 
             StringBuilder sb = new StringBuilder();
 

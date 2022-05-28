@@ -7,7 +7,7 @@
 
 namespace AIUnityExamples.RobbyOptimize.RobbyModel
 {
-    public enum Reaction
+    public enum RobbyAction
     {
         MoveNorth   = 0,
         MoveSouth   = 1,

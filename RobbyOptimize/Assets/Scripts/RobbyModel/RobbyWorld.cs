@@ -47,18 +47,18 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
 
         static RobbyWorld()
         {
-            numActions = Enum.GetValues(typeof(Reaction)).Length;
+            numActions = Enum.GetValues(typeof(RobbyAction)).Length;
         }
 
-        public IList<Reaction> GenerateRandomRules(IList<Reaction> outRules = null)
+        public IList<RobbyAction> GenerateRandomRules(IList<RobbyAction> outRules = null)
         {
-            IList<Reaction> rules = outRules ?? new Reaction[TileUtil.numRules];
+            IList<RobbyAction> rules = outRules ?? new RobbyAction[TileUtil.numRules];
 
             System.Diagnostics.Debug.Assert(rules.Count == TileUtil.numRules);
 
             for (int i = 0; i < TileUtil.numRules; i++)
             {
-                rules[i] = (Reaction)random.Next(numActions);
+                rules[i] = (RobbyAction)random.Next(numActions);
             }
 
             return rules;
@@ -85,7 +85,7 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
             }
         }
 
-        public int FullRun(int iterations, IList<Reaction> rules)
+        public int FullRun(int iterations, IList<RobbyAction> rules)
         {
             for (int i = 0; i < iterations; i++)
             {
@@ -99,12 +99,12 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
             return score;
         }
 
-        public void NextTurn(IList<Reaction> rules)
+        public void NextTurn(IList<RobbyAction> rules)
         {
             System.Diagnostics.Debug.Assert(rules.Count == TileUtil.numRules);
 
             int ruleIndex;
-            Reaction action;
+            RobbyAction action;
 
             GetSituationAt(RobbyPos, situation);
 
@@ -117,18 +117,18 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
                 RobbyPos.row, RobbyPos.col, score, ruleIndex,
                 TileUtil.ToString(situation), action);
 
-            if (action == Reaction.MoveRandom)
+            if (action == RobbyAction.MoveRandom)
             {
-                action = (Reaction)random.Next(TileUtil.NUM_NEIGHBORS);
+                action = (RobbyAction)random.Next(TileUtil.NUM_NEIGHBORS);
             }
 
             switch (action)
             {
-                case Reaction.MoveNorth: Move(-1, 0); break;
-                case Reaction.MoveSouth: Move(1, 0); break;
-                case Reaction.MoveEast: Move(0, 1); break;
-                case Reaction.MoveWest: Move(0, -1); break;
-                case Reaction.PickUpTrash: PickUpTrash(); break;
+                case RobbyAction.MoveNorth: Move(-1, 0); break;
+                case RobbyAction.MoveSouth: Move(1, 0); break;
+                case RobbyAction.MoveEast: Move(0, 1); break;
+                case RobbyAction.MoveWest: Move(0, -1); break;
+                case RobbyAction.PickUpTrash: PickUpTrash(); break;
             }
         }
 
