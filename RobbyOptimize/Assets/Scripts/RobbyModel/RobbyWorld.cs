@@ -75,11 +75,11 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
                 {
                     if (random.NextDouble() < trashCov)
                     {
-                        world[i, j] = Tile.Empty;
+                        world[i, j] = Tile.Trash;
                     }
                     else
                     {
-                        world[i, j] = Tile.Trash;
+                        world[i, j] = Tile.Empty;
                     }
                 }
             }
