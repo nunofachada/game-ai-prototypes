@@ -26,26 +26,26 @@ namespace AIUnityExamples.RobbyOptimize.RobbyModel
         {
             System.Diagnostics.Debug.Assert(tiles.Length == NUM_NEIGHBORS);
 
-            int index = 0;
+            int base10 = 0;
             int current = 1;
             for (int i = 0; i < NUM_NEIGHBORS; i++)
             {
                 int digit = (int)tiles[i];
-                index += current * digit;
+                base10 += current * digit;
                 current *= numStates;
             }
-            return index;
+            return base10;
         }
-        public static void FromDecimal(int index, Tile[] tiles)
+        public static void FromDecimal(int base10, Tile[] tiles)
         {
             System.Diagnostics.Debug.Assert(tiles.Length == NUM_NEIGHBORS);
-            System.Diagnostics.Debug.Assert(index >= 0 && index < numRules);
+            System.Diagnostics.Debug.Assert(base10 >= 0 && base10 < numRules);
 
             for (int i = 0; i < NUM_NEIGHBORS; i++)
-            {   if (index > 0)
+            {   if (base10 > 0)
                 {
-                    tiles[i] = (Tile)(index % numStates);
-                    index /= numStates;
+                    tiles[i] = (Tile)(base10 % numStates);
+                    base10 /= numStates;
                 }
                 else
                 {
