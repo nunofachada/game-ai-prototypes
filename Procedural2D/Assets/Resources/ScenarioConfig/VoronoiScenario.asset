@@ -12,14 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 498e53d1c76ceda449f43d1063135021, type: 3}
   m_Name: VoronoiScenario
   m_EditorClassIdentifier: 
-  randGenerator: 
-  useSeed: 0
+  randGenerator: LCG48
+  useSeed: 1
   seed: 0
+  maxAreas: 25
+  toroidal: 1
+  distanceType: 0
   areaTypes:
   - {r: 0, g: 0, b: 1, a: 1}
   - {r: 0, g: 1, b: 0, a: 1}
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  maxAreas: 6
-  toroidal: 1
-  distance: 0
+  - {r: 0.3962264, g: 0.38327006, b: 0.23362406, a: 1}
+  - {r: 0.8713332, g: 0.015686274, b: 1, a: 1}
+  - {r: 0.5528213, g: 0.9528302, b: 0.5832738, a: 1}
+  - {r: 1, g: 0.59301215, b: 0.015686274, a: 1}

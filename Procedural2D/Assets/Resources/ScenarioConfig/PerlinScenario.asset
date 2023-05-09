@@ -15,7 +15,7 @@ MonoBehaviour:
   randGenerator: LCG48
   useSeed: 0
   seed: 0
-  span: 5
+  span: 10
   heightColors:
   - {r: 0.22, g: 0.52, b: 0.81, a: 1}
   - {r: 0.76, g: 0.7, b: 0.5, a: 1}

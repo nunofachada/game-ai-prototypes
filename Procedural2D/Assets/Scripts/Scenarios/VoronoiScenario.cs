@@ -16,11 +16,6 @@ namespace AIUnityExamples.Procedural2D.Scenarios
         private enum Distance { Euclidean, Manhattan }
 
         [SerializeField]
-        private List<Color> areaTypes = new List<Color>() {
-            Color.blue, Color.green, Color.red, Color.yellow
-        };
-
-        [SerializeField]
         private int maxAreas = 6;
 
         [SerializeField]
@@ -28,6 +23,11 @@ namespace AIUnityExamples.Procedural2D.Scenarios
 
         [SerializeField]
         private Distance distanceType = Distance.Euclidean;
+
+        [SerializeField]
+        private List<Color> areaTypes = new List<Color>() {
+            Color.blue, Color.green, Color.red, Color.yellow
+        };
 
         public override void Generate(Color[] pixels, int width, int height)
         {
