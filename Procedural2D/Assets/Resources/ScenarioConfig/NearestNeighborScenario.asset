@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b965f6ea3b5d6c8f9bf0b87aa1956cd, type: 3}
   m_Name: NearestNeighborScenario
   m_EditorClassIdentifier: 
-  randGenerator: 
+  randGenerator: Randu
   useSeed: 0
   seed: 0
   areaTypes:
@@ -20,6 +20,10 @@ MonoBehaviour:
   - {r: 0, g: 1, b: 0, a: 1}
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  maxAreas: 6
-  distance: 1
-  Toroidal: 1
+  - {r: 0.1981132, g: 0.18880548, b: 0.081301175, a: 1}
+  - {r: 1, g: 0.015686274, b: 0.7635453, a: 1}
+  - {r: 0.7729619, g: 0.80203885, b: 0.8490566, a: 1}
+  - {r: 0.4494482, g: 0.9433962, b: 0.9290346, a: 1}
+  - {r: 1, g: 0.5176471, b: 0.015686275, a: 1}
+  maxAreas: 680
+  toroidal: 1
