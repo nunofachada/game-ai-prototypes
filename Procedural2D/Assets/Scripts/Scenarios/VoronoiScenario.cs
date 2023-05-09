@@ -11,8 +11,10 @@ using UnityEngine;
 
 namespace AIUnityExamples.Procedural2D.Scenarios
 {
-    public class NearestNeighborScenario : StochasticScenario
+    public class VoronoiScenario : StochasticScenario
     {
+        private enum Distance { Euclidean, Manhattan }
+
         [SerializeField]
         private List<Color> areaTypes = new List<Color>() {
             Color.blue, Color.green, Color.red, Color.yellow
@@ -24,10 +26,13 @@ namespace AIUnityExamples.Procedural2D.Scenarios
         [SerializeField]
         private bool toroidal = true;
 
+        [SerializeField]
+        private Distance distanceType = Distance.Euclidean;
+
         public override void Generate(Color[] pixels, int width, int height)
         {
-            // For now we only use Euclidean distance
-            double Distance((int r, int c) a, (int r, int c) b)
+            // Euclidean distance
+            double EuclideanDistance((int r, int c) a, (int r, int c) b)
             {
                 int dr = Math.Abs(a.r - b.r);
                 int dc = Math.Abs(a.c - b.c);
@@ -43,7 +48,31 @@ namespace AIUnityExamples.Procedural2D.Scenarios
                 return Math.Sqrt(dr * dr + dc * dc);
             }
 
+            // Manhattan distance
+            double ManhattanDistance((int r, int c) a, (int r, int c) b)
+            {
+                int dr = Math.Abs(a.r - b.r);
+                int dc = Math.Abs(a.c - b.c);
+
+                if (toroidal)
+                {
+                    if (dr > height / 2)
+                        dr = height - dr;
+                    if (dc > width / 2)
+                        dc = width - dc;
+                }
+
+                return dr + dc;
+            }
+
             base.Generate(pixels, width, height);
+
+            Func<(int, int), (int, int), double> distFunc = distanceType switch
+            {
+                Distance.Euclidean => EuclideanDistance,
+                Distance.Manhattan => ManhattanDistance,
+                _ => throw new InvalidOperationException("Unknown distance type")
+            };
 
             IList<(int, int)> centers;
 
@@ -90,7 +119,7 @@ namespace AIUnityExamples.Procedural2D.Scenarios
                         // Determine closest center
                         foreach ((int r, int c) point in centers)
                         {
-                            double dist = Distance((i, j), point);
+                            double dist = distFunc((i, j), point);
 
                             if (dist < minDist)
                             {

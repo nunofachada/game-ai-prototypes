@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b965f6ea3b5d6c8f9bf0b87aa1956cd, type: 3}
-  m_Name: NearestNeighborScenario
+  m_Script: {fileID: 11500000, guid: 498e53d1c76ceda449f43d1063135021, type: 3}
+  m_Name: VoronoiScenario
   m_EditorClassIdentifier: 
-  randGenerator: Randu
+  randGenerator: 
   useSeed: 0
   seed: 0
   areaTypes:
@@ -20,10 +20,6 @@ MonoBehaviour:
   - {r: 0, g: 1, b: 0, a: 1}
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  - {r: 0.1981132, g: 0.18880548, b: 0.081301175, a: 1}
-  - {r: 1, g: 0.015686274, b: 0.7635453, a: 1}
-  - {r: 0.7729619, g: 0.80203885, b: 0.8490566, a: 1}
-  - {r: 0.4494482, g: 0.9433962, b: 0.9290346, a: 1}
-  - {r: 1, g: 0.5176471, b: 0.015686275, a: 1}
-  maxAreas: 680
+  maxAreas: 6
   toroidal: 1
+  distance: 0
