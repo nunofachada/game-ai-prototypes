@@ -1,0 +1,63 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Game AI Prototypes
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Nuno
+    family-names: Fachada
+    email: nuno.fachada@ulusofona.pt
+    affiliation: 'Lusófona University, COPELABS'
+    orcid: 'https://orcid.org/0000-0002-8487-5837'
+repository-code: 'https://github.com/nunofachada/game-ai-prototypes'
+abstract: >-
+  Artificial intelligence prototypes developed in Unity for educational
+  purposes.
+keywords:
+  - artificial intelligence
+  - ai for games
+  - computer games
+  - videogames
+  - unity game engine
+license: MPL-2.0
+preferred-citation:
+  title: Active Learning Prototypes for Teaching Game AI
+  type: conference-paper
+  conference:
+    name: '2023 IEEE Conference on Games (CoG)'
+  collection-title: 'Proceedings of 2023 IEEE Conference on Games (CoG)'
+  collection-type: proceedings
+  location:
+    name: 'Northeastern University, Boston, USA'
+  authors:
+    - given-names: Nuno
+      family-names: Fachada
+      email: nuno.fachada@ulusofona.pt
+      affiliation: 'Lusófona University, COPELABS'
+      orcid: 'https://orcid.org/0000-0002-8487-5837'
+    - given-names: Filipa F.
+      family-names: Barreiros
+      email: filipa.barreiros@logframe.pt
+      affiliation: 'Logframe, Lda.'
+    - given-names: Phil
+      family-names: Lopes
+      email: phil.lopes@ulusofona.pt
+      affiliation: 'Lusófona University, HEI-Lab'
+      orcid: 'https://orcid.org/0000-0002-9567-5806'
+    - given-names: Micaela
+      family-names: Fonseca
+      email: micaela.fonseca@ulusofona.pt
+      affiliation: 'Lusófona University, HEI-Lab'
+      orcid: 'https://orcid.org/0000-0001-7946-4825'
+  # doi: TBD
+  # start: TBD
+  # end: TBD
+  month: 8
+  year: 2023
+  # url: 'TBD'
+  publisher:
+    name: IEEE
