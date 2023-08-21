@@ -1,15 +1,25 @@
-﻿/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * Author: Nuno Fachada
- * */
+﻿/* Copyright (c) 2018-2023 Nuno Fachada and contributors
+ * Distributed under the MIT License (See accompanying file LICENSE or copy
+ * at http://opensource.org/licenses/MIT) */
 
 using System;
 using System.Collections.Generic;
 
 namespace LibGameAI.PathFinding
 {
+    /// <summary>
+    /// A path finder implemented with the A* algorithm.
+    /// </summary>
+    /// <remarks>
+    /// Optimizations to be done (some are code-related with others):
+    /// TODO Use a heap/priority queue (priority heap) data structure for the
+    /// open and closed nodes.
+    /// TODO Either make NodeRecord structs (and update surrounding code
+    /// appropriately) or use an object pool of NodeRecords.
+    /// TODO Avoid always getting node record from the dictionary, just pull
+    /// it once onto a local variable and use that.
+    /// TODO Reuse the heuristic value from previously existing node records.
+    /// </remarks>
     public class AStarPathFinder : IPathFinder
     {
         // Auxiliary collections
@@ -119,7 +129,6 @@ namespace LibGameAI.PathFinding
         /// <param name="graph">Graph where to perform search.</param>
         /// <param name="start">Start node.</param>
         /// <param name="goal">Goal node.</param>
-        /// <param name="heuristics">Heuristics for each node.</param>
         /// <returns>
         /// An enumerable containing the connections that constitute
         /// a path from start to goal.
