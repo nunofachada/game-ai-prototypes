@@ -5,9 +5,12 @@
  * Author: Nuno Fachada
  * */
 
-public enum Fill
+namespace GameAIPrototypes.PathFinder2D
 {
-    None,
-    Open,
-    Closed
+    public enum Fill
+    {
+        None,
+        Open,
+        Closed
+    }
 }

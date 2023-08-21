@@ -6,15 +6,18 @@
  * */
 using UnityEngine;
 
-[CreateAssetMenu(
-    fileName = "Data",
-    menuName = "ScriptableObjects/TileScriptableObject",
-    order = 1)]
-public class TileScriptableObject : ScriptableObject
+namespace GameAIPrototypes.PathFinder2D
 {
-    [SerializeField] private Sprite blocked = null;
-    [SerializeField] private Sprite empty = null;
+    [CreateAssetMenu(
+        fileName = "Data",
+        menuName = "ScriptableObjects/TileScriptableObject",
+        order = 1)]
+    public class TileScriptableObject : ScriptableObject
+    {
+        [SerializeField] private Sprite blocked = null;
+        [SerializeField] private Sprite empty = null;
 
-    public Sprite Blocked => blocked;
-    public Sprite Empty => empty;
+        public Sprite Blocked => blocked;
+        public Sprite Empty => empty;
+    }
 }

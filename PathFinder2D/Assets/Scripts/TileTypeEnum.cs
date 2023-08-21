@@ -5,11 +5,14 @@
  * Author: Nuno Fachada
  * */
 
-// State of a tile in the tile-based world
-public enum TileTypeEnum
+namespace GameAIPrototypes.PathFinder2D
 {
-    // Empty tile
-    Empty,
-    // Blocked tile
-    Blocked
+    // State of a tile in the tile-based world
+    public enum TileTypeEnum
+    {
+        // Empty tile
+        Empty,
+        // Blocked tile
+        Blocked
+    }
 }

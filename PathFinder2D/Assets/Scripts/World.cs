@@ -10,498 +10,501 @@ using UnityEngine;
 using NaughtyAttributes;
 using LibGameAI.PathFinding;
 
-public class World : MonoBehaviour
+namespace GameAIPrototypes.PathFinder2D
 {
-    // Useful enumerations
-    private enum PathFindAlg { Dijkstra, AStar }
-    private enum Heuristic { EuclideanDist, ManhattanDist, InverseEuclidean }
-
-    // Names of boxes containing parameters
-    private const string worldParams = "World";
-    private const string movementParams = "Movement";
-    private const string pathFindingParams = "General Pathfinding";
-    private const string aStarParams = "AStar Pathfinding";
-
-    // The world size
-    [SerializeField]
-    [BoxGroup(worldParams)]
-    private Vector2Int worldSize = new Vector2Int(10, 10);
-
-    // Ratio of passages in each column
-    [SerializeField]
-    [Range(0f, 1f)]
-    [BoxGroup(worldParams)]
-    private float passageRatio = 0.1f;
-
-    // How long between each movement
-    [SerializeField]
-    [Range(0.1f, 10f)]
-    [BoxGroup(movementParams)]
-    private float moveSpeed = 2f;
-
-    // Is paused?
-    [SerializeField]
-    [BoxGroup(movementParams)]
-    private bool pause = false;
-
-    // Show fill?
-    [SerializeField]
-    [BoxGroup(pathFindingParams)]
-    private bool showFill = true;
-
-    // Path finding algorithm to use
-    [SerializeField]
-    [BoxGroup(pathFindingParams)]
-    private PathFindAlg pathFindingAlgorithm = default;
-
-    [SerializeField]
-    [BoxGroup(aStarParams)]
-    [ShowIf(nameof(IsAStar))]
-    private bool earlyExit = false;
-
-    [SerializeField]
-    [BoxGroup(aStarParams)]
-    [ShowIf(nameof(IsAStar))]
-    private Heuristic heuristic = default;
-
-    // Heuristic weight
-    [Range(0, 25)]
-    [SerializeField]
-    [BoxGroup(aStarParams)]
-    [ShowIf(nameof(IsAStar))]
-    private float heuristicWeight = 1;
-
-    // Returns true if A* algorithm is selected
-    private bool IsAStar => pathFindingAlgorithm == PathFindAlg.AStar;
-
-    // These should contain the prefabs that represent the game objects
-    private GameObject tilePrefab;
-    private GameObject playerPrefab;
-    private GameObject goalPrefab;
-
-    // Known path finders
-    private IDictionary<int, IPathFinder> knownPathFinders;
-
-    // Key for getting the correct pathfinder from the dictionary
-    private int Key(
-        PathFindAlg pfa,
-        Heuristic h = Heuristic.EuclideanDist,
-        bool early = false)
+    public class World : MonoBehaviour
     {
-        if (pfa == PathFindAlg.Dijkstra) return 0;
-        else return 1 | ((early ? 0 : 1) << 1) | (int)h << 2;
-    }
+        // Useful enumerations
+        private enum PathFindAlg { Dijkstra, AStar }
+        private enum Heuristic { EuclideanDist, ManhattanDist, InverseEuclidean }
 
-    // Player and goal positions
-    public Vector2Int PlayerPos { get; private set; }
-    public Vector2Int GoalPos { get; private set; }
+        // Names of boxes containing parameters
+        private const string worldParams = "World";
+        private const string movementParams = "Movement";
+        private const string pathFindingParams = "General Pathfinding";
+        private const string aStarParams = "AStar Pathfinding";
 
-    // Goal reached?
-    public bool GoalReached { get; private set; }
+        // The world size
+        [SerializeField]
+        [BoxGroup(worldParams)]
+        private Vector2Int worldSize = new Vector2Int(10, 10);
 
-    // Does a valid path exists between player and goal?
-    public bool ValidPath { get; private set; } = true;
+        // Ratio of passages in each column
+        [SerializeField]
+        [Range(0f, 1f)]
+        [BoxGroup(worldParams)]
+        private float passageRatio = 0.1f;
 
-    // Show fill?
-    public bool ShowFill => showFill;
+        // How long between each movement
+        [SerializeField]
+        [Range(0.1f, 10f)]
+        [BoxGroup(movementParams)]
+        private float moveSpeed = 2f;
 
-    // Current path
-    private IEnumerable<IConnection> path;
+        // Is paused?
+        [SerializeField]
+        [BoxGroup(movementParams)]
+        private bool pause = false;
 
-    // Matrix of game world state
-    private TileBehaviour[,] world;
+        // Show fill?
+        [SerializeField]
+        [BoxGroup(pathFindingParams)]
+        private bool showFill = true;
 
-    // The current player and goal
-    private GameObject player;
-    private GameObject goal;
+        // Path finding algorithm to use
+        [SerializeField]
+        [BoxGroup(pathFindingParams)]
+        private PathFindAlg pathFindingAlgorithm = default;
 
-    // Offset for all tiles
-    private Vector2 offset;
+        [SerializeField]
+        [BoxGroup(aStarParams)]
+        [ShowIf(nameof(IsAStar))]
+        private bool earlyExit = false;
 
-    // Is the player moving?
-    private bool isMoving;
+        [SerializeField]
+        [BoxGroup(aStarParams)]
+        [ShowIf(nameof(IsAStar))]
+        private Heuristic heuristic = default;
 
-    // Last time the FindPath coroutine ran
-    private float lastFindPathTime;
+        // Heuristic weight
+        [Range(0, 25)]
+        [SerializeField]
+        [BoxGroup(aStarParams)]
+        [ShowIf(nameof(IsAStar))]
+        private float heuristicWeight = 1;
 
-    // Awake is called when the script instance is being loaded
-    private void Awake()
-    {
-        // Load prefabs
-        tilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
-        playerPrefab = Resources.Load<GameObject>("Prefabs/Player");
-        goalPrefab = Resources.Load<GameObject>("Prefabs/Goal");
+        // Returns true if A* algorithm is selected
+        private bool IsAStar => pathFindingAlgorithm == PathFindAlg.AStar;
 
-        // Instantiate known path finders
-        knownPathFinders = new Dictionary<int, IPathFinder>();
+        // These should contain the prefabs that represent the game objects
+        private GameObject tilePrefab;
+        private GameObject playerPrefab;
+        private GameObject goalPrefab;
 
-        knownPathFinders[Key(PathFindAlg.Dijkstra)] =
-            new DijkstraPathFinder();
-        knownPathFinders[Key(PathFindAlg.AStar, Heuristic.EuclideanDist)] =
-            new AStarPathFinder(EuclideanDistance);
-        knownPathFinders[Key(PathFindAlg.AStar, Heuristic.EuclideanDist, true)] =
-            new AStarPathFinder(EuclideanDistance, true);
-        knownPathFinders[Key(PathFindAlg.AStar, Heuristic.ManhattanDist)] =
-            new AStarPathFinder(ManhattanDistance);
-        knownPathFinders[Key(PathFindAlg.AStar, Heuristic.ManhattanDist, true)] =
-            new AStarPathFinder(ManhattanDistance, true);
-        knownPathFinders[Key(PathFindAlg.AStar, Heuristic.InverseEuclidean)] =
-            new AStarPathFinder(InverseEuclidean);
-        knownPathFinders[Key(PathFindAlg.AStar, Heuristic.InverseEuclidean, true)] =
-            new AStarPathFinder(InverseEuclidean, true);
+        // Known path finders
+        private IDictionary<int, IPathFinder> knownPathFinders;
 
-        // References to camera game object and camera component
-        GameObject cameraGameObj = GameObject.FindWithTag("MainCamera");
-        Camera cameraComponent = cameraGameObj.GetComponent<Camera>();
-
-        // Width must be odd
-        if (worldSize.x % 2 == 0) worldSize.x++;
-
-        // Adjust camera to game world
-        cameraComponent.orthographicSize =
-            Mathf.Max(worldSize.x, worldSize.y) / 2;
-
-        // Initialize matrix of game world elements (by default will be
-        // all empties)
-        world = new TileBehaviour[worldSize.x, worldSize.y];
-
-        // Determine tile offsets
-        offset = new Vector2(worldSize.x / 2f - 0.5f, worldSize.y / 2f - 0.5f);
-    }
-
-    // Start is called before the first frame update
-    private void Start()
-    {
-        // Goal hasn't been reached yet
-        GoalReached = false;
-
-        // Player is not moving initially
-        isMoving = false;
-
-        // Generate level
-        GenerateLevel();
-
-        // Start path finding process
-        StartCoroutine(FindPath());
-    }
-
-    // Restart path finding
-    internal void Restart()
-    {
-        // Delete world tiles
-        for (int i = 0; i < worldSize.x; i++)
+        // Key for getting the correct pathfinder from the dictionary
+        private int Key(
+            PathFindAlg pfa,
+            Heuristic h = Heuristic.EuclideanDist,
+            bool early = false)
         {
-            for (int j = 0; j < worldSize.y; j++)
-            {
-                Destroy(world[i, j].gameObject);
-            }
+            if (pfa == PathFindAlg.Dijkstra) return 0;
+            else return 1 | ((early ? 0 : 1) << 1) | (int)h << 2;
         }
-        // Delete player and goal
-        Destroy(player);
-        Destroy(goal);
 
-        // Start again
-        Start();
-    }
+        // Player and goal positions
+        public Vector2Int PlayerPos { get; private set; }
+        public Vector2Int GoalPos { get; private set; }
 
-    // Procedurally generate level
-    private void GenerateLevel()
-    {
-        // Array of game objects to clone for each column
-        TileTypeEnum[] columnToCreate = new TileTypeEnum[worldSize.y];
+        // Goal reached?
+        public bool GoalReached { get; private set; }
 
-        // Cycle through columns
-        for (int i = 0; i < worldSize.x; i++)
+        // Does a valid path exists between player and goal?
+        public bool ValidPath { get; private set; } = true;
+
+        // Show fill?
+        public bool ShowFill => showFill;
+
+        // Current path
+        private IEnumerable<IConnection> path;
+
+        // Matrix of game world state
+        private TileBehaviour[,] world;
+
+        // The current player and goal
+        private GameObject player;
+        private GameObject goal;
+
+        // Offset for all tiles
+        private Vector2 offset;
+
+        // Is the player moving?
+        private bool isMoving;
+
+        // Last time the FindPath coroutine ran
+        private float lastFindPathTime;
+
+        // Awake is called when the script instance is being loaded
+        private void Awake()
         {
-            // Number of passages in current column (by default all)
-            int numEmpty = worldSize.y;
+            // Load prefabs
+            tilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
+            playerPrefab = Resources.Load<GameObject>("Prefabs/Player");
+            goalPrefab = Resources.Load<GameObject>("Prefabs/Goal");
 
-            // For current column determine which tiles are empty and which are
-            // blocked
-            for (int j = 0; j < worldSize.y; j++)
+            // Instantiate known path finders
+            knownPathFinders = new Dictionary<int, IPathFinder>();
+
+            knownPathFinders[Key(PathFindAlg.Dijkstra)] =
+                new DijkstraPathFinder();
+            knownPathFinders[Key(PathFindAlg.AStar, Heuristic.EuclideanDist)] =
+                new AStarPathFinder(EuclideanDistance);
+            knownPathFinders[Key(PathFindAlg.AStar, Heuristic.EuclideanDist, true)] =
+                new AStarPathFinder(EuclideanDistance, true);
+            knownPathFinders[Key(PathFindAlg.AStar, Heuristic.ManhattanDist)] =
+                new AStarPathFinder(ManhattanDistance);
+            knownPathFinders[Key(PathFindAlg.AStar, Heuristic.ManhattanDist, true)] =
+                new AStarPathFinder(ManhattanDistance, true);
+            knownPathFinders[Key(PathFindAlg.AStar, Heuristic.InverseEuclidean)] =
+                new AStarPathFinder(InverseEuclidean);
+            knownPathFinders[Key(PathFindAlg.AStar, Heuristic.InverseEuclidean, true)] =
+                new AStarPathFinder(InverseEuclidean, true);
+
+            // References to camera game object and camera component
+            GameObject cameraGameObj = GameObject.FindWithTag("MainCamera");
+            Camera cameraComponent = cameraGameObj.GetComponent<Camera>();
+
+            // Width must be odd
+            if (worldSize.x % 2 == 0) worldSize.x++;
+
+            // Adjust camera to game world
+            cameraComponent.orthographicSize =
+                Mathf.Max(worldSize.x, worldSize.y) / 2;
+
+            // Initialize matrix of game world elements (by default will be
+            // all empties)
+            world = new TileBehaviour[worldSize.x, worldSize.y];
+
+            // Determine tile offsets
+            offset = new Vector2(worldSize.x / 2f - 0.5f, worldSize.y / 2f - 0.5f);
+        }
+
+        // Start is called before the first frame update
+        private void Start()
+        {
+            // Goal hasn't been reached yet
+            GoalReached = false;
+
+            // Player is not moving initially
+            isMoving = false;
+
+            // Generate level
+            GenerateLevel();
+
+            // Start path finding process
+            StartCoroutine(FindPath());
+        }
+
+        // Restart path finding
+        internal void Restart()
+        {
+            // Delete world tiles
+            for (int i = 0; i < worldSize.x; i++)
             {
-                // By default, current position in column is empty
-                columnToCreate[j] = TileTypeEnum.Empty;
-
-                // However, if column is odd...
-                if (i % 2 != 0)
+                for (int j = 0; j < worldSize.y; j++)
                 {
-                    // ...and of by chance it's supposed to have a blocked tile
-                    if (Random.value > passageRatio)
+                    Destroy(world[i, j].gameObject);
+                }
+            }
+            // Delete player and goal
+            Destroy(player);
+            Destroy(goal);
+
+            // Start again
+            Start();
+        }
+
+        // Procedurally generate level
+        private void GenerateLevel()
+        {
+            // Array of game objects to clone for each column
+            TileTypeEnum[] columnToCreate = new TileTypeEnum[worldSize.y];
+
+            // Cycle through columns
+            for (int i = 0; i < worldSize.x; i++)
+            {
+                // Number of passages in current column (by default all)
+                int numEmpty = worldSize.y;
+
+                // For current column determine which tiles are empty and which are
+                // blocked
+                for (int j = 0; j < worldSize.y; j++)
+                {
+                    // By default, current position in column is empty
+                    columnToCreate[j] = TileTypeEnum.Empty;
+
+                    // However, if column is odd...
+                    if (i % 2 != 0)
                     {
-                        // ...then set a blocked tile
-                        columnToCreate[j] = TileTypeEnum.Blocked;
-
-                        // Now we have on less empty space
-                        numEmpty--;
-                    }
-                }
-            }
-
-            // Are there any empty tiles in current column?
-            if (numEmpty == 0)
-            {
-                // If not, then randomly define one empty tile
-                columnToCreate[Random.Range(0, worldSize.y)] =
-                    TileTypeEnum.Empty;
-            }
-
-            // Instantiate tiles for current column
-            for (int j = 0; j < worldSize.y; j++)
-            {
-                GameObject currTile = Instantiate(tilePrefab, transform);
-                currTile.name = $"Tile({i},{j})";
-                currTile.transform.position =
-                    new Vector3(i - offset.x, j - offset.y, 0);
-                world[i, j] = currTile.GetComponent<TileBehaviour>();
-                world[i, j].SetAs(columnToCreate[j]);
-                world[i, j].Pos = new Vector2Int(i, j);
-            }
-        }
-
-        // Place player anywhere in the world, as long as it's an empty tile
-        while (true)
-        {
-            PlayerPos = new Vector2Int(
-                Random.Range(0, worldSize.x), Random.Range(0, worldSize.y));
-            if (world[PlayerPos.x, PlayerPos.y].TileType == TileTypeEnum.Empty)
-            {
-                player = Instantiate(playerPrefab);
-                player.transform.position = new Vector3(
-                    PlayerPos.x - offset.x, PlayerPos.y - offset.y, -2);
-                break;
-            }
-        }
-
-        Debug.Log($"Player placed at {PlayerPos}");
-
-        // Place goal anywhere in the world, as long as it's an empty tile and
-        // noy the player position
-        while (true)
-        {
-            GoalPos = new Vector2Int(
-                Random.Range(0, worldSize.x), Random.Range(0, worldSize.y));
-            if (world[GoalPos.x, GoalPos.y].TileType == TileTypeEnum.Empty
-                && PlayerPos != GoalPos)
-            {
-                goal = Instantiate(goalPrefab);
-                goal.transform.position = new Vector3(
-                    GoalPos.x - offset.x, GoalPos.y - offset.y, -1);
-                break;
-            }
-        }
-
-        Debug.Log($"Goal placed at {GoalPos}");
-    }
-
-    // Euclidean distance heuristic from given node to destination node
-    private float EuclideanDistance(int node)
-    {
-        Vector2 nodeVec = (Vector2)Ind2Vec(node, world.GetLength(0));
-        Vector2 destVec = (Vector2)GoalPos;
-        return Vector2.Distance(nodeVec, destVec) * heuristicWeight;
-    }
-
-    // Manhattan distance heuristic from given node to destination node
-    private float ManhattanDistance(int node)
-    {
-        Vector2Int nodeVec = Ind2Vec(node, world.GetLength(0));
-        return (Mathf.Abs(nodeVec.x - GoalPos.x)
-            + Mathf.Abs(nodeVec.y - GoalPos.y)) * heuristicWeight;
-    }
-
-    // Inverse Euclidean distance: essentially it's an anti-heuristic
-    private float InverseEuclidean(int node) => -EuclideanDistance(node);
-
-    // This co-routine performs the path finding and invokes another coroutine
-    // to perform player movement animation
-    private IEnumerator FindPath()
-    {
-        // Player movement status before this coroutine yields
-        bool wasMoving = false;
-
-        // Coroutine will be called again in a few millisseconds or when the
-        // player is not moving but previously was
-        CustomYieldInstruction wfs = new WaitUntil(
-            () => (!isMoving && wasMoving) || Time.time < lastFindPathTime + 0.2f);
-
-        // The graph representation of our tile world
-        TileWorldGraph graph = new TileWorldGraph(world);
-
-        // Start player movement loop
-        while (PlayerPos != GoalPos)
-        {
-            // Pathfinder to use
-            IPathFinder pathFinder =
-                knownPathFinders[Key(pathFindingAlgorithm, heuristic, earlyExit)];
-
-            // Perform path finding
-            path = pathFinder.FindPath(
-                graph,
-                Vec2Ind(PlayerPos, world.GetLength(0)),
-                Vec2Ind(GoalPos, world.GetLength(0)));
-
-            // Show fill?
-            if (showFill)
-            {
-                foreach (TileBehaviour tile in world)
-                {
-                    tile.FillState = Fill.None;
-                }
-                foreach (int ind in pathFinder.OpenNodes)
-                {
-                    Vector2Int tilePos = Ind2Vec(ind, world.GetLength(0));
-                    world[tilePos.x, tilePos.y].FillState = Fill.Open;
-                }
-                foreach (int ind in pathFinder.ClosedNodes)
-                {
-                    Vector2Int tilePos = Ind2Vec(ind, world.GetLength(0));
-                    world[tilePos.x, tilePos.y].FillState = Fill.Closed;
-                }
-            }
-
-            // Was a path found?
-            if (path == null)
-            {
-                // If not, update flag
-                ValidPath = false;
-            }
-            else
-            {
-                // A valid path was found, update flag
-                ValidPath = true;
-
-                // Get an enumerator for the connection enumerable (it must be
-                // disposed of, as such we put it in a using block)
-                using (IEnumerator<IConnection> conns = path.GetEnumerator())
-                {
-                    // Did the path finder return any connection at all?
-                    if (conns.MoveNext())
-                    {
-                        // If so, move player towards the destination node in
-                        // the first connection, but only if player is not
-                        // moving and if simulation is not paused
-                        if (!isMoving && !pause)
+                        // ...and of by chance it's supposed to have a blocked tile
+                        if (Random.value > passageRatio)
                         {
-                            StartCoroutine(MovePlayer(
-                                conns.Current.ToNode, moveSpeed));
+                            // ...then set a blocked tile
+                            columnToCreate[j] = TileTypeEnum.Blocked;
+
+                            // Now we have on less empty space
+                            numEmpty--;
                         }
                     }
                 }
+
+                // Are there any empty tiles in current column?
+                if (numEmpty == 0)
+                {
+                    // If not, then randomly define one empty tile
+                    columnToCreate[Random.Range(0, worldSize.y)] =
+                        TileTypeEnum.Empty;
+                }
+
+                // Instantiate tiles for current column
+                for (int j = 0; j < worldSize.y; j++)
+                {
+                    GameObject currTile = Instantiate(tilePrefab, transform);
+                    currTile.name = $"Tile({i},{j})";
+                    currTile.transform.position =
+                        new Vector3(i - offset.x, j - offset.y, 0);
+                    world[i, j] = currTile.GetComponent<TileBehaviour>();
+                    world[i, j].SetAs(columnToCreate[j]);
+                    world[i, j].Pos = new Vector2Int(i, j);
+                }
             }
 
-            // Keep track of time and player movement status before
-            // coroutine yields
-            lastFindPathTime = Time.time;
-            wasMoving = isMoving;
-
-            // Return again after some fixed amount of time
-            yield return wfs;
-        }
-
-        // If we got here, it means the goal was reached!
-        GoalReached = true;
-    }
-
-    // Co-routine that performs the player movement animation
-    private IEnumerator MovePlayer(int toNode, float speed)
-    {
-        // Final position of player sprite
-        Vector3 finalPos;
-        // Initial position of player sprite
-        Vector3 initPos = player.transform.position;
-        // Animation start time
-        float startTime = Time.time;
-        // Animation end time
-        float endTime = startTime + 1 / speed;
-
-        // Set player tile position to its final position
-        PlayerPos = Ind2Vec(toNode, world.GetLength(0));
-
-        // Determine player sprite final position
-        finalPos = new Vector3(
-            PlayerPos.x - offset.x,
-            PlayerPos.y - offset.y,
-            player.transform.position.z);
-
-        // Set moving flag to true
-        isMoving = true;
-
-        // Perform animation
-        while (Time.time < endTime)
-        {
-            // Get current time
-            float currTime = Time.time;
-            // Determine movement length
-            float toMove = Mathf.InverseLerp(startTime, endTime, currTime);
-            // Determine new sprite position for current frame
-            Vector3 newPos = Vector3.Lerp(initPos, finalPos, toMove);
-            // Move player sprite to new position
-            player.transform.position = newPos;
-            // Give control back to main loop, this loop will continue on the
-            // next frame
-            yield return null;
-        }
-
-        // Make sure player sprite ends up in the final position
-        player.transform.position = finalPos;
-
-        // Set moving flag to false
-        isMoving = false;
-    }
-
-    // Draw gizmos around player, goal and along found path
-    private void OnDrawGizmos()
-    {
-        // Player gizmo
-        Gizmos.color = Color.blue;
-        if (player != null)
-            Gizmos.DrawWireCube(
-                player.transform.position, new Vector3(1, 1, 1));
-
-        // Goal gizmo
-        Gizmos.color = Color.green;
-        if (goal != null)
-            Gizmos.DrawWireCube(
-                goal.transform.position, new Vector3(1, 1, 1));
-
-        // Path gizmo
-        Gizmos.color = Color.red;
-        if (path != null)
-        {
-            bool first = true;
-            // Cycle through all connections
-            foreach (IConnection conn in path)
+            // Place player anywhere in the world, as long as it's an empty tile
+            while (true)
             {
-                // Don't draw first connection, it doesn't look very nice
-                if (first)
+                PlayerPos = new Vector2Int(
+                    Random.Range(0, worldSize.x), Random.Range(0, worldSize.y));
+                if (world[PlayerPos.x, PlayerPos.y].TileType == TileTypeEnum.Empty)
                 {
-                    first = false;
+                    player = Instantiate(playerPrefab);
+                    player.transform.position = new Vector3(
+                        PlayerPos.x - offset.x, PlayerPos.y - offset.y, -2);
+                    break;
+                }
+            }
+
+            Debug.Log($"Player placed at {PlayerPos}");
+
+            // Place goal anywhere in the world, as long as it's an empty tile and
+            // noy the player position
+            while (true)
+            {
+                GoalPos = new Vector2Int(
+                    Random.Range(0, worldSize.x), Random.Range(0, worldSize.y));
+                if (world[GoalPos.x, GoalPos.y].TileType == TileTypeEnum.Empty
+                    && PlayerPos != GoalPos)
+                {
+                    goal = Instantiate(goalPrefab);
+                    goal.transform.position = new Vector3(
+                        GoalPos.x - offset.x, GoalPos.y - offset.y, -1);
+                    break;
+                }
+            }
+
+            Debug.Log($"Goal placed at {GoalPos}");
+        }
+
+        // Euclidean distance heuristic from given node to destination node
+        private float EuclideanDistance(int node)
+        {
+            Vector2 nodeVec = (Vector2)Ind2Vec(node, world.GetLength(0));
+            Vector2 destVec = (Vector2)GoalPos;
+            return Vector2.Distance(nodeVec, destVec) * heuristicWeight;
+        }
+
+        // Manhattan distance heuristic from given node to destination node
+        private float ManhattanDistance(int node)
+        {
+            Vector2Int nodeVec = Ind2Vec(node, world.GetLength(0));
+            return (Mathf.Abs(nodeVec.x - GoalPos.x)
+                + Mathf.Abs(nodeVec.y - GoalPos.y)) * heuristicWeight;
+        }
+
+        // Inverse Euclidean distance: essentially it's an anti-heuristic
+        private float InverseEuclidean(int node) => -EuclideanDistance(node);
+
+        // This co-routine performs the path finding and invokes another coroutine
+        // to perform player movement animation
+        private IEnumerator FindPath()
+        {
+            // Player movement status before this coroutine yields
+            bool wasMoving = false;
+
+            // Coroutine will be called again in a few millisseconds or when the
+            // player is not moving but previously was
+            CustomYieldInstruction wfs = new WaitUntil(
+                () => (!isMoving && wasMoving) || Time.time < lastFindPathTime + 0.2f);
+
+            // The graph representation of our tile world
+            TileWorldGraph graph = new TileWorldGraph(world);
+
+            // Start player movement loop
+            while (PlayerPos != GoalPos)
+            {
+                // Pathfinder to use
+                IPathFinder pathFinder =
+                    knownPathFinders[Key(pathFindingAlgorithm, heuristic, earlyExit)];
+
+                // Perform path finding
+                path = pathFinder.FindPath(
+                    graph,
+                    Vec2Ind(PlayerPos, world.GetLength(0)),
+                    Vec2Ind(GoalPos, world.GetLength(0)));
+
+                // Show fill?
+                if (showFill)
+                {
+                    foreach (TileBehaviour tile in world)
+                    {
+                        tile.FillState = Fill.None;
+                    }
+                    foreach (int ind in pathFinder.OpenNodes)
+                    {
+                        Vector2Int tilePos = Ind2Vec(ind, world.GetLength(0));
+                        world[tilePos.x, tilePos.y].FillState = Fill.Open;
+                    }
+                    foreach (int ind in pathFinder.ClosedNodes)
+                    {
+                        Vector2Int tilePos = Ind2Vec(ind, world.GetLength(0));
+                        world[tilePos.x, tilePos.y].FillState = Fill.Closed;
+                    }
+                }
+
+                // Was a path found?
+                if (path == null)
+                {
+                    // If not, update flag
+                    ValidPath = false;
                 }
                 else
                 {
-                    // Get start tile for current connection
-                    Vector2Int start = Ind2Vec(conn.FromNode, world.GetLength(0));
-                    // Get end tile for current connection
-                    Vector2Int end = Ind2Vec(conn.ToNode, world.GetLength(0));
-                    // Get on-screen position for start of current connection
-                    Vector3 startPos = new Vector3(
-                        start.x - offset.x, start.y - offset.y, -3);
-                    // Get on-screen position for end of current connection
-                    Vector3 endPos = new Vector3(
-                        end.x - offset.x, end.y - offset.y, -3);
-                    // Draw line for current connection
-                    Gizmos.DrawLine(startPos, endPos);
+                    // A valid path was found, update flag
+                    ValidPath = true;
+
+                    // Get an enumerator for the connection enumerable (it must be
+                    // disposed of, as such we put it in a using block)
+                    using (IEnumerator<IConnection> conns = path.GetEnumerator())
+                    {
+                        // Did the path finder return any connection at all?
+                        if (conns.MoveNext())
+                        {
+                            // If so, move player towards the destination node in
+                            // the first connection, but only if player is not
+                            // moving and if simulation is not paused
+                            if (!isMoving && !pause)
+                            {
+                                StartCoroutine(MovePlayer(
+                                    conns.Current.ToNode, moveSpeed));
+                            }
+                        }
+                    }
+                }
+
+                // Keep track of time and player movement status before
+                // coroutine yields
+                lastFindPathTime = Time.time;
+                wasMoving = isMoving;
+
+                // Return again after some fixed amount of time
+                yield return wfs;
+            }
+
+            // If we got here, it means the goal was reached!
+            GoalReached = true;
+        }
+
+        // Co-routine that performs the player movement animation
+        private IEnumerator MovePlayer(int toNode, float speed)
+        {
+            // Final position of player sprite
+            Vector3 finalPos;
+            // Initial position of player sprite
+            Vector3 initPos = player.transform.position;
+            // Animation start time
+            float startTime = Time.time;
+            // Animation end time
+            float endTime = startTime + 1 / speed;
+
+            // Set player tile position to its final position
+            PlayerPos = Ind2Vec(toNode, world.GetLength(0));
+
+            // Determine player sprite final position
+            finalPos = new Vector3(
+                PlayerPos.x - offset.x,
+                PlayerPos.y - offset.y,
+                player.transform.position.z);
+
+            // Set moving flag to true
+            isMoving = true;
+
+            // Perform animation
+            while (Time.time < endTime)
+            {
+                // Get current time
+                float currTime = Time.time;
+                // Determine movement length
+                float toMove = Mathf.InverseLerp(startTime, endTime, currTime);
+                // Determine new sprite position for current frame
+                Vector3 newPos = Vector3.Lerp(initPos, finalPos, toMove);
+                // Move player sprite to new position
+                player.transform.position = newPos;
+                // Give control back to main loop, this loop will continue on the
+                // next frame
+                yield return null;
+            }
+
+            // Make sure player sprite ends up in the final position
+            player.transform.position = finalPos;
+
+            // Set moving flag to false
+            isMoving = false;
+        }
+
+        // Draw gizmos around player, goal and along found path
+        private void OnDrawGizmos()
+        {
+            // Player gizmo
+            Gizmos.color = Color.blue;
+            if (player != null)
+                Gizmos.DrawWireCube(
+                    player.transform.position, new Vector3(1, 1, 1));
+
+            // Goal gizmo
+            Gizmos.color = Color.green;
+            if (goal != null)
+                Gizmos.DrawWireCube(
+                    goal.transform.position, new Vector3(1, 1, 1));
+
+            // Path gizmo
+            Gizmos.color = Color.red;
+            if (path != null)
+            {
+                bool first = true;
+                // Cycle through all connections
+                foreach (IConnection conn in path)
+                {
+                    // Don't draw first connection, it doesn't look very nice
+                    if (first)
+                    {
+                        first = false;
+                    }
+                    else
+                    {
+                        // Get start tile for current connection
+                        Vector2Int start = Ind2Vec(conn.FromNode, world.GetLength(0));
+                        // Get end tile for current connection
+                        Vector2Int end = Ind2Vec(conn.ToNode, world.GetLength(0));
+                        // Get on-screen position for start of current connection
+                        Vector3 startPos = new Vector3(
+                            start.x - offset.x, start.y - offset.y, -3);
+                        // Get on-screen position for end of current connection
+                        Vector3 endPos = new Vector3(
+                            end.x - offset.x, end.y - offset.y, -3);
+                        // Draw line for current connection
+                        Gizmos.DrawLine(startPos, endPos);
+                    }
                 }
             }
         }
+
+        // Convert index (graph node) to int vector (tile position)
+        public static Vector2Int Ind2Vec(int index, int xdim) =>
+            new Vector2Int(index % xdim, index / xdim);
+        // Convert int vector (tile position) to index (graph node)
+        public static int Vec2Ind(Vector2Int vec, int xdim) =>
+            vec.y * xdim + vec.x;
+
     }
-
-    // Convert index (graph node) to int vector (tile position)
-    public static Vector2Int Ind2Vec(int index, int xdim) =>
-        new Vector2Int(index % xdim, index / xdim);
-    // Convert int vector (tile position) to index (graph node)
-    public static int Vec2Ind(Vector2Int vec, int xdim) =>
-        vec.y * xdim + vec.x;
-
 }
