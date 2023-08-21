@@ -6,9 +6,9 @@
  * */
 
 using UnityEngine;
-using AIUnityExamples.Movement.Core;
+using GameAIPrototypes.Movement.Core;
 
-namespace AIUnityExamples.Movement.Dynamic
+namespace GameAIPrototypes.Movement.Dynamic
 {
     // This class defines movement for dynamic agents
     public class DynamicAgent : MonoBehaviour

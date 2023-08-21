@@ -7,7 +7,7 @@
 
 using UnityEngine;
 
-namespace AIUnityExamples.Movement.Core
+namespace GameAIPrototypes.Movement.Core
 {
     // Controls when to spawn a static target
     public class StaticTargetController : MonoBehaviour

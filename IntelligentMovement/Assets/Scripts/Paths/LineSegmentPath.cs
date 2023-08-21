@@ -8,7 +8,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-namespace AIUnityExamples.Movement.Paths
+namespace GameAIPrototypes.Movement.Paths
 {
     // Ideas:
     // 1 - Make paths using a wander-style generator

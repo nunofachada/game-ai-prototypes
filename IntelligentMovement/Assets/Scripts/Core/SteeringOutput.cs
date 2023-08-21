@@ -7,7 +7,7 @@
 
 using UnityEngine;
 
-namespace AIUnityExamples.Movement.Core
+namespace GameAIPrototypes.Movement.Core
 {
     public struct SteeringOutput
     {

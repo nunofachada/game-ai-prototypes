@@ -8,7 +8,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace AIUnityExamples.Movement.Core
+namespace GameAIPrototypes.Movement.Core
 {
     // Defines a static target
     public class StaticTarget : MonoBehaviour

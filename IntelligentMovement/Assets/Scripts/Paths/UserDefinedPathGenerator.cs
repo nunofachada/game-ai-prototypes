@@ -7,7 +7,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace AIUnityExamples.Movement.Paths
+namespace GameAIPrototypes.Movement.Paths
 {
     public class UserDefinedPathGenerator : AbstractPathGenerator
     {

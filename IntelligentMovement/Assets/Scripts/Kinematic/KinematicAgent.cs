@@ -8,9 +8,9 @@
 using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
-using AIUnityExamples.Movement.Core;
+using GameAIPrototypes.Movement.Core;
 
-namespace AIUnityExamples.Movement.Kinematic
+namespace GameAIPrototypes.Movement.Kinematic
 {
     // This class defines movement for kinematic agents
     public class KinematicAgent : MonoBehaviour

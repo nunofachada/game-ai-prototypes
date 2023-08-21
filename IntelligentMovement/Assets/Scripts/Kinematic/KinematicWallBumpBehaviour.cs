@@ -5,7 +5,7 @@
  * Author: Nuno Fachada
  * */
 
-namespace AIUnityExamples.Movement.Kinematic
+namespace GameAIPrototypes.Movement.Kinematic
 {
     // Kinds of wall bump behaviour for kinematic agents
     public enum KinematicWallBumpBehaviour

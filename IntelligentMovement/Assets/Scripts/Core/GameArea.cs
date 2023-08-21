@@ -7,7 +7,7 @@
 
 using UnityEngine;
 
-namespace AIUnityExamples.Movement.Core
+namespace GameAIPrototypes.Movement.Core
 {
     // Helper class to determine game area and obtain random positions within it
     public class GameArea

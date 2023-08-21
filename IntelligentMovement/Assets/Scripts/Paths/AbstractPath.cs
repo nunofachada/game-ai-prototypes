@@ -8,7 +8,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace AIUnityExamples.Movement.Paths
+namespace GameAIPrototypes.Movement.Paths
 {
     public abstract class AbstractPath : MonoBehaviour, IPath
     {

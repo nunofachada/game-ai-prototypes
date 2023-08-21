@@ -6,9 +6,9 @@
  * */
 
 using UnityEngine;
-using AIUnityExamples.Movement.Core;
+using GameAIPrototypes.Movement.Core;
 
-namespace AIUnityExamples.Movement.Dynamic.Behaviours
+namespace GameAIPrototypes.Movement.Dynamic.Behaviours
 {
     public class SeparationBehaviour : SteeringBehaviour
     {

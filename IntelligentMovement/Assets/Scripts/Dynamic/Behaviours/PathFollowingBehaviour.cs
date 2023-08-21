@@ -6,10 +6,10 @@
  * */
 
 using UnityEngine;
-using AIUnityExamples.Movement.Core;
-using AIUnityExamples.Movement.Paths;
+using GameAIPrototypes.Movement.Core;
+using GameAIPrototypes.Movement.Paths;
 
-namespace AIUnityExamples.Movement.Dynamic.Behaviours
+namespace GameAIPrototypes.Movement.Dynamic.Behaviours
 {
     public class PathFollowingBehaviour : SeekBehaviour
     {

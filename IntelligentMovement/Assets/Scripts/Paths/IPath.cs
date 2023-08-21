@@ -7,7 +7,7 @@
 
 using UnityEngine;
 
-namespace AIUnityExamples.Movement.Paths
+namespace GameAIPrototypes.Movement.Paths
 {
     // Interface that defines how paths work
     public interface IPath
