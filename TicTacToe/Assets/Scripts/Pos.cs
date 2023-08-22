@@ -9,7 +9,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace AIUnityExamples.TicTacToe
+namespace GameAIPrototypes.TicTacToe
 {
     /// <summary>
     /// Represents a position in the Tic Tac Toe board.

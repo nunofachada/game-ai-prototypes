@@ -9,7 +9,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 
-namespace AIUnityExamples.TicTacToe
+namespace GameAIPrototypes.TicTacToe
 {
     /// <summary>
     /// A basic MCTS player.

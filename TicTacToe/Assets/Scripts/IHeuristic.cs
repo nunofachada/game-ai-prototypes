@@ -5,7 +5,7 @@
  * Author: Nuno Fachada
  * */
 
-namespace AIUnityExamples.TicTacToe
+namespace GameAIPrototypes.TicTacToe
 {
     /// <summary>
     /// Interface to simplify the use of heuristics.

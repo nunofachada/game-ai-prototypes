@@ -7,7 +7,7 @@
 
 using UnityEngine;
 
-namespace AIUnityExamples.TicTacToe
+namespace GameAIPrototypes.TicTacToe
 {
     /// <summary>
     /// A human TicTacToe player, doesn't do anything since the actual plays are

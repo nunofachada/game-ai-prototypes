@@ -6,7 +6,7 @@
  * Author: Nuno Fachada
  * */
 
-namespace AIUnityExamples.TicTacToe
+namespace GameAIPrototypes.TicTacToe
 {
     /// <summary>
     /// The possible states of a board position (cell) in TicTacToe.

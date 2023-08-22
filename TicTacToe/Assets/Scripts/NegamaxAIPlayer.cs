@@ -7,7 +7,7 @@
 
 using System;
 
-namespace AIUnityExamples.TicTacToe
+namespace GameAIPrototypes.TicTacToe
 {
     /// <summary>
     /// A simple Negamax AI player.

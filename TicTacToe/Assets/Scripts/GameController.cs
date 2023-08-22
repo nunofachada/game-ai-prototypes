@@ -8,7 +8,7 @@
 using System;
 using UnityEngine;
 
-namespace AIUnityExamples.TicTacToe
+namespace GameAIPrototypes.TicTacToe
 {
     /// <summary>
     /// Controls a game of TicTacToe in Unity.

@@ -10,7 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System;
 
-namespace AIUnityExamples.TicTacToe
+namespace GameAIPrototypes.TicTacToe
 {
     /// <summary>
     /// A user interface for TicTacToe.

@@ -8,7 +8,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AIUnityExamples.TicTacToe
+namespace GameAIPrototypes.TicTacToe
 {
     /// <summary>
     /// A concrete MCTS node for the Tic Tac Toe game.

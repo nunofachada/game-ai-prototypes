@@ -7,7 +7,7 @@
 
 using System;
 
-namespace AIUnityExamples.TicTacToe
+namespace GameAIPrototypes.TicTacToe
 {
     /// <summary>
     /// Extension methods for the CellState enumeration.

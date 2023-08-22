@@ -6,7 +6,7 @@
  * */
 using UnityEngine;
 
-namespace AIUnityExamples.TicTacToe
+namespace GameAIPrototypes.TicTacToe
 {
     /// <summary>
     /// Interface for a TicTacToe player.

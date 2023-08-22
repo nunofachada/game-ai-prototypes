@@ -7,7 +7,7 @@
 
 using UnityEngine;
 
-namespace AIUnityExamples.TicTacToe
+namespace GameAIPrototypes.TicTacToe
 {
     /// <summary>
     /// Simple heuristic which only checks available lines for each player.

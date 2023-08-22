@@ -9,7 +9,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace AIUnityExamples.TicTacToe
+namespace GameAIPrototypes.TicTacToe
 {
     /// <summary>
     /// Helper class for rendering a dropdown menu in Unity's IMGUI mode.

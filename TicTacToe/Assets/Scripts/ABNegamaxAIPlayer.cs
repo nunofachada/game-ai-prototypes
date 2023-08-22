@@ -5,7 +5,7 @@
  * Author: Nuno Fachada
  * */
 
-namespace AIUnityExamples.TicTacToe
+namespace GameAIPrototypes.TicTacToe
 {
     /// <summary>
     /// Negamax AI with alpha-beta pruning.
