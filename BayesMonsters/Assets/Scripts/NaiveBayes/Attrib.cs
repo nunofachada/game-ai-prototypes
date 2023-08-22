@@ -1,12 +1,10 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * Author: Nuno Fachada
- * */
+/* Copyright (c) 2018-2023 Nuno Fachada and contributors
+ * Distributed under the MIT License (See accompanying file LICENSE or copy
+ * at http://opensource.org/licenses/MIT) */
+
 using System.Collections.Generic;
 
-namespace NaiveBayes
+namespace LibGameAI.NaiveBayes
 {
     // This class represents an attribute with two or more different values
     public class Attrib
@@ -17,7 +15,7 @@ namespace NaiveBayes
         public ICollection<string> Values => values;
 
         // List that contains the actual values of the attribute
-        private List<string> values;
+        private readonly List<string> values;
 
         // Constructor, accepts a name and a set of possible values
         public Attrib(string name, IEnumerable<string> values)

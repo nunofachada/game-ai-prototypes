@@ -1,23 +1,21 @@
-﻿/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * Author: Nuno Fachada
- * */
+﻿/* Copyright (c) 2018-2023 Nuno Fachada and contributors
+ * Distributed under the MIT License (See accompanying file LICENSE or copy
+ * at http://opensource.org/licenses/MIT) */
+
 using System;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace NaiveBayes
+namespace LibGameAI.NaiveBayes
 {
     public class NaiveBayesClassifier
     {
 
         // Number of examples with given label
-        private IDictionary<string, int> labelsCount;
+        private readonly IDictionary<string, int> labelsCount;
 
         // Number of times each attribute has a given value for each label
-        private IDictionary<string, IDictionary<Attrib, AttribCount>>
+        private readonly IDictionary<string, IDictionary<Attrib, AttribCount>>
             attribValueCounts;
 
         // Constructor, accepts a set of labels and a set of attributes

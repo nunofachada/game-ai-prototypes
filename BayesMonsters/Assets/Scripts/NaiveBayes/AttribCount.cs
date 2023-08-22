@@ -1,19 +1,17 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * Author: Nuno Fachada
- * */
+/* Copyright (c) 2018-2023 Nuno Fachada and contributors
+ * Distributed under the MIT License (See accompanying file LICENSE or copy
+ * at http://opensource.org/licenses/MIT) */
+
 using System.Collections.Generic;
 
-namespace NaiveBayes
+namespace LibGameAI.NaiveBayes
 {
     // Represents counts for the individual attribute values
     // This class is for internal consumption only
     internal class AttribCount
     {
         // Contains the counts for each attribute value
-        private IDictionary<string, int> counts;
+        private readonly IDictionary<string, int> counts;
 
         // Constructor, initializes all counts to zero
         public AttribCount(Attrib attribute)
