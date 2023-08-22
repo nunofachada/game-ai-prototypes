@@ -6,42 +6,46 @@
  * */
 using UnityEngine;
 
-public class ObstacleBehaviour : WaypointCycler
+namespace GameAIPrototypes.SimpleNavMesh
 {
-
-    // Speed of obstacle movement between waypoints
-    [SerializeField] [Range(0f, 20f)]
-    private float speed = 10f;
-
-    // Minimum distance to waypoint to trigger a new waypoint
-    [SerializeField]
-    private float minWaypointDist = 0.5f;
-
-    // Reference to the agent's rigid body
-    private Rigidbody rb;
-
-    // Get reference to the agent's rigid body
-    private void Awake()
+    public class ObstacleBehaviour : WaypointCycler
     {
-        rb = GetComponent<Rigidbody>();
-    }
 
-    // Move obstacle agent between waypoints
-    private void FixedUpdate()
-    {
-        Vector3 vel;
+        // Speed of obstacle movement between waypoints
+        [SerializeField]
+        [Range(0f, 20f)]
+        private float speed = 10f;
 
-        // Are we close enough to the current waypoint?
-        if ((CurrentWaypoint - transform.position).magnitude < minWaypointDist)
+        // Minimum distance to waypoint to trigger a new waypoint
+        [SerializeField]
+        private float minWaypointDist = 0.5f;
+
+        // Reference to the agent's rigid body
+        private Rigidbody rb;
+
+        // Get reference to the agent's rigid body
+        private void Awake()
         {
-            // If so, get a new waypoint
-            NextWaypoint();
+            rb = GetComponent<Rigidbody>();
         }
 
-        // Determine velocity to the current waypoint
-        vel = (CurrentWaypoint - transform.position).normalized * speed;
+        // Move obstacle agent between waypoints
+        private void FixedUpdate()
+        {
+            Vector3 vel;
 
-        // Move towards the next waypoint at the calculated velocity
-        rb.MovePosition(transform.position + vel * Time.fixedDeltaTime);
+            // Are we close enough to the current waypoint?
+            if ((CurrentWaypoint - transform.position).magnitude < minWaypointDist)
+            {
+                // If so, get a new waypoint
+                NextWaypoint();
+            }
+
+            // Determine velocity to the current waypoint
+            vel = (CurrentWaypoint - transform.position).normalized * speed;
+
+            // Move towards the next waypoint at the calculated velocity
+            rb.MovePosition(transform.position + vel * Time.fixedDeltaTime);
+        }
     }
 }

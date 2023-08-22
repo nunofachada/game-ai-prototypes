@@ -6,23 +6,26 @@
  * */
 using UnityEngine;
 
-public class GoalBehaviour : WaypointCycler
+namespace GameAIPrototypes.SimpleNavMesh
 {
-
-    // Update is called once per frame
-    private void Update()
+    public class GoalBehaviour : WaypointCycler
     {
-        // Rotate goal
-        transform.Rotate(Vector3.one * 100 * Time.deltaTime);
-    }
 
-    // If nav agent collides with goal, move goal to next waypoint
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.name == "NavAgent")
+        // Update is called once per frame
+        private void Update()
         {
-            NextWaypoint();
-            transform.position = CurrentWaypoint;
+            // Rotate goal
+            transform.Rotate(Vector3.one * 100 * Time.deltaTime);
+        }
+
+        // If nav agent collides with goal, move goal to next waypoint
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.name == "NavAgent")
+            {
+                NextWaypoint();
+                transform.position = CurrentWaypoint;
+            }
         }
     }
 }

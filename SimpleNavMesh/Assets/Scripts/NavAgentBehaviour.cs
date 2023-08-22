@@ -7,37 +7,39 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class NavAgentBehaviour : MonoBehaviour
+namespace GameAIPrototypes.SimpleNavMesh
 {
-    // Current goal of navigation agent
-    [SerializeField] private Transform goal;
-
-    // Reference to the NavMeshAgent component
-    private NavMeshAgent agent;
-
-    // Start is called before the first frame update
-    private void Start()
+    public class NavAgentBehaviour : MonoBehaviour
     {
-        // Get reference to the NavMeshAgent component
-        agent = GetComponent<NavMeshAgent>();
-        // Set initial agent goal
-        agent.SetDestination(goal.position);
-    }
+        // Current goal of navigation agent
+        [SerializeField] private Transform goal;
 
-    // Method called when agent collides with something
-    private void OnTriggerEnter(Collider other)
-    {
-        // Did agent collide with goal?
-        if (other.name == "Goal")
-            // If so, update destination (let goal reposition itself first)
-            Invoke("UpdateDestination", 0.1f);
-    }
+        // Reference to the NavMeshAgent component
+        private NavMeshAgent agent;
 
-    // Update destination
-    private void UpdateDestination()
-    {
-        // Set destination to current goal position
-        agent.SetDestination(goal.position);
-    }
+        // Start is called before the first frame update
+        private void Start()
+        {
+            // Get reference to the NavMeshAgent component
+            agent = GetComponent<NavMeshAgent>();
+            // Set initial agent goal
+            agent.SetDestination(goal.position);
+        }
 
+        // Method called when agent collides with something
+        private void OnTriggerEnter(Collider other)
+        {
+            // Did agent collide with goal?
+            if (other.name == "Goal")
+                // If so, update destination (let goal reposition itself first)
+                Invoke("UpdateDestination", 0.1f);
+        }
+
+        // Update destination
+        private void UpdateDestination()
+        {
+            // Set destination to current goal position
+            agent.SetDestination(goal.position);
+        }
+    }
 }
