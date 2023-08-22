@@ -7,23 +7,26 @@
 
 using UnityEngine;
 
-// Simple script to control an agent using keyboard or controller
-public class PlayerBehaviour : MonoBehaviour
+namespace GameAIPrototypes
 {
-    // Player speed
-    [SerializeField]
-    private float speed = 15f;
-
-    // Simple player controller
-    private void Update()
+    // Simple script to control an agent using keyboard or controller
+    public class PlayerBehaviour : MonoBehaviour
     {
-        // Get controller input
-        Vector3 direction = new Vector3(
-            Input.GetAxis("Horizontal"),
-            0f,
-            Input.GetAxis("Vertical"));
+        // Player speed
+        [SerializeField]
+        private float speed = 15f;
 
-        // Move player
-        transform.Translate(direction * speed * Time.deltaTime);
+        // Simple player controller
+        private void Update()
+        {
+            // Get controller input
+            Vector3 direction = new Vector3(
+                Input.GetAxis("Horizontal"),
+                0f,
+                Input.GetAxis("Vertical"));
+
+            // Move player
+            transform.Translate(direction * speed * Time.deltaTime);
+        }
     }
 }
