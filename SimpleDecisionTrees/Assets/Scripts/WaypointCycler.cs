@@ -7,41 +7,44 @@
 
 using UnityEngine;
 
-public abstract class WaypointCycler : MonoBehaviour
+namespace GameAIPrototypes.SimpleDecisionTrees
 {
-    // Array of waypoints
-    [SerializeField]
-    private Vector3[] waypoints = null;
-
-    // Current waypoint index
-    private int currentWaypoint;
-
-    // Property that returns the current waypoint
-    protected Vector3 CurrentWaypoint => waypoints[currentWaypoint];
-
-    // Position agent at first goal
-    protected virtual void Start()
+    public abstract class WaypointCycler : MonoBehaviour
     {
-        currentWaypoint = 0;
-    }
+        // Array of waypoints
+        [SerializeField]
+        private Vector3[] waypoints = null;
 
-    // Update waypoint
-    protected void NextWaypoint()
-    {
-        currentWaypoint++;
-        if (currentWaypoint >= waypoints.Length)
+        // Current waypoint index
+        private int currentWaypoint;
+
+        // Property that returns the current waypoint
+        protected Vector3 CurrentWaypoint => waypoints[currentWaypoint];
+
+        // Position agent at first goal
+        protected virtual void Start()
         {
             currentWaypoint = 0;
         }
-    }
 
-    // Draw gizmos at waypoints
-    protected virtual void OnDrawGizmos()
-    {
-        Gizmos.color = Color.blue;
-        for (int i = 0; i < waypoints.Length; i++)
+        // Update waypoint
+        protected void NextWaypoint()
         {
-            Gizmos.DrawWireSphere(waypoints[i], 0.5f);
+            currentWaypoint++;
+            if (currentWaypoint >= waypoints.Length)
+            {
+                currentWaypoint = 0;
+            }
+        }
+
+        // Draw gizmos at waypoints
+        protected virtual void OnDrawGizmos()
+        {
+            Gizmos.color = Color.blue;
+            for (int i = 0; i < waypoints.Length; i++)
+            {
+                Gizmos.DrawWireSphere(waypoints[i], 0.5f);
+            }
         }
     }
 }

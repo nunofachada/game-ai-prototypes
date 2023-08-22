@@ -7,23 +7,26 @@
 
 using UnityEngine;
 
-public class PlayerBehaviour : MonoBehaviour
+namespace GameAIPrototypes.SimpleDecisionTrees
 {
-    // Player speed
-    [SerializeField]
-    [Range(1, 100)]
-    private float speed = 50f;
-
-    // Simple player controller
-    private void Update()
+    public class PlayerBehaviour : MonoBehaviour
     {
-        // Get controller input
-        Vector3 direction = new Vector3(
-            Input.GetAxis("Horizontal"),
-            0f,
-            Input.GetAxis("Vertical"));
+        // Player speed
+        [SerializeField]
+        [Range(1, 100)]
+        private float speed = 50f;
 
-        // Move player
-        transform.position += direction * speed * Time.deltaTime;
+        // Simple player controller
+        private void Update()
+        {
+            // Get controller input
+            Vector3 direction = new Vector3(
+                Input.GetAxis("Horizontal"),
+                0f,
+                Input.GetAxis("Vertical"));
+
+            // Move player
+            transform.position += direction * speed * Time.deltaTime;
+        }
     }
 }

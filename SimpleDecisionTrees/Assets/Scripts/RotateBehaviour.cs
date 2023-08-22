@@ -7,14 +7,17 @@
 
 using UnityEngine;
 
-public class RotateBehaviour : MonoBehaviour
+namespace GameAIPrototypes.SimpleDecisionTrees
 {
-    [SerializeField]
-    private Vector3 rotateSpeed = new Vector3(0f, 50f, 0f);
-
-    // Rotate the object
-    private void Update()
+    public class RotateBehaviour : MonoBehaviour
     {
-        transform.Rotate(rotateSpeed * Time.deltaTime);
+        [SerializeField]
+        private Vector3 rotateSpeed = new Vector3(0f, 50f, 0f);
+
+        // Rotate the object
+        private void Update()
+        {
+            transform.Rotate(rotateSpeed * Time.deltaTime);
+        }
     }
 }
