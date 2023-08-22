@@ -5,8 +5,6 @@
  * Author: Nuno Fachada
  * */
 
-using System;
-
 namespace GameAIPrototypes.TicTacToe
 {
     /// <summary>

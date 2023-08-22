@@ -4,7 +4,6 @@
  *
  * Author: Nuno Fachada
  * */
-using UnityEngine;
 
 namespace GameAIPrototypes.TicTacToe
 {

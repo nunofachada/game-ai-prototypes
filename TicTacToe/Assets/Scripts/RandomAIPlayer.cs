@@ -4,6 +4,7 @@
  *
  * Author: Nuno Fachada
  * */
+
 using System;
 using System.Collections.Generic;
 
