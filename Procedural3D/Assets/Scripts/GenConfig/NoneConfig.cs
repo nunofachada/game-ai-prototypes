@@ -5,7 +5,7 @@
  * Author: Nuno Fachada
  * */
 
-namespace AIUnityExamples.ProceduralLandscape.GenConfig
+namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 {
     public class NoneConfig : AbstractGenConfig
     {

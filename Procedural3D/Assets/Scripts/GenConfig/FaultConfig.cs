@@ -8,7 +8,7 @@
 using UnityEngine;
 using LibGameAI.PCG;
 
-namespace AIUnityExamples.ProceduralLandscape.GenConfig
+namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 {
     public class FaultConfig : StochasticGenConfig
     {

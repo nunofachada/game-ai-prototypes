@@ -6,10 +6,10 @@
  * */
 
 using UnityEngine;
-using AIUnityExamples.ProceduralLandscape.GenConfig;
+using GameAIPrototypes.ProceduralLandscape.GenConfig;
 using NaughtyAttributes;
 
-namespace AIUnityExamples.ProceduralLandscape
+namespace GameAIPrototypes.ProceduralLandscape
 {
     public class Controller : MonoBehaviour
     {

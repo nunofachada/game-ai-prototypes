@@ -7,11 +7,11 @@
 
 using System.Collections.Generic;
 using UnityEngine;
-using AIUnityExamples.ProceduralLandscape.GenConfig;
+using GameAIPrototypes.ProceduralLandscape.GenConfig;
 using NaughtyAttributes;
 using LibGameAI.Util;
 
-namespace AIUnityExamples.ProceduralLandscape
+namespace GameAIPrototypes.ProceduralLandscape
 {
     /// <summary>
     /// Represents and configures a PCG generator.

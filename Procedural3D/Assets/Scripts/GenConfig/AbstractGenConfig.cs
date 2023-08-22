@@ -9,7 +9,7 @@ using System;
 using UnityEngine;
 using UnityEditor;
 
-namespace AIUnityExamples.ProceduralLandscape.GenConfig
+namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 {
     /// <summary>
     /// The base class for all generator configurators.

@@ -7,7 +7,7 @@
 
 using UnityEngine;
 
-namespace AIUnityExamples.ProceduralLandscape.GenConfig
+namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 {
     public class PerlinConfig : AbstractGenConfig
     {
