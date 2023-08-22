@@ -6,9 +6,9 @@
 
 using System;
 using UnityEngine;
-using AIUnityExample.NGramsFight.UI;
+using GameAIPrototypes.NGramsFight.UI;
 
-namespace AIUnityExample.NGramsFight
+namespace GameAIPrototypes.NGramsFight
 {
     /// <summary>
     /// The game controller.

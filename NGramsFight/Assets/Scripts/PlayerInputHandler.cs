@@ -7,7 +7,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace AIUnityExample.NGramsFight
+namespace GameAIPrototypes.NGramsFight
 {
     /// <summary>
     /// This script handles input for the player agent.

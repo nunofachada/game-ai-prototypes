@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace AIUnityExample.NGramsFight
+namespace GameAIPrototypes.NGramsFight
 {
     /// <summary>
     /// The input frontend, captures valid keystrokes and notifies registered

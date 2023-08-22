@@ -9,7 +9,7 @@ using LibGameAI.NGrams;
 using LibGameAI.Util;
 using NaughtyAttributes;
 
-namespace AIUnityExample.NGramsFight
+namespace GameAIPrototypes.NGramsFight
 {
     /// <summary>
     /// This script is attached to the Enemy agent, interfacing with the N-Grams

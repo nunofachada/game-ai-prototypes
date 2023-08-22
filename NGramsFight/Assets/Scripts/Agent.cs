@@ -7,7 +7,7 @@
 using System;
 using UnityEngine;
 
-namespace AIUnityExample.NGramsFight
+namespace GameAIPrototypes.NGramsFight
 {
     /// <summary>
     /// An agent in the fighting game. Can be player or enemy.

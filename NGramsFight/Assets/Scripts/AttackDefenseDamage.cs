@@ -7,7 +7,7 @@
 using System;
 using UnityEngine;
 
-namespace AIUnityExample.NGramsFight
+namespace GameAIPrototypes.NGramsFight
 {
     /// <summary>
     /// Relates an <see cref="AttackType"/> with a proper

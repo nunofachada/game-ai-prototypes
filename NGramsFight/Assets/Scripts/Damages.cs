@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
 
-namespace AIUnityExample.NGramsFight
+namespace GameAIPrototypes.NGramsFight
 {
     /// <summary>
     /// An list of <see cref="AttackDefenseDamage"/> which can be edited in the

@@ -6,7 +6,7 @@
 
 using UnityEngine;
 
-namespace AIUnityExample.NGramsFight
+namespace GameAIPrototypes.NGramsFight
 {
     /// <summary>
     /// A script for handling the player agent.

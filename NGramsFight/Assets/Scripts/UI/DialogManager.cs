@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace AIUnityExample.NGramsFight.UI
+namespace GameAIPrototypes.NGramsFight.UI
 {
     /// <summary>
     /// Manages the dialog box that appears to the user.

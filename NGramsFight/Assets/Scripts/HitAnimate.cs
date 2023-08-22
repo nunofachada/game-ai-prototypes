@@ -7,7 +7,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace AIUnityExample.NGramsFight
+namespace GameAIPrototypes.NGramsFight
 {
     /// <summary>
     /// This script creates a simple scaling animation for when the object it's

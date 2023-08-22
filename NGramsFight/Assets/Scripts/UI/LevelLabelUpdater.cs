@@ -7,7 +7,7 @@
 using UnityEngine;
 using TMPro;
 
-namespace AIUnityExample.NGramsFight.UI
+namespace GameAIPrototypes.NGramsFight.UI
 {
     /// <summary>
     /// Updates the current level label.

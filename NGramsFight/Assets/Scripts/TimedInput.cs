@@ -6,7 +6,7 @@
 
 using UnityEngine;
 
-namespace AIUnityExample.NGramsFight
+namespace GameAIPrototypes.NGramsFight
 {
     /// <summary>
     /// Associates a key code with a specific input time.

@@ -8,7 +8,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace AIUnityExample.NGramsFight
+namespace GameAIPrototypes.NGramsFight
 {
     /// <summary>
     /// Script to be attached to the shot or bullet fired by the player when

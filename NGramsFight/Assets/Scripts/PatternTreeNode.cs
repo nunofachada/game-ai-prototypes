@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using LibGameAI.Util;
 
-namespace AIUnityExample.NGramsFight
+namespace GameAIPrototypes.NGramsFight
 {
     /// <summary>
     /// A node of a tree data structure used for matching patterns with specific

@@ -4,7 +4,7 @@
 //
 // Author: Nuno Fachada
 
-namespace AIUnityExample.NGramsFight
+namespace GameAIPrototypes.NGramsFight
 {
     /// <summary>
     /// The various attack types.
