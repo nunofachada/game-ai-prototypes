@@ -13,9 +13,9 @@ using UnityEngine.UI;
 using UnityEditor;
 using NaughtyAttributes;
 using LibGameAI.Util;
-using AIUnityExamples.Procedural2D.Scenarios;
+using GameAIPrototypes.Procedural2D.Scenarios;
 
-namespace AIUnityExamples.Procedural2D
+namespace GameAIPrototypes.Procedural2D
 {
     public class Controller : MonoBehaviour
     {

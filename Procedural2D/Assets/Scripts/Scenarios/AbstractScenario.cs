@@ -9,7 +9,7 @@ using System;
 using UnityEngine;
 using UnityEditor;
 
-namespace AIUnityExamples.Procedural2D.Scenarios
+namespace GameAIPrototypes.Procedural2D.Scenarios
 {
     /// <summary>
     /// The base class for all scenarios.

@@ -8,11 +8,10 @@
 using System;
 using System.Reflection;
 using UnityEngine;
-using NaughtyAttributes;
 using LibGameAI.Util;
 using Random = System.Random;
 
-namespace AIUnityExamples.Procedural2D.Scenarios
+namespace GameAIPrototypes.Procedural2D.Scenarios
 {
     public class PRNGHelper
     {

@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace AIUnityExamples.Procedural2D.Scenarios
+namespace GameAIPrototypes.Procedural2D.Scenarios
 {
     public class VoronoiScenario : StochasticScenario
     {

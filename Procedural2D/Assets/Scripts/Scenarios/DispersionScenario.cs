@@ -9,7 +9,7 @@ using UnityEngine;
 using LibGameAI.QRNG;
 using Random = System.Random;
 
-namespace AIUnityExamples.Procedural2D.Scenarios
+namespace GameAIPrototypes.Procedural2D.Scenarios
 {
     public class DispersionScenario : AbstractScenario
     {

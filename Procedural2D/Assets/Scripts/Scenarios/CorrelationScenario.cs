@@ -10,7 +10,7 @@ using UnityEngine;
 using NaughtyAttributes;
 using Random = System.Random;
 
-namespace AIUnityExamples.Procedural2D.Scenarios
+namespace GameAIPrototypes.Procedural2D.Scenarios
 {
     public class CorrelationScenario : AbstractScenario
     {

@@ -7,7 +7,7 @@
 
 using UnityEngine;
 using NaughtyAttributes;
-namespace AIUnityExamples.Procedural2D.Scenarios
+namespace GameAIPrototypes.Procedural2D.Scenarios
 {
     public class CA2DCaveScenario : StochasticScenario
     {
