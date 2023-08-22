@@ -5,8 +5,11 @@
  * Author: Nuno Fachada
  * */
 
-public enum EnemyType
+namespace GameAIPrototypes.BayesMonsters
 {
-    Demon,
-    Dragon
-};
+    public enum EnemyType
+    {
+        Demon,
+        Dragon
+    }
+}

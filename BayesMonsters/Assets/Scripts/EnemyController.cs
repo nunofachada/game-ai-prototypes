@@ -10,108 +10,111 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using Random = UnityEngine.Random;
 
-public class EnemyController : MonoBehaviour
+namespace GameAIPrototypes.BayesMonsters
 {
-
-    // This should have the enemy prefab
-    [SerializeField]
-    private GameObject enemyPrototype = null;
-
-    // Maximum enemy speed
-    [SerializeField]
-    [Range(MINSPEED, MAXSPEED)]
-    private float maxSpeed = (MINSPEED + MAXSPEED) / 2f;
-
-    // Maximum spawn interval
-    [SerializeField]
-    [Range(0f, 10f)]
-    private float maxSpawnInterval = 3f;
-
-    // Number of enemies per game
-    [SerializeField]
-    [Range(1, 30)]
-    private int enemiesPerGame = 10;
-
-    // Constants
-    public const float MAXSPEED = 40f;
-    public const float MINSPEED = MAXSPEED / 10f;
-
-    // Property that exposes the maximum speed to outside objects
-    public float MaxSpeed => maxSpeed;
-
-    // Reference to the game controller
-    private GameController gameController;
-
-    // Number of enemies spawned so far in the current game
-    private int spawnedEnemies;
-
-    // Method called when the application loads
-    private void Awake()
+    public class EnemyController : MonoBehaviour
     {
-        // Position controller in order to enemies to be spawned at this
-        // position
-        float xPos =
-            Camera.main.orthographicSize * Screen.width / Screen.height - 1;
-        transform.position =
-            new Vector3(xPos, transform.position.y, transform.position.z);
 
-        // Make sure the enemy prefab is specified
-        Assert.IsNotNull(enemyPrototype);
+        // This should have the enemy prefab
+        [SerializeField]
+        private GameObject enemyPrototype = null;
 
-        // Get reference to the game controller
-        gameController =
-            GameObject.Find("GameController").GetComponent<GameController>();
-    }
+        // Maximum enemy speed
+        [SerializeField]
+        [Range(MINSPEED, MAXSPEED)]
+        private float maxSpeed = (MINSPEED + MAXSPEED) / 2f;
 
-    // Method called when this object is activated
-    private void OnEnable()
-    {
-        spawnedEnemies = 0;
-    }
+        // Maximum spawn interval
+        [SerializeField]
+        [Range(0f, 10f)]
+        private float maxSpawnInterval = 3f;
 
-    // Method called when it's necessary to schedule the spawn of a new enemy
-    public void ScheduleEnemySpawn()
-    {
-        // Do we still have enemies to spawn?
-        if (spawnedEnemies < enemiesPerGame)
-            // If so, spawn new enemy
-            Invoke("SpawnEnemy", Random.Range(0, maxSpawnInterval));
-        else
-            // Otherwise end current game
-            gameController.EndCurrentGame();
+        // Number of enemies per game
+        [SerializeField]
+        [Range(1, 30)]
+        private int enemiesPerGame = 10;
 
-        // Increment the number of spawned enemies
-        spawnedEnemies++;
-    }
+        // Constants
+        public const float MAXSPEED = 40f;
+        public const float MINSPEED = MAXSPEED / 10f;
 
-    // Spawn a new enemy
-    private void SpawnEnemy()
-    {
-        // The new enemy to spawn
-        Enemy enemyScript;
+        // Property that exposes the maximum speed to outside objects
+        public float MaxSpeed => maxSpeed;
 
-        // Randomize enemy properties
-        EnemyType enemyType =
-            Random.value < 0.5 ? EnemyType.Demon : EnemyType.Dragon;
-        float speed = Random.Range(maxSpeed / 10f, maxSpeed);
+        // Reference to the game controller
+        private GameController gameController;
 
-        // Spawn enemy
-        GameObject enemy = Instantiate(enemyPrototype, transform, false);
-        enemyScript = enemy.GetComponent<Enemy>();
-        enemyScript.Initialize(enemyType, speed, this);
+        // Number of enemies spawned so far in the current game
+        private int spawnedEnemies;
+
+        // Method called when the application loads
+        private void Awake()
+        {
+            // Position controller in order to enemies to be spawned at this
+            // position
+            float xPos =
+                Camera.main.orthographicSize * Screen.width / Screen.height - 1;
+            transform.position =
+                new Vector3(xPos, transform.position.y, transform.position.z);
+
+            // Make sure the enemy prefab is specified
+            Assert.IsNotNull(enemyPrototype);
+
+            // Get reference to the game controller
+            gameController =
+                GameObject.Find("GameController").GetComponent<GameController>();
+        }
+
+        // Method called when this object is activated
+        private void OnEnable()
+        {
+            spawnedEnemies = 0;
+        }
+
+        // Method called when it's necessary to schedule the spawn of a new enemy
+        public void ScheduleEnemySpawn()
+        {
+            // Do we still have enemies to spawn?
+            if (spawnedEnemies < enemiesPerGame)
+                // If so, spawn new enemy
+                Invoke("DoSpawnEnemy", Random.Range(0, maxSpawnInterval));
+            else
+                // Otherwise end current game
+                gameController.EndCurrentGame();
+
+            // Increment the number of spawned enemies
+            spawnedEnemies++;
+        }
+
+        // Spawn a new enemy
+        private void DoSpawnEnemy()
+        {
+            // The new enemy to spawn
+            Enemy enemyScript;
+
+            // Randomize enemy properties
+            EnemyType enemyType =
+                Random.value < 0.5 ? EnemyType.Demon : EnemyType.Dragon;
+            float speed = Random.Range(maxSpeed / 10f, maxSpeed);
+
+            // Spawn enemy
+            GameObject enemy = Instantiate(enemyPrototype, transform, false);
+            enemyScript = enemy.GetComponent<Enemy>();
+            enemyScript.Initialize(enemyType, speed, this);
+
+            // Notify listeners that an enemy was spawned
+            OnSpawnEnemy(enemyScript);
+        }
 
         // Notify listeners that an enemy was spawned
-        OnSpawnEnemy(enemyScript);
-    }
+        private void OnSpawnEnemy(Enemy enemy)
+        {
+            // Only invoke event if there are listeners
+            SpawnEnemy?.Invoke(enemy);
+        }
 
-    // Notify listeners that an enemy was spawned
-    private void OnSpawnEnemy(Enemy enemy)
-    {
-        // Only invoke event if there are listeners
-        spawnEnemy?.Invoke(enemy);
+        // Event which outside objects can register in order to be notified when
+        // an enemy is spawned
+        public event Action<Enemy> SpawnEnemy;
     }
-
-    // Event which outside objects can register in order to be notified when
-    // an enemy is spawned
-    public event Action<Enemy> spawnEnemy;
 }

@@ -6,9 +6,12 @@
  * Author: Nuno Fachada
  * */
 
-public enum SpeedClassification
+namespace GameAIPrototypes.BayesMonsters
 {
-    Slow,
-    Normal,
-    Fast
+    public enum SpeedClassification
+    {
+        Slow,
+        Normal,
+        Fast
+    }
 }

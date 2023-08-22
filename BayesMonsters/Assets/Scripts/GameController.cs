@@ -8,113 +8,116 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameController : MonoBehaviour
+namespace GameAIPrototypes.BayesMonsters
 {
-    // User interface references
-    private Text uiMessages;
-    private Text uiDamage;
-
-    private Button newHumanGameButton;
-    private Button newAIGameButton;
-    private Button quitButton;
-
-    // Contains references to all the buttons
-    private Button[] allButtons;
-
-    // References to the player and to the enemy controller game objects
-    private GameObject player, enemyController;
-
-    // Method invoked when the application starts
-    private void Awake()
+    public class GameController : MonoBehaviour
     {
-        // Get references to UI elements
-        uiMessages = GameObject.Find("TextMessages").GetComponent<Text>();
-        uiDamage = GameObject.Find("TextDamage").GetComponent<Text>();
+        // User interface references
+        private Text uiMessages;
+        private Text uiDamage;
 
-        newHumanGameButton =
-            GameObject.Find("ButtonNewPlayer").GetComponent<Button>();
-        newAIGameButton =
-            GameObject.Find("ButtonNewAI").GetComponent<Button>();
-        quitButton =
-            GameObject.Find("ButtonQuit").GetComponent<Button>();
+        private Button newHumanGameButton;
+        private Button newAIGameButton;
+        private Button quitButton;
 
-        // Keep all buttons in an array
-        allButtons = new Button[]
-            { newHumanGameButton, newAIGameButton, quitButton };
+        // Contains references to all the buttons
+        private Button[] allButtons;
 
-        // Clear UI text fields
-        uiMessages.text = "";
-        uiDamage.text = "";
+        // References to the player and to the enemy controller game objects
+        private GameObject player, enemyController;
 
-        // Add methods to listen to button clicks
-        newHumanGameButton.onClick.AddListener(StartHumanGame);
-        newAIGameButton.onClick.AddListener(StartAIGame);
-        quitButton.onClick.AddListener(Quit);
+        // Method invoked when the application starts
+        private void Awake()
+        {
+            // Get references to UI elements
+            uiMessages = GameObject.Find("TextMessages").GetComponent<Text>();
+            uiDamage = GameObject.Find("TextDamage").GetComponent<Text>();
 
-        // Get reference to the player and enemy controller game objects
-        player = GameObject.Find("Player");
-        enemyController = GameObject.Find("EnemyController");
+            newHumanGameButton =
+                GameObject.Find("ButtonNewPlayer").GetComponent<Button>();
+            newAIGameButton =
+                GameObject.Find("ButtonNewAI").GetComponent<Button>();
+            quitButton =
+                GameObject.Find("ButtonQuit").GetComponent<Button>();
 
-        // Disable the player and enemy controller game object
-        player.SetActive(false);
-        enemyController.SetActive(false);
+            // Keep all buttons in an array
+            allButtons = new Button[]
+                { newHumanGameButton, newAIGameButton, quitButton };
 
-        // Register the player's NotifyEnemySpawned() method to listen
-        // for enemies spawning
-        enemyController.GetComponent<EnemyController>().spawnEnemy +=
-            player.GetComponent<Player>().NotifyEnemySpawned;
-    }
+            // Clear UI text fields
+            uiMessages.text = "";
+            uiDamage.text = "";
 
-    // Method called when user clicks in new human game button
-    private void StartHumanGame()
-    {
-        StartGame();
-        player.GetComponent<Player>().IsAI = false;
-    }
+            // Add methods to listen to button clicks
+            newHumanGameButton.onClick.AddListener(StartHumanGame);
+            newAIGameButton.onClick.AddListener(StartAIGame);
+            quitButton.onClick.AddListener(Quit);
 
-    // Method called when user clicks in new AI game button
-    private void StartAIGame()
-    {
-        StartGame();
-        player.GetComponent<Player>().IsAI = true;
-    }
+            // Get reference to the player and enemy controller game objects
+            player = GameObject.Find("Player");
+            enemyController = GameObject.Find("EnemyController");
 
-    // Method called when user clicks the quit button
-    private void Quit()
-    {
+            // Disable the player and enemy controller game object
+            player.SetActive(false);
+            enemyController.SetActive(false);
+
+            // Register the player's NotifyEnemySpawned() method to listen
+            // for enemies spawning
+            enemyController.GetComponent<EnemyController>().SpawnEnemy +=
+                player.GetComponent<Player>().NotifyEnemySpawned;
+        }
+
+        // Method called when user clicks in new human game button
+        private void StartHumanGame()
+        {
+            StartGame();
+            player.GetComponent<Player>().IsAI = false;
+        }
+
+        // Method called when user clicks in new AI game button
+        private void StartAIGame()
+        {
+            StartGame();
+            player.GetComponent<Player>().IsAI = true;
+        }
+
+        // Method called when user clicks the quit button
+        private void Quit()
+        {
 #if UNITY_STANDALONE
-        // Quit application if running standalone
-        Application.Quit();
+            // Quit application if running standalone
+            Application.Quit();
 #endif
 #if UNITY_EDITOR
-        // Stop game if running in editor
-        UnityEditor.EditorApplication.isPlaying = false;
+            // Stop game if running in editor
+            UnityEditor.EditorApplication.isPlaying = false;
 #endif
-    }
+        }
 
-    // Start a new game
-    private void StartGame()
-    {
-        // Disable UI buttons
-        foreach (Button b in allButtons) b.gameObject.SetActive(false);
-        // Clear UI text
-        uiMessages.text = "";
-        // Activate the player and enemy controller game objects
-        player.SetActive(true);
-        enemyController.SetActive(true);
-        enemyController.GetComponent<EnemyController>().ScheduleEnemySpawn();
-    }
+        // Start a new game
+        private void StartGame()
+        {
+            // Disable UI buttons
+            foreach (Button b in allButtons) b.gameObject.SetActive(false);
+            // Clear UI text
+            uiMessages.text = "";
+            // Activate the player and enemy controller game objects
+            player.SetActive(true);
+            enemyController.SetActive(true);
+            enemyController.GetComponent<EnemyController>().ScheduleEnemySpawn();
+        }
 
-    // End current game
-    public void EndCurrentGame()
-    {
-        // Disable the player and enemy controller game objects
-        player.SetActive(false);
-        enemyController.SetActive(false);
-        // Enable UI buttons
-        foreach (Button b in allButtons) b.gameObject.SetActive(true);
-        // Update UI text with game over message
-        uiMessages.text = "Game Over!";
-    }
+        // End current game
+        public void EndCurrentGame()
+        {
+            // Disable the player and enemy controller game objects
+            player.SetActive(false);
+            enemyController.SetActive(false);
+            // Enable UI buttons
+            foreach (Button b in allButtons) b.gameObject.SetActive(true);
+            // Update UI text with game over message
+            uiMessages.text = "Game Over!";
+        }
 
+    }
 }

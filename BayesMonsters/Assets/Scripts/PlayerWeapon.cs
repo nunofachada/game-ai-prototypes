@@ -5,8 +5,11 @@
  * Author: Nuno Fachada
  * */
 
-public enum PlayerWeapon
+namespace GameAIPrototypes.BayesMonsters
 {
-    Bow,
-    Sword
-};
+    public enum PlayerWeapon
+    {
+        Bow,
+        Sword
+    }
+}
