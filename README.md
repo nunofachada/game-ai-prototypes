@@ -17,6 +17,8 @@ Games at [Lusófona University] (click on each for further information):
 - [BayesMonsters](BayesMonsters)
 - [NGramsFight](NGramsFight)
 
+Check out our [YouTube channel] for videos of these prototypes and more.
+
 ## Compatibility
 
 - Unity 2021.3 LTS or higher
@@ -42,3 +44,4 @@ the [Mozilla Public License 2.0](LICENSE).
 [Lusófona University]:https://www.ulusofona.pt/
 [LibGameAI]:https://github.com/nunofachada/libgameai
 [MIT]:https://opensource.org/license/mit/
+[YouTube channel]:https://www.youtube.com/@ActiveLearningAI4Games-oz9tf
