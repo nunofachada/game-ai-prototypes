@@ -28,9 +28,9 @@ Check out our [YouTube channel] for videos of these prototypes and more.
 If you use or mention this software in your work, please cite the following
 reference:
 
-- Fachada, N., Barreiros, F.F., Lopes, P., & Fonseca, M. (2023, August).
+- Fachada, N., Barreiros, F.F., Lopes, P., & Fonseca, M. (2023).
   Active Learning Prototypes for Teaching Game AI. In *2023 IEEE Conference on
-  Games (CoG)* (pp. TBD). IEEE.
+  Games (CoG)*. IEEE. <https://doi.org/10.1109/CoG57401.2023.10333229>
 
 ## Supporting libraries
 
