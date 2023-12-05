@@ -53,11 +53,11 @@ preferred-citation:
       email: micaela.fonseca@ulusofona.pt
       affiliation: 'Lusófona University, HEI-Lab'
       orcid: 'https://orcid.org/0000-0001-7946-4825'
-  # doi: TBD
+  doi: '10.1109/CoG57401.2023.10333229'
   # start: TBD
   # end: TBD
   month: 8
   year: 2023
-  # url: 'TBD'
+  url: 'https://doi.org/10.1109/CoG57401.2023.10333229'
   publisher:
     name: IEEE
