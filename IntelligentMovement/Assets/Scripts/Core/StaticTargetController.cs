@@ -32,7 +32,7 @@ namespace GameAIPrototypes.Movement.Core
         private void TargetDestroyed()
         {
             // Schedule the creation of a new target
-            Invoke("SpawnTarget", delay);
+            Invoke(nameof(SpawnTarget), delay);
         }
 
         // Spawn a new target at a random location
