@@ -21,7 +21,7 @@ Check out our [YouTube channel] for videos of these prototypes and more.
 
 ## Compatibility
 
-- Unity 2021.3 LTS or higher
+- Unity 2022.3 LTS or higher
 
 ## Reference
 
