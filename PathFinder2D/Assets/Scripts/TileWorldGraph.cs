@@ -17,7 +17,7 @@ namespace GameAIPrototypes.PathFinder2D
     public class TileWorldGraph : IGraph
     {
         // The tile-based world
-        private TileBehaviour[,] world;
+        private readonly TileBehaviour[,] world;
 
         // Get outgoing connections from given node
         public IEnumerable<IConnection> GetConnections(int fromNode)
