@@ -48,7 +48,13 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
                 ca1 = ca2;
                 ca2 = aux;
             }
-
+            // for (int i = 0; i < ydim; i++)
+            // {
+            //     for (int j = 0; j < xdim; j++)
+            //     {
+            //         heights[j, i] = heights[j, i] * 0.0015f;
+            //     }
+            // }
         }
     }
 }

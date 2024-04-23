@@ -6,7 +6,6 @@
  * */
 
 using System;
-using System.Diagnostics;
 
 namespace LibGameAI.PCG
 {
@@ -67,14 +66,14 @@ namespace LibGameAI.PCG
                     int numNeighs = CountNeighbors(map_in, width, height, i, j, radius);
 
                     if (numNeighs > 4) map_out[i * width + j] = 1;
-                    else if (numNeighs < 4) map_out[i * width + j] = 0;
+                    else if (numNeighs <= 4) map_out[i * width + j] = 0;
                     else map_out[i * width + j] = map_in[i * width + j];
                 }
             }
         }
 
-        private static int CountNeighbors(int[] map, int width, int height, int row, int col, int radius,
-            bool toroidal = true, int nonToroidalBorderCells = 0, int neighValue = 1,
+        public static int CountNeighbors(int[] map, int width, int height, int row, int col, int radius,
+            bool toroidal = true, int nonToroidalBorderCells = 0, int neighValue = 1, bool countSelf = false,
             NeighType neighType = NeighType.Moore)
         {
             int numNeighs = 0;
@@ -88,14 +87,13 @@ namespace LibGameAI.PCG
                         continue;
                     }
 
+                    if (!countSelf && i == 0 && j ==0)
+                    {
+                        continue;
+                    }
+
                     int r = Wrap(row + i, height, out bool wrapRow);
                     int c = Wrap(col + j, width, out bool wrapCol);
-
-                    if (map.Length <= r * width + c)
-                    {
-                        UnityEngine.Debug.Log(Wrap(-2, 10, out bool mywrap));
-                        throw new IndexOutOfRangeException($"map length is {map.Length}, index is {r * width + c} (r={r}, c={c}, row={row}, col={col}, width={width}, height={height})");
-                    }
 
                     if (!toroidal && (wrapRow || wrapCol))
                     {
