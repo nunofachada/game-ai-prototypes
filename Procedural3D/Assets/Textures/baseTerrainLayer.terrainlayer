@@ -6,11 +6,11 @@ TerrainLayer:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SmallRocksLayer
-  m_DiffuseTexture: {fileID: 2800000, guid: ca94f015af15be377a83e28d0e75d9d8, type: 3}
+  m_Name: baseTerrainLayer
+  m_DiffuseTexture: {fileID: 2800000, guid: 6cf3c88f377fc4a7eaedfc77467d7068, type: 3}
   m_NormalMapTexture: {fileID: 0}
   m_MaskMapTexture: {fileID: 0}
-  m_TileSize: {x: 50, y: 50}
+  m_TileSize: {x: 10, y: 10}
   m_TileOffset: {x: 0, y: 0}
   m_Specular: {r: 0, g: 0, b: 0, a: 0}
   m_Metallic: 0
