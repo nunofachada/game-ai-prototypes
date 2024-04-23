@@ -15,6 +15,9 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 
         [SerializeField]
         private CA2D.Rule rule = CA2D.Rule.Smooth44;
+        [SerializeField]
+        [Range(0, 1)]
+        private float initialFill = 0.5f;
 
         [SerializeField]
         private bool addFirst = false;
@@ -30,7 +33,7 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
             int[] ca2 = new int[xdim * ydim];
             int[] aux;
 
-            CA2D.RandomFill(ca1, new int[] { 0, 1 }, new float[] { 0.5f, 0.5f }, () => (float)PRNG.NextDouble());
+            CA2D.RandomFill(ca1, new int[] { 0, 1 }, new float[] { 1 - initialFill, initialFill }, () => (float)PRNG.NextDouble());
 
             for (int t = 0; t < steps; t++)
             {
