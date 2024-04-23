@@ -6,7 +6,6 @@
  * */
 
 using UnityEngine;
-using LibGameAI.PCG;
 
 namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 {
