@@ -12,6 +12,17 @@ namespace LibGameAI.PCG
     public class CA2D
     {
 
+        public enum Rule
+        {
+            Smooth44,
+            Smooth45,
+            Majority,
+            WalledCities,
+            Diamoeba,
+            Coral,
+            HighLife
+        }
+
         public static void RandomFill(int[] map, int[] values, float[] probabilities, Func<float> nextFloat)
         {
             if (values.Length != probabilities.Length)
@@ -56,18 +67,101 @@ namespace LibGameAI.PCG
             return ncProbs;
         }
 
-        public static void DoStep(int[] map_in, int[] map_out, int width, int height)
+        public static void DoStep(int[] map_in, int[] map_out, int width, int height, Rule rule)
         {
-            int radius = 1;
             for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
                 {
-                    int numNeighs = CountNeighbors(map_in, width, height, i, j, radius);
 
-                    if (numNeighs > 4) map_out[i * width + j] = 1;
-                    else if (numNeighs <= 4) map_out[i * width + j] = 0;
-                    else map_out[i * width + j] = map_in[i * width + j];
+                    if (rule == Rule.Smooth44)
+                    {
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1);
+
+                        if (numNeighs > 4) map_out[i * width + j] = 1;
+                        else if (numNeighs < 4) map_out[i * width + j] = 0;
+                        else map_out[i * width + j] = map_in[i * width + j];
+
+                    }
+                    else if (rule == Rule.Smooth45)
+                    {
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1);
+
+                        if (numNeighs > 4) map_out[i * width + j] = 1;
+                        else map_out[i * width + j] = 0;
+                    }
+                    else if (rule == Rule.Majority)
+                    {
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 4);
+
+                        if (numNeighs >= 41) map_out[i * width + j] = 1;
+                        else map_out[i * width + j] = 0;
+
+                    }
+                    else if (rule == Rule.WalledCities)
+                    {
+                        // 2345/45678
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1);
+
+                        if (map_in[i * width + j] == 1 && numNeighs >= 2 && numNeighs <= 5)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else if (map_in[i * width + j] == 0 && numNeighs >= 4 && numNeighs <= 8)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else map_out[i * width + j] = 0;
+                    }
+                    else if (rule == Rule.Diamoeba)
+                    {
+                        // 5678/35678
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1);
+
+                        if (map_in[i * width + j] == 1 && numNeighs >= 5 && numNeighs <= 8)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else if (map_in[i * width + j] == 0 && numNeighs >= 3 && numNeighs <= 8 && numNeighs != 3)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else map_out[i * width + j] = 0;
+
+                    }
+                    else if (rule == Rule.Coral)
+                    {
+                        // 45678/3
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1);
+
+                        if (map_in[i * width + j] == 1 && numNeighs >= 4 && numNeighs <= 8)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else if (map_in[i * width + j] == 0 && numNeighs == 3)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else map_out[i * width + j] = 0;
+
+                    }
+                    else if (rule == Rule.HighLife)
+                    {
+                        // 23/36
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1);
+
+                        if (map_in[i * width + j] == 1 && numNeighs >= 2 && numNeighs <= 3)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else if (map_in[i * width + j] == 0 && (numNeighs == 3 || numNeighs == 6))
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else map_out[i * width + j] = 0;
+
+
+                    }
                 }
             }
         }

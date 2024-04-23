@@ -14,6 +14,9 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
     {
 
         [SerializeField]
+        private CA2D.Rule rule = CA2D.Rule.Smooth44;
+
+        [SerializeField]
         private bool addFirst = false;
         [SerializeField]
         private int steps = 5;
@@ -42,7 +45,7 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
                     }
                 }
 
-                CA2D.DoStep(ca1, ca2, xdim, ydim);
+                CA2D.DoStep(ca1, ca2, xdim, ydim, rule);
 
                 aux = ca1;
                 ca1 = ca2;
