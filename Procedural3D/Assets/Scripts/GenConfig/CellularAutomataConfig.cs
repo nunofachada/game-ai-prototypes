@@ -8,6 +8,7 @@
 using UnityEngine;
 using LibGameAI.PCG;
 using System.Runtime.InteropServices.WindowsRuntime;
+using NaughtyAttributes;
 
 namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 {
@@ -24,6 +25,11 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
         private bool addFirst = false;
         [SerializeField]
         private int steps = 5;
+        [SerializeField]
+        private bool toroidal = true;
+        [SerializeField]
+        [HideIf(nameof(toroidal))]
+        private bool offGridBorderCellsAlive = false;
 
         public override float[,] Generate(float[,] prev_heights)
         {
@@ -55,7 +61,7 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
                     }
                 }
 
-                CA2D.DoStep(ca1, ca2, xdim, ydim, rule);
+                CA2D.DoStep(ca1, ca2, xdim, ydim, toroidal, offGridBorderCellsAlive ? 1 : 0, rule);
 
                 aux = ca1;
                 ca1 = ca2;

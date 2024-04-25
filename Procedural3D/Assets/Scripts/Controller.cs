@@ -108,18 +108,19 @@ namespace GameAIPrototypes.ProceduralLandscape
                 }
             }
 
-            // Determine maximum height
+            // Determine minimum and maximum heights
             maxHeight = float.NegativeInfinity;
+            float minHeight = float.PositiveInfinity;
             for (int i = 0; i < xdim; i++)
             {
                 for (int j = 0; j < ydim; j++)
                 {
-                    if (heights[i, j] > maxHeight)
-                    {
-                        maxHeight = heights[i, j];
-                    }
+                    if (heights[i, j] > maxHeight) maxHeight = heights[i, j];
+                    else if (heights[i, j] < minHeight) minHeight = heights[i, j];
                 }
             }
+
+            Debug.Log($"Min height = {minHeight}; Max height = {maxHeight}");
 
             // Apply terrain heights
             terrain.terrainData.SetHeights(0, 0, heights);

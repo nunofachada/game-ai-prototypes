@@ -20,7 +20,9 @@ namespace LibGameAI.PCG
             WalledCities,
             Diamoeba,
             Coral,
-            HighLife
+            HighLife,
+            Caves,
+            GameOfLife
         }
 
         public static void RandomFill(int[] map, int[] values, float[] probabilities, Func<float> nextFloat)
@@ -67,7 +69,7 @@ namespace LibGameAI.PCG
             return ncProbs;
         }
 
-        public static void DoStep(int[] map_in, int[] map_out, int width, int height, Rule rule)
+        public static void DoStep(int[] map_in, int[] map_out, int width, int height, bool toroidal, int nonToroidalBorderCells, Rule rule)
         {
             for (int i = 0; i < height; i++)
             {
@@ -76,7 +78,7 @@ namespace LibGameAI.PCG
 
                     if (rule == Rule.Smooth44)
                     {
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1);
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
                         if (numNeighs > 4) map_out[i * width + j] = 1;
                         else if (numNeighs < 4) map_out[i * width + j] = 0;
@@ -85,14 +87,14 @@ namespace LibGameAI.PCG
                     }
                     else if (rule == Rule.Smooth45)
                     {
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1);
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
                         if (numNeighs > 4) map_out[i * width + j] = 1;
                         else map_out[i * width + j] = 0;
                     }
                     else if (rule == Rule.Majority)
                     {
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 4);
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
                         if (numNeighs >= 43) map_out[i * width + j] = 1;
                         else map_out[i * width + j] = 0;
@@ -101,7 +103,7 @@ namespace LibGameAI.PCG
                     else if (rule == Rule.WalledCities)
                     {
                         // 2345/45678
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1);
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
                         if (map_in[i * width + j] == 1 && numNeighs >= 2 && numNeighs <= 5)
                         {
@@ -116,7 +118,7 @@ namespace LibGameAI.PCG
                     else if (rule == Rule.Diamoeba)
                     {
                         // 5678/35678
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1);
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
                         if (map_in[i * width + j] == 1 && numNeighs >= 5 && numNeighs <= 8)
                         {
@@ -132,7 +134,7 @@ namespace LibGameAI.PCG
                     else if (rule == Rule.Coral)
                     {
                         // 45678/3
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1);
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
                         if (map_in[i * width + j] == 1 && numNeighs >= 4 && numNeighs <= 8)
                         {
@@ -148,7 +150,7 @@ namespace LibGameAI.PCG
                     else if (rule == Rule.HighLife)
                     {
                         // 23/36
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1);
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
                         if (map_in[i * width + j] == 1 && numNeighs >= 2 && numNeighs <= 3)
                         {
@@ -160,6 +162,29 @@ namespace LibGameAI.PCG
                         }
                         else map_out[i * width + j] = 0;
 
+
+                    }
+                    else if (rule == Rule.Caves)
+                    {
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 2, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
+
+                        map_out[i * width + j] = numNeighs >= 13 ? 1 : 0;
+                    }
+                    else if (rule == Rule.GameOfLife)
+                    {
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
+
+                        // GoL rules
+                        if (map_in[i * width + j] == 1)
+                        {
+                            if (numNeighs < 2 && numNeighs > 3) map_out[i * width + j] = 0;
+                            else map_out[i * width + j] = 1;
+                        }
+                        else if (map_in[i * width + j] == 0 && (numNeighs == 3 || numNeighs == 6))
+                        {
+                            if (numNeighs == 3) map_out[i * width + j] = 1;
+                            else map_out[i * width + j] = 0;
+                        }
 
                     }
                 }
