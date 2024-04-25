@@ -50,7 +50,6 @@ namespace GameAIPrototypes.ProceduralLandscape
         // //////////////////// //
         // Generator parameters //
         // //////////////////// //
-
         [SerializeField]
         [Dropdown(nameof(GeneratorNames))]
         [OnValueChanged(nameof(OnChangeGeneratorName))]
@@ -60,6 +59,27 @@ namespace GameAIPrototypes.ProceduralLandscape
         [Expandable]
         [OnValueChanged(nameof(OnChangeGeneratorType))]
         private AbstractGenConfig generatorConfig;
+
+        private enum PostProcess { None, Normalize, Multiply }
+
+        [SerializeField]
+        private PostProcess postProcessing = PostProcess.None;
+
+        [SerializeField]
+        [ShowIf(nameof(PostNormalize))]
+        private float maxHeight = 1;
+
+        [SerializeField]
+        [ShowIf(nameof(PostMultiply))]
+        private float multiplier = 1;
+
+        public bool PostNormalize => postProcessing == PostProcess.Normalize;
+        public bool PostMultiply => postProcessing == PostProcess.Multiply;
+
+        public float MaxHeight => maxHeight;
+        public float Multiplier => multiplier;
+
+        public bool IsModifier => generatorConfig.IsModifier;
 
         // ///////////////////////////////////// //
         // Instance variables not used in editor //
@@ -138,10 +158,13 @@ namespace GameAIPrototypes.ProceduralLandscape
         /// <summary>
         /// Apply generator on the given heightmap.
         /// </summary>
-        /// <param name="heights">Heightmap.</param>
-        public void Generate(float[,] heights)
+        /// <param name="heights">The current heightmap.</param>
+        /// <returns>
+        /// A new heightmap, possibly based on the current heighmap.
+        /// </returns>
+        public float[,] Generate(float[,] heights)
         {
-            generatorConfig.Generate(heights);
+            return generatorConfig.Generate(heights);
         }
 
 
@@ -150,13 +173,15 @@ namespace GameAIPrototypes.ProceduralLandscape
         /// </summary>
         public void SetAsNormalizer()
         {
-            generatorName = SimpleName(typeof(NormalizeConfig).FullName);
+            generatorName = SimpleName(typeof(PostProcessingOnlyConfig).FullName);
             OnChangeGeneratorName();
+            postProcessing = PostProcess.Normalize;
+            maxHeight = 1;
         }
 
         private void Reset()
         {
-            generatorName = SimpleName(typeof(NoneConfig).FullName);
+            generatorName = SimpleName(typeof(PostProcessingOnlyConfig).FullName);
             OnChangeGeneratorName();
         }
 

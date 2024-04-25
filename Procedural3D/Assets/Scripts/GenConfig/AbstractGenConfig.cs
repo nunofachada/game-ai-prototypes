@@ -8,6 +8,7 @@
 using System;
 using UnityEngine;
 using UnityEditor;
+using NaughtyAttributes;
 
 namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 {
@@ -32,12 +33,22 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
             $"Assets/Resources/{configFolder}";
 
         /// <summary>
+        /// Specifies wether the generator is a modifier (i.e. it modifies
+        /// a previously given landscape) or it simply generates landscape from
+        /// scratch.
+        /// </summary>
+        public virtual bool IsModifier => false;
+
+        /// <summary>
         /// Generate a landscape.
         /// </summary>
         /// <param name="heights">
-        /// Bidimensional array to fill with the generated landscape.
+        /// Current landscape.
         /// </param>
-        public abstract void Generate(float[,] heights);
+        /// <returns>
+        /// The generated landscape, possibly based on the current landscape.
+        /// </returns>
+        public abstract float[,] Generate(float[,] heights);
 
         /// <summary>
         /// Returns an instance of the generator configurator.

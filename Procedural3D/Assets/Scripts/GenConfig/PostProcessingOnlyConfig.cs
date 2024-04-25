@@ -7,11 +7,12 @@
 
 namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 {
-    public class NoneConfig : AbstractGenConfig
+    public class PostProcessingOnlyConfig : AbstractGenConfig
     {
-        public override void Generate(float[,] heights)
+        public override bool IsModifier => true;
+        public override float[,] Generate(float[,] heights)
         {
-            // Do nothing
+            return heights;
         }
     }
 }

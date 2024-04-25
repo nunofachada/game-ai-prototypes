@@ -18,9 +18,19 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
         [SerializeField]
         private float roughness = 0.5f;
 
-        public override void Generate(float[,] heights)
+        public override float[,] Generate(float[,] prev_heights)
         {
-            Landscape.DiamondSquare(heights, maxInitHeight, roughness, () => (float)PRNG.NextDouble());
+            int xdim = prev_heights.GetLength(0);
+            int ydim = prev_heights.GetLength(1);
+            float[,] ds_heights = new float[xdim, ydim];
+
+            Landscape.DiamondSquare(
+                ds_heights,
+                maxInitHeight,
+                roughness,
+                () => (float)PRNG.NextDouble());
+
+            return ds_heights;
         }
     }
 }

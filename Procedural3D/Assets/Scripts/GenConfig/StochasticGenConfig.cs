@@ -17,7 +17,7 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
         private bool useSeed = false;
 
         [SerializeField]
-        [EnableIf(nameof(useSeed))]
+        [ShowIf(nameof(useSeed))]
         private int seed = 0;
 
         private Random random;

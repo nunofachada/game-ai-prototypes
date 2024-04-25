@@ -7,6 +7,7 @@
 
 using UnityEngine;
 using LibGameAI.PCG;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 {
@@ -24,16 +25,22 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
         [SerializeField]
         private int steps = 5;
 
-        public override void Generate(float[,] heights)
+        public override float[,] Generate(float[,] prev_heights)
         {
-            int xdim = heights.GetLength(0);
-            int ydim = heights.GetLength(1);
+            int xdim = prev_heights.GetLength(0);
+            int ydim = prev_heights.GetLength(1);
 
             int[] ca1 = new int[xdim * ydim];
             int[] ca2 = new int[xdim * ydim];
             int[] aux;
 
-            CA2D.RandomFill(ca1, new int[] { 0, 1 }, new float[] { 1 - initialFill, initialFill }, () => (float)PRNG.NextDouble());
+            float[,] ca_heights = new float[xdim, ydim];
+
+            CA2D.RandomFill(
+                ca1,
+                new int[] { 0, 1 },
+                new float[] { 1 - initialFill, initialFill },
+                () => (float)PRNG.NextDouble());
 
             for (int t = 0; t < steps; t++)
             {
@@ -43,7 +50,7 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
                     {
                         for (int j = 0; j < xdim; j++)
                         {
-                            heights[j, i] += ca1[i * xdim + j];
+                            ca_heights[j, i] += ca1[i * xdim + j];
                         }
                     }
                 }
@@ -54,13 +61,8 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
                 ca1 = ca2;
                 ca2 = aux;
             }
-            // for (int i = 0; i < ydim; i++)
-            // {
-            //     for (int j = 0; j < xdim; j++)
-            //     {
-            //         heights[j, i] = heights[j, i] * 0.0015f;
-            //     }
-            // }
+
+            return ca_heights;
         }
     }
 }

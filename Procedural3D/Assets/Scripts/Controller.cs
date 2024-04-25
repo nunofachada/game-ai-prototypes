@@ -48,17 +48,71 @@ namespace GameAIPrototypes.ProceduralLandscape
         {
             Flatten();
 
+            int xdim = Heights.GetLength(0);
+            int ydim = Heights.GetLength(1);
+
             // Apply the generation
             foreach (Generator g in GetComponents<Generator>())
             {
-                g.Generate(Heights);
+                float[,] partial_heights = g.Generate(heights);
+
+                if (g.PostNormalize)
+                {
+                    float min = float.PositiveInfinity;
+                    float max = float.NegativeInfinity;
+
+                    // Normalizing
+                    for (int i = 0; i < xdim; i++)
+                    {
+                        for (int j = 0; j < ydim; j++)
+                        {
+                            if (partial_heights[i, j] < min) min = partial_heights[i, j];
+                            else if (partial_heights[i, j] > max) max = partial_heights[i, j];
+                        }
+                    }
+
+                    for (int i = 0; i < xdim; i++)
+                    {
+                        for (int j = 0; j < ydim; j++)
+                        {
+                            partial_heights[i, j] =
+                                g.MaxHeight * (partial_heights[i, j] - min) / (max - min);
+                        }
+                    }
+                }
+                else if (g.PostMultiply)
+                {
+                    // Apply multiplier
+                    for (int i = 0; i < xdim; i++)
+                    {
+                        for (int j = 0; j < ydim; j++)
+                        {
+                            partial_heights[i, j] *= g.Multiplier;
+                        }
+                    }
+                }
+
+                if (!g.IsModifier)
+                {
+                    // If this generator is not a modifier of the previous
+                    // landscape, then we must add the newly generated landscape
+                    // to the previous one
+                    for (int i = 0; i < xdim; i++)
+                    {
+                        for (int j = 0; j < ydim; j++)
+                        {
+                            heights[i, j] += partial_heights[i, j];
+                        }
+                    }
+
+                }
             }
 
             // Determine maximum height
             maxHeight = float.NegativeInfinity;
-            for (int i = 0; i < heights.GetLength(0); i++)
+            for (int i = 0; i < xdim; i++)
             {
-                for (int j = 0; j < heights.GetLength(1); j++)
+                for (int j = 0; j < ydim; j++)
                 {
                     if (heights[i, j] > maxHeight)
                     {

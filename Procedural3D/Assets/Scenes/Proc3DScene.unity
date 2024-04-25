@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657725, g: 0.49641246, b: 0.5748152, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -105,7 +105,7 @@ NavMeshSettings:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_BuildSettings:
-    serializedVersion: 2
+    serializedVersion: 3
     agentTypeID: 0
     agentRadius: 0.5
     agentHeight: 2
@@ -118,7 +118,7 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualTileSize: 0
     tileSize: 256
-    accuratePlacement: 0
+    buildHeightMesh: 0
     maxJobWorkers: 0
     preserveTilesOutsideBounds: 0
     debug:
@@ -150,7 +150,16 @@ TerrainCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 453445760}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
+  serializedVersion: 2
   m_TerrainData: {fileID: 15600000, guid: 0a3f50716e326cb6cb0a77be419b26fd, type: 2}
   m_EnableTreeColliders: 1
 --- !u!218 &453445762
@@ -177,16 +186,21 @@ Terrain:
   m_DrawInstanced: 0
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
+  m_IgnoreQualitySettings: 0
   m_ReflectionProbeUsage: 1
   m_MaterialTemplate: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
+  m_ReceiveGI: 1
   m_ScaleInLightmap: 0.0256
   m_LightmapParameters: {fileID: 15203, guid: 0000000000000000f000000000000000, type: 0}
   m_GroupingID: 0
   m_RenderingLayerMask: 1
   m_AllowAutoConnect: 1
+  m_EnableHeightmapRayTracing: 1
+  m_EnableTreesAndDetailsRayTracing: 0
+  m_TreeMotionVectorModeOverride: 3
 --- !u!4 &453445763
 Transform:
   m_ObjectHideFlags: 0
@@ -194,13 +208,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 453445760}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &637276294
 GameObject:
@@ -235,7 +249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrain: {fileID: 453445762}
-  maxHeight: 0
+  maxHeight: -Infinity
   tSide: 513
 --- !u!4 &637276296
 Transform:
@@ -244,13 +258,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 637276294}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &637276297
 MonoBehaviour:
@@ -264,8 +278,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66531adbb1fd2fc0a9f236459e5a13eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generatorName: Normalize
-  generatorConfig: {fileID: 11400000, guid: 9c683a19dad02c4ba87d5c51a706ac84, type: 2}
+  generatorName: PostProcessingOnly
+  generatorConfig: {fileID: 11400000, guid: 8d9a0ef4f5ca61b6a90744ae82dd3149, type: 2}
+  postProcessing: 1
+  maxHeight: 1
+  multiplier: 1
 --- !u!114 &637276298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,8 +295,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66531adbb1fd2fc0a9f236459e5a13eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generatorName: None
-  generatorConfig: {fileID: 11400000, guid: ae317c5a71a05d38185ab5e25e60c38f, type: 2}
+  generatorName: PostProcessingOnly
+  generatorConfig: {fileID: 11400000, guid: 35ac1e08e6987d18e82aa5bac26be426, type: 2}
+  postProcessing: 0
+  maxHeight: 1
+  multiplier: 1
 --- !u!114 &637276299
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -292,8 +312,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66531adbb1fd2fc0a9f236459e5a13eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generatorName: None
-  generatorConfig: {fileID: 11400000, guid: c1668b8d4cd6fb41a8cbbfbbf132e03b, type: 2}
+  generatorName: PostProcessingOnly
+  generatorConfig: {fileID: 11400000, guid: c908fed5ade4bd4e4874f56b144376de, type: 2}
+  postProcessing: 0
+  maxHeight: 1
+  multiplier: 1
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -380,14 +403,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
-  m_LocalRotation: {x: 0.42309862, y: -0.119584985, z: 0.4472934, w: 0.77885526}
-  m_LocalPosition: {x: 165, y: 402, z: 193}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 50, y: 17.4, z: 67.9}
+  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -428,9 +451,17 @@ Camera:
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -464,11 +495,19 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
+  serializedVersion: 2
   m_LocalRotation: {x: 0.37262312, y: -0.1121225, z: 0.04704764, w: 0.91998214}
   m_LocalPosition: {x: 673, y: 568, z: -286}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 44.12, y: -13.8, z: 0.24}
+--- !u!1660057539 &9223372036854775807
+SceneRoots:
+  m_ObjectHideFlags: 0
+  m_Roots:
+  - {fileID: 963194228}
+  - {fileID: 705507995}
+  - {fileID: 453445763}
+  - {fileID: 637276296}

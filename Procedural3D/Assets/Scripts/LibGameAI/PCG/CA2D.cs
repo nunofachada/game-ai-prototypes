@@ -94,7 +94,7 @@ namespace LibGameAI.PCG
                     {
                         int numNeighs = CountNeighbors(map_in, width, height, i, j, 4);
 
-                        if (numNeighs >= 41) map_out[i * width + j] = 1;
+                        if (numNeighs >= 43) map_out[i * width + j] = 1;
                         else map_out[i * width + j] = 0;
 
                     }

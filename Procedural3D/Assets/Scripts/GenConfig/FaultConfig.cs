@@ -22,15 +22,21 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
         [SerializeField]
         private float decreaseDistance = 0f;
 
-        public override void Generate(float[,] heights)
+        public override float[,] Generate(float[,] prev_heights)
         {
+            int xdim = prev_heights.GetLength(0);
+            int ydim = prev_heights.GetLength(1);
+            float[,] flt_heights = new float[xdim, ydim];
+
             // Apply faults
             for (int i = 0; i < numFaults; i++)
             {
                 Landscape.FaultModifier(
-                    heights, meanDepth, () => (float)PRNG.NextDouble(),
+                    flt_heights, meanDepth, () => (float)PRNG.NextDouble(),
                     decreaseDistance);
             }
+
+            return flt_heights;
         }
     }
 }

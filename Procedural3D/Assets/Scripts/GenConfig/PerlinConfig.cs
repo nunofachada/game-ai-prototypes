@@ -14,20 +14,23 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
         [SerializeField]
         private float tileSize = 10f;
 
-        public override void Generate(float[,] heights)
+        public override float[,] Generate(float[,] prev_heights)
         {
-            int width = heights.GetLength(0);
-            int height = heights.GetLength(1);
+            int width = prev_heights.GetLength(0);
+            int height = prev_heights.GetLength(1);
+            float[,] perlin_heights = new float[width, height];
 
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
-                    heights[i, j] += Mathf.PerlinNoise(
-                        tileSize * i / (float)width,
-                        tileSize * (float)j / height);
+                    perlin_heights[i, j] += Mathf.PerlinNoise(
+                        tileSize * i / width,
+                        tileSize * j / height);
                 }
             }
+
+            return perlin_heights;
         }
     }
 }
