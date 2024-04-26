@@ -143,8 +143,9 @@ namespace GameAIPrototypes.ProceduralLandscape
         [Button("Reset Configuration", enabledMode: EButtonEnableMode.Editor)]
         private void ResetConfiguration()
         {
-            terrain.transform.position = new Vector3(0, 0, 0);
-            terrain.transform.rotation = Quaternion.identity;
+            terrain.transform.SetPositionAndRotation(
+                new Vector3(0, 0, 0),
+                Quaternion.identity);
             terrain.transform.localScale = new Vector3(1, 1, 1);
 
             foreach (Generator g in GetComponents<Generator>())

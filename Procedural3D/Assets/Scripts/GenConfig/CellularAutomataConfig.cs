@@ -49,20 +49,13 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
                 new float[] { 1 - initialFill, initialFill },
                 () => (float)PRNG.NextDouble());
 
+            if (addFirst) AddLayer(ca_heights, ca1);
+
             for (int t = 0; t < steps; t++)
             {
-                if (addFirst || t > 0)
-                {
-                    for (int i = 0; i < ydim; i++)
-                    {
-                        for (int j = 0; j < xdim; j++)
-                        {
-                            ca_heights[j, i] += ca1[i * xdim + j];
-                        }
-                    }
-                }
-
                 CA2D.DoStep(ca1, ca2, xdim, ydim, toroidal, offGridBorderCellsAlive ? 1 : 0, rule);
+
+                AddLayer(ca_heights, ca2);
 
                 aux = ca1;
                 ca1 = ca2;
@@ -70,6 +63,19 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
             }
 
             return ca_heights;
+        }
+
+        private void AddLayer(float[,] heights, int[] caLayer)
+        {
+            int xdim = heights.GetLength(0);
+            int ydim = heights.GetLength(1);
+            for (int i = 0; i < ydim; i++)
+            {
+                for (int j = 0; j < xdim; j++)
+                {
+                    heights[j, i] += caLayer[i * xdim + j];
+                }
+            }
         }
     }
 }
