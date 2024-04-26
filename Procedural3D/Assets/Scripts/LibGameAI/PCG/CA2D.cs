@@ -16,7 +16,12 @@ namespace LibGameAI.PCG
         {
             Smooth44,
             Smooth45,
-            Majority,
+            Majority38,
+            Majority39,
+            Majority40,
+            Majority41,
+            Majority42,
+            Majority43,
             WalledCities,
             Diamoeba,
             Coral,
@@ -92,7 +97,47 @@ namespace LibGameAI.PCG
                         if (numNeighs > 4) map_out[i * width + j] = 1;
                         else map_out[i * width + j] = 0;
                     }
-                    else if (rule == Rule.Majority)
+                    else if (rule == Rule.Majority38)
+                    {
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
+
+                        if (numNeighs >= 38) map_out[i * width + j] = 1;
+                        else map_out[i * width + j] = 0;
+
+                    }
+                    else if (rule == Rule.Majority39)
+                    {
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
+
+                        if (numNeighs >= 39) map_out[i * width + j] = 1;
+                        else map_out[i * width + j] = 0;
+
+                    }
+                    else if (rule == Rule.Majority40)
+                    {
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
+
+                        if (numNeighs >= 40) map_out[i * width + j] = 1;
+                        else map_out[i * width + j] = 0;
+
+                    }
+                    else if (rule == Rule.Majority41)
+                    {
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
+
+                        if (numNeighs >= 41) map_out[i * width + j] = 1;
+                        else map_out[i * width + j] = 0;
+
+                    }
+                    else if (rule == Rule.Majority42)
+                    {
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
+
+                        if (numNeighs >= 42) map_out[i * width + j] = 1;
+                        else map_out[i * width + j] = 0;
+
+                    }
+                    else if (rule == Rule.Majority43)
                     {
                         int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
