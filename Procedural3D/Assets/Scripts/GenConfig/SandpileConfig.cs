@@ -10,32 +10,40 @@ using LibGameAI.PCG;
 
 namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 {
-    public class SandpileConfig //: StochasticGenConfig
+    public class SandpileConfig : StochasticGenConfig
     {
 
-        // [SerializeField]
-        // private float threshold = 4;
+        [SerializeField]
+        private float threshold = 4;
 
-        // [SerializeField]
-        // private float increment = 1;
+        [SerializeField]
+        private float increment = 1;
 
-        // [SerializeField]
-        // private float decrement = 4;
+        [SerializeField]
+        private float decrement = 4;
 
-        // [SerializeField]
-        // private float grainDropDensity = 10;
+        [SerializeField]
+        private float grainDropDensity = 0.02f;
 
-        // [SerializeField]
-        // private bool staticDrop = true;
+        [SerializeField]
+        private bool staticDrop = false;
 
-        // [SerializeField]
-        // private bool stochastic = true;
+        [SerializeField]
+        private bool stochastic = true;
 
-        // public override void Generate(float[,] heights)
-        // {
-        //     Landscape.Sandpile(heights, threshold, increment, decrement,
-        //         grainDropDensity, staticDrop, stochastic, PRNG.Next,
-        //         PRNG.NextDouble);
-        // }
+        public override float[,] Generate(float[,] prev_heights)
+        {
+            InitPRNG();
+
+            int xdim = prev_heights.GetLength(0);
+            int ydim = prev_heights.GetLength(1);
+            float[,] sandpile_heights = new float[xdim, ydim];
+
+            Landscape.Sandpile(sandpile_heights, threshold, increment, decrement,
+                grainDropDensity, staticDrop, stochastic, PRNG.Next,
+                PRNG.NextDouble);
+
+            return sandpile_heights;
+        }
     }
 }
