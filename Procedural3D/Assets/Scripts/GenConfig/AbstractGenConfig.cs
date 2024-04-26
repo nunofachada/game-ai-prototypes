@@ -8,7 +8,6 @@
 using System;
 using UnityEngine;
 using UnityEditor;
-using NaughtyAttributes;
 
 namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 {

@@ -24,6 +24,8 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 
         public override float[,] Generate(float[,] prev_heights)
         {
+            InitPRNG();
+
             int xdim = prev_heights.GetLength(0);
             int ydim = prev_heights.GetLength(1);
             float[,] flt_heights = new float[xdim, ydim];

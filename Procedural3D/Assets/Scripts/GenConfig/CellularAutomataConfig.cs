@@ -7,7 +7,6 @@
 
 using UnityEngine;
 using LibGameAI.PCG;
-using System.Runtime.InteropServices.WindowsRuntime;
 using NaughtyAttributes;
 
 namespace GameAIPrototypes.ProceduralLandscape.GenConfig
@@ -33,6 +32,8 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 
         public override float[,] Generate(float[,] prev_heights)
         {
+            InitPRNG();
+
             int xdim = prev_heights.GetLength(0);
             int ydim = prev_heights.GetLength(1);
 

@@ -24,7 +24,7 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 
         protected Random PRNG => random;
 
-        private void OnEnable()
+        protected void InitPRNG()
         {
             random = useSeed ? new Random(seed) : new Random();
         }
