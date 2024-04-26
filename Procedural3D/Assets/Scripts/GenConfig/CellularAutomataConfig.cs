@@ -21,7 +21,7 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
         private float initialFill = 0.5f;
 
         [SerializeField]
-        private bool addFirst = false;
+        private int skipFirstNSteps = 1;
         [SerializeField]
         private int steps = 5;
         [SerializeField]
@@ -49,13 +49,14 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
                 new float[] { 1 - initialFill, initialFill },
                 () => (float)PRNG.NextDouble());
 
-            if (addFirst) AddLayer(ca_heights, ca1);
+            if (skipFirstNSteps == 0) AddLayer(ca_heights, ca1);
 
             for (int t = 0; t < steps; t++)
             {
                 CA2D.DoStep(ca1, ca2, xdim, ydim, toroidal, offGridBorderCellsAlive ? 1 : 0, rule);
 
-                AddLayer(ca_heights, ca2);
+                if (skipFirstNSteps < t)
+                    AddLayer(ca_heights, ca2);
 
                 aux = ca1;
                 ca1 = ca2;
