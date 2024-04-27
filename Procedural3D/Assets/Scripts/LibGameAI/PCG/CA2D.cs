@@ -170,7 +170,8 @@ namespace LibGameAI.PCG
                         {
                             map_out[i * width + j] = 1;
                         }
-                        else if (map_in[i * width + j] == 0 && numNeighs >= 3 && numNeighs <= 8 && numNeighs != 3)
+                        else if (map_in[i * width + j] == 0 && numNeighs >= 3 && numNeighs <= 8 && numNeighs != 4)
+                        //else if (map_in[i * width + j] == 0 && (numNeighs >= 5 && numNeighs <= 8 || numNeighs == 3)) // Like ARR had
                         {
                             map_out[i * width + j] = 1;
                         }
