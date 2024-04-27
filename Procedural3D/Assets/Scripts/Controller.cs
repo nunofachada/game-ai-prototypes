@@ -8,6 +8,7 @@
 using UnityEngine;
 using GameAIPrototypes.ProceduralLandscape.GenConfig;
 using NaughtyAttributes;
+using UnityEditor;
 
 namespace GameAIPrototypes.ProceduralLandscape
 {
@@ -18,6 +19,23 @@ namespace GameAIPrototypes.ProceduralLandscape
         private Terrain terrain;
 
         [SerializeField]
+        [Dropdown(nameof(validHeighmapResolutions))]
+        [OnValueChanged(nameof(UpdateHeighmapResolution))]
+        private int heightmapResolution = 513;
+
+        private readonly DropdownList<int> validHeighmapResolutions = new()
+        {
+            {"33 x 33", 33},
+            {"65 x 65", 65},
+            {"129 x 129", 129},
+            {"257 x 257", 257},
+            {"513 x 513", 513},
+            {"1025 x 1025", 1025},
+            {"2049 x 2049", 2049},
+            {"4097 x 4097", 4097},
+        };
+
+        [SerializeField]
         [HideInInspector]
         private float[,] heights;
 
@@ -25,22 +43,26 @@ namespace GameAIPrototypes.ProceduralLandscape
         [HideInInspector]
         private float maxHeight;
 
-        [SerializeField]
-        [HideInInspector]
-        private int tSide;
-
         private float[,] Heights
         {
             get
             {
                 if (heights is null)
                 {
-                    tSide = terrain.terrainData.heightmapResolution;
-                    heights = heights = new float[tSide, tSide];
+                    heights = new float[heightmapResolution, heightmapResolution];
                     maxHeight = 0;
                 }
                 return heights;
             }
+        }
+
+        private void UpdateHeighmapResolution()
+        {
+            terrain.terrainData.heightmapResolution = heightmapResolution;
+            terrain.terrainData.size =
+                new Vector3(heightmapResolution, heightmapResolution / 2, heightmapResolution);
+            heights = null;
+            SceneView.lastActiveSceneView.Frame(terrain.terrainData.bounds);
         }
 
         [Button("Generate", enabledMode: EButtonEnableMode.Editor)]
