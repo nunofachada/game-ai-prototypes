@@ -26,7 +26,8 @@ namespace LibGameAI.PCG
             Diamoeba,
             Coral,
             HighLife,
-            Caves,
+            CavesR1N5,
+            CavesR2N13,
             GameOfLife
         }
 
@@ -209,7 +210,13 @@ namespace LibGameAI.PCG
 
 
                     }
-                    else if (rule == Rule.Caves)
+                    else if (rule == Rule.CavesR1N5)
+                    {
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
+
+                        map_out[i * width + j] = numNeighs >= 5 ? 1 : 0;
+                    }
+                    else if (rule == Rule.CavesR2N13)
                     {
                         int numNeighs = CountNeighbors(map_in, width, height, i, j, 2, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
