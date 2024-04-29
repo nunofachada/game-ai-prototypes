@@ -22,13 +22,16 @@ namespace LibGameAI.PCG
             Majority41,
             Majority42,
             Majority43,
+            MajR2N13,
             WalledCities,
             Diamoeba,
             Coral,
             HighLife,
             CavesR1N5,
             CavesR2N13,
-            GameOfLife
+            GameOfLife,
+            Serviettes,
+            Flakes,
         }
 
         public static void RandomFill(int[] map, int[] values, float[] probabilities, Func<float> nextFloat)
@@ -84,6 +87,7 @@ namespace LibGameAI.PCG
 
                     if (rule == Rule.Smooth44)
                     {
+                        // 45678/5678
                         int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
                         if (numNeighs > 4) map_out[i * width + j] = 1;
@@ -93,6 +97,7 @@ namespace LibGameAI.PCG
                     }
                     else if (rule == Rule.Smooth45)
                     {
+                        // 5678/5678
                         int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
                         if (numNeighs > 4) map_out[i * width + j] = 1;
@@ -145,6 +150,12 @@ namespace LibGameAI.PCG
                         if (numNeighs >= 43) map_out[i * width + j] = 1;
                         else map_out[i * width + j] = 0;
 
+                    }
+                    else if (rule == Rule.MajR2N13)
+                    {
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 2, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
+
+                        map_out[i * width + j] = numNeighs >= 13 ? 1 : 0;
                     }
                     else if (rule == Rule.WalledCities)
                     {
@@ -213,33 +224,91 @@ namespace LibGameAI.PCG
                     }
                     else if (rule == Rule.CavesR1N5)
                     {
+                        // 45678/5678
                         int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
-                        map_out[i * width + j] = numNeighs >= 5 ? 1 : 0;
+                        if (map_in[i * width + j] == 1 && numNeighs >= 4)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else if (map_in[i * width + j] == 0 && numNeighs >= 5)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else
+                        {
+                            map_out[i * width + j] = 0;
+                        }
                     }
                     else if (rule == Rule.CavesR2N13)
                     {
                         int numNeighs = CountNeighbors(map_in, width, height, i, j, 2, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
-                        map_out[i * width + j] = numNeighs >= 13 ? 1 : 0;
+                        if (map_in[i * width + j] == 1 && numNeighs >= 12)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else if (map_in[i * width + j] == 0 && numNeighs >= 13)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else
+                        {
+                            map_out[i * width + j] = 0;
+                        }
                     }
                     else if (rule == Rule.GameOfLife)
                     {
                         int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
-                        // GoL rules
-                        if (map_in[i * width + j] == 1)
+                        // GoL rules 23/3
+                        if (map_in[i * width + j] == 1 && numNeighs >= 2 && numNeighs <= 3)
                         {
-                            if (numNeighs < 2 && numNeighs > 3) map_out[i * width + j] = 0;
-                            else map_out[i * width + j] = 1;
+                            map_out[i * width + j] = 1;
                         }
-                        else if (map_in[i * width + j] == 0 && (numNeighs == 3 || numNeighs == 6))
+                        else if (map_in[i * width + j] == 0 && numNeighs == 3)
                         {
-                            if (numNeighs == 3) map_out[i * width + j] = 1;
-                            else map_out[i * width + j] = 0;
+                            map_out[i * width + j] = 1;
+                        }
+                        else
+                        {
+                            map_out[i * width + j] = 0;
                         }
 
                     }
+                    else if (rule == Rule.Serviettes)
+                    {
+                        // /234
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
+
+                        if (map_in[i * width + j] == 1)
+                        {
+                            map_out[i * width + j] = 0;
+                        }
+                        else if (map_in[i * width + j] == 0 && numNeighs >= 2 && numNeighs <= 4)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else map_out[i * width + j] = 0;
+
+                    }
+                    else if (rule == Rule.Flakes)
+                    {
+                        // 012345678/3
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
+
+                        if (map_in[i * width + j] == 1 && map_in[i * width + j] < 9)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else if (map_in[i * width + j] == 0 && numNeighs == 3)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else map_out[i * width + j] = 0;
+
+                    }
+
                 }
             }
         }
