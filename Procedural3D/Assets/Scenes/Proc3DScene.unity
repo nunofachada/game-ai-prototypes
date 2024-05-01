@@ -178,7 +178,7 @@ Terrain:
   m_TreeMaximumFullLODCount: 50
   m_DetailObjectDistance: 80
   m_DetailObjectDensity: 1
-  m_HeightmapPixelError: 5
+  m_HeightmapPixelError: 1
   m_SplatMapDistance: 1000
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
@@ -249,8 +249,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrain: {fileID: 453445762}
-  maxHeight: -Infinity
-  tSide: 513
+  heightmapResolution: 129
+  maxHeight: 0
 --- !u!4 &637276296
 Transform:
   m_ObjectHideFlags: 0
