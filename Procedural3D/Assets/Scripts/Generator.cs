@@ -66,6 +66,7 @@ namespace GameAIPrototypes.ProceduralLandscape
         private PostProcess postProcessing = PostProcess.None;
 
         [SerializeField]
+        [Range(0, 1)]
         [ShowIf(nameof(PostNormalize))]
         private float maxHeight = 1;
 

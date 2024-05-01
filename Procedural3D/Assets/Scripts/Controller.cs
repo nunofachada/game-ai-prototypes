@@ -67,8 +67,7 @@ namespace GameAIPrototypes.ProceduralLandscape
         private void UpdateHeighmapResolution()
         {
             terrain.terrainData.heightmapResolution = heightmapResolution;
-            terrain.terrainData.size =
-                new Vector3(heightmapResolution, heightmapResolution / 2, heightmapResolution);
+            terrain.terrainData.size = heightmapResolution * Vector3.one;
             heights = null;
             SceneView.lastActiveSceneView.Frame(terrain.terrainData.bounds);
         }
