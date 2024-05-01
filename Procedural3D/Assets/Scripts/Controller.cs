@@ -103,12 +103,47 @@ namespace GameAIPrototypes.ProceduralLandscape
 
         }
 
+        private void UpdateHeightMapTexture()
+        {
+            int xdim = Heights.GetLength(0);
+            int ydim = Heights.GetLength(1);
+
+            float[,] heights4texture = new float[xdim, ydim];
+            Array.Copy(heights, heights4texture, heights.Length);
+            Normalize(heights4texture);
+
+            heightmapTexture = new(xdim, ydim);
+            for (int x = 0; x < xdim; x++)
+            {
+                for (int y = 0; y < ydim; y++)
+                {
+                    float greyLevel = heights4texture[x, y];
+                    heightmapTexture.SetPixel(x, y, new Color(greyLevel, greyLevel, greyLevel));
+                }
+            }
+            heightmapTexture.Apply();
+        }
+
+        private void Zeros(float[,] heights2zero)
+        {
+            int xdim = heights2zero.GetLength(0);
+            int ydim = heights2zero.GetLength(1);
+
+            for (int i = 0; i < xdim; i++)
+            {
+                for (int j = 0; j < ydim; j++)
+                {
+                    heights2zero[i, j] = 0;
+                }
+            }
+        }
+
         [Button("Generate", enabledMode: EButtonEnableMode.Editor)]
         private void Generate()
         {
-            Flatten();
+            Zeros(Heights);
 
-            int xdim = Heights.GetLength(0);
+            int xdim = heights.GetLength(0);
             int ydim = Heights.GetLength(1);
 
             // Apply the generation
@@ -163,42 +198,20 @@ namespace GameAIPrototypes.ProceduralLandscape
             terrain.terrainData.SetHeights(0, 0, heights);
 
             // Update preview texture
-            float[,] heights4texture = new float[xdim, ydim];
-            Array.Copy(heights, heights4texture, heights.Length);
-            Normalize(heights4texture);
-
-            heightmapTexture = new(xdim, ydim);
-            for (int x = 0; x < xdim; x++)
-            {
-                for (int y = 0; y < ydim; y++)
-                {
-                    float greyLevel = heights4texture[x, y];
-                    heightmapTexture.SetPixel(x, y, new Color(greyLevel, greyLevel, greyLevel));
-                }
-            }
-            heightmapTexture.Apply();
+            UpdateHeightMapTexture();
         }
 
         [Button("Save Heightmap to PNG", enabledMode: EButtonEnableMode.Editor)]
         private void SaveHeightmapToPNG()
         {
-            int xdim = Heights.GetLength(0);
-            int ydim = heights.GetLength(1);
-
-            float[,] localHeights = new float[xdim, ydim];
-            Array.Copy(heights, localHeights, heights.Length);
-            Normalize(localHeights);
-
-            Texture2D hmTexture = new(xdim, ydim);
-            for (int x = 0; x < xdim; x++)
+            if (heightmapTexture == null)
             {
-                for (int y = 0; y < ydim; y++)
-                {
-                    float greyLevel = localHeights[x, y];
-                    hmTexture.SetPixel(x, y, new Color(greyLevel, greyLevel, greyLevel));
-                }
+                Debug.LogWarning(
+                    "No heightmap texture defined. Run generate and try again.");
+                return;
             }
-            byte[] bytes = hmTexture.EncodeToPNG();
+
+            byte[] bytes = heightmapTexture.EncodeToPNG();
 
             // Ask user for file name to save
             string filename = EditorUtility.SaveFilePanel(
@@ -222,18 +235,15 @@ namespace GameAIPrototypes.ProceduralLandscape
         [Button("Flatten", enabledMode: EButtonEnableMode.Editor)]
         private void Flatten()
         {
-            for (int i = 0; i < Heights.GetLength(0); i++)
-            {
-                for (int j = 0; j < heights.GetLength(1); j++)
-                {
-                    heights[i, j] = 0;
-                }
-            }
+            // Set heights to zero
+            Zeros(Heights);
 
             maxHeight = 0;
 
             // Apply terrain heights
             terrain.terrainData.SetHeights(0, 0, heights);
+
+            UpdateHeightMapTexture();
         }
 
         [Button("Add Generator", enabledMode: EButtonEnableMode.Editor)]
