@@ -114,14 +114,14 @@ namespace GameAIPrototypes.ProceduralLandscape
                 {
                     Normalize(partial_heights, g.MaxHeight);
                 }
-                else if (g.PostMultiply)
+                else if (g.PostScaling)
                 {
-                    // Apply multiplier
+                    // Apply scaling
                     for (int i = 0; i < xdim; i++)
                     {
                         for (int j = 0; j < ydim; j++)
                         {
-                            partial_heights[i, j] *= g.Multiplier;
+                            partial_heights[i, j] *= g.ScaleFactor;
                         }
                     }
                 }

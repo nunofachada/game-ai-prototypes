@@ -60,7 +60,7 @@ namespace GameAIPrototypes.ProceduralLandscape
         [OnValueChanged(nameof(OnChangeGeneratorType))]
         private AbstractGenConfig generatorConfig;
 
-        private enum PostProcess { None, Normalize, Multiply }
+        private enum PostProcess { None, Normalize, Scale }
 
         [SerializeField]
         private PostProcess postProcessing = PostProcess.None;
@@ -70,14 +70,14 @@ namespace GameAIPrototypes.ProceduralLandscape
         private float maxHeight = 1;
 
         [SerializeField]
-        [ShowIf(nameof(PostMultiply))]
-        private float multiplier = 1;
+        [ShowIf(nameof(PostScaling))]
+        private float scaleFactor = 1;
 
         public bool PostNormalize => postProcessing == PostProcess.Normalize;
-        public bool PostMultiply => postProcessing == PostProcess.Multiply;
+        public bool PostScaling => postProcessing == PostProcess.Scale;
 
         public float MaxHeight => maxHeight;
-        public float Multiplier => multiplier;
+        public float ScaleFactor => scaleFactor;
 
         public bool IsModifier => generatorConfig.IsModifier;
 
