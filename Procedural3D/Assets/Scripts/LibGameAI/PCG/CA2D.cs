@@ -14,21 +14,20 @@ namespace LibGameAI.PCG
 
         public enum Rule
         {
-            Smooth44,
-            Smooth45,
-            Majority38,
-            Majority39,
-            Majority40,
-            Majority41,
-            Majority42,
-            Majority43,
+            MajR1N5,
             MajR2N13,
+            MajR4N38,
+            MajR4N39,
+            MajR4N40,
+            MajR4N41,
+            MajR4N42,
+            MajR4N43,
+            CavesR1N5,
+            CavesR2N13,
             WalledCities,
             Diamoeba,
             Coral,
             HighLife,
-            CavesR1N5,
-            CavesR2N13,
             GameOfLife,
             Serviettes,
             Flakes,
@@ -85,31 +84,12 @@ namespace LibGameAI.PCG
                 for (int j = 0; j < width; j++)
                 {
 
-                    if (rule == Rule.Smooth44)
-                    {
-                        // 45678/5678
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        // if (numNeighs > 4) map_out[i * width + j] = 1;
-                        // else if (numNeighs < 4) map_out[i * width + j] = 0;
-                        // else map_out[i * width + j] = map_in[i * width + j];
-
-                        if (map_in[i * width + j] == 1 && numNeighs >= 4)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else if (map_in[i * width + j] == 0 && numNeighs >= 5)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else map_out[i * width + j] = 0;
-
-                    }
-                    else if (rule == Rule.Smooth45)
+                    if (rule == Rule.MajR1N5) // This was previously called Smooth45
                     {
                         // 5678/5678
                         int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
+                        // Alternative formulation
                         // if (numNeighs > 4) map_out[i * width + j] = 1;
                         // else map_out[i * width + j] = 0;
 
@@ -123,7 +103,13 @@ namespace LibGameAI.PCG
                         }
                         else map_out[i * width + j] = 0;
                     }
-                    else if (rule == Rule.Majority38)
+                    else if (rule == Rule.MajR2N13)
+                    {
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 2, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
+
+                        map_out[i * width + j] = numNeighs >= 13 ? 1 : 0;
+                    }
+                    else if (rule == Rule.MajR4N38)
                     {
                         int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
@@ -131,7 +117,7 @@ namespace LibGameAI.PCG
                         else map_out[i * width + j] = 0;
 
                     }
-                    else if (rule == Rule.Majority39)
+                    else if (rule == Rule.MajR4N39)
                     {
                         int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
@@ -139,7 +125,7 @@ namespace LibGameAI.PCG
                         else map_out[i * width + j] = 0;
 
                     }
-                    else if (rule == Rule.Majority40)
+                    else if (rule == Rule.MajR4N40)
                     {
                         int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
@@ -147,7 +133,7 @@ namespace LibGameAI.PCG
                         else map_out[i * width + j] = 0;
 
                     }
-                    else if (rule == Rule.Majority41)
+                    else if (rule == Rule.MajR4N41)
                     {
                         int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
@@ -155,7 +141,7 @@ namespace LibGameAI.PCG
                         else map_out[i * width + j] = 0;
 
                     }
-                    else if (rule == Rule.Majority42)
+                    else if (rule == Rule.MajR4N42)
                     {
                         int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
@@ -163,7 +149,7 @@ namespace LibGameAI.PCG
                         else map_out[i * width + j] = 0;
 
                     }
-                    else if (rule == Rule.Majority43)
+                    else if (rule == Rule.MajR4N43)
                     {
                         int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
@@ -171,11 +157,47 @@ namespace LibGameAI.PCG
                         else map_out[i * width + j] = 0;
 
                     }
-                    else if (rule == Rule.MajR2N13)
+                    else if (rule == Rule.CavesR1N5) // This is the same as the previously called Smooth44
                     {
+                        // 45678/5678
+                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
+
+                        // Alternative:
+                        // if (numNeighs > 4) map_out[i * width + j] = 1;
+                        // else if (numNeighs < 4) map_out[i * width + j] = 0;
+                        // else map_out[i * width + j] = map_in[i * width + j];
+
+                        if (map_in[i * width + j] == 1 && numNeighs >= 4)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else if (map_in[i * width + j] == 0 && numNeighs >= 5)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else
+                        {
+                            map_out[i * width + j] = 0;
+                        }
+                    }
+
+                    else if (rule == Rule.CavesR2N13)
+                    {
+                        // 12..Nmax/13..Nmax
                         int numNeighs = CountNeighbors(map_in, width, height, i, j, 2, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
 
-                        map_out[i * width + j] = numNeighs >= 13 ? 1 : 0;
+                        if (map_in[i * width + j] == 1 && numNeighs >= 12)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else if (map_in[i * width + j] == 0 && numNeighs >= 13)
+                        {
+                            map_out[i * width + j] = 1;
+                        }
+                        else
+                        {
+                            map_out[i * width + j] = 0;
+                        }
                     }
                     else if (rule == Rule.WalledCities)
                     {
@@ -241,42 +263,6 @@ namespace LibGameAI.PCG
                         else map_out[i * width + j] = 0;
 
 
-                    }
-                    else if (rule == Rule.CavesR1N5)
-                    {
-                        // 45678/5678
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        if (map_in[i * width + j] == 1 && numNeighs >= 4)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else if (map_in[i * width + j] == 0 && numNeighs >= 5)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else
-                        {
-                            map_out[i * width + j] = 0;
-                        }
-                    }
-                    else if (rule == Rule.CavesR2N13)
-                    {
-                        // 12..Nmax/13..Nmax
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 2, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        if (map_in[i * width + j] == 1 && numNeighs >= 12)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else if (map_in[i * width + j] == 0 && numNeighs >= 13)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else
-                        {
-                            map_out[i * width + j] = 0;
-                        }
                     }
                     else if (rule == Rule.GameOfLife)
                     {

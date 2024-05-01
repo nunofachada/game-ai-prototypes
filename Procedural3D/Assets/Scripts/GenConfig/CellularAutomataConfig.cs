@@ -15,7 +15,7 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
     {
 
         [SerializeField]
-        private CA2D.Rule rule = CA2D.Rule.Smooth44;
+        private CA2D.Rule rule = CA2D.Rule.MajR1N5;
         [SerializeField]
         [Range(0, 1)]
         private float initialFill = 0.5f;
