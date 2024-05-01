@@ -5,10 +5,12 @@
  * Author: Nuno Fachada
  * */
 
+using System;
+using System.IO;
 using UnityEngine;
-using GameAIPrototypes.ProceduralLandscape.GenConfig;
-using NaughtyAttributes;
 using UnityEditor;
+using NaughtyAttributes;
+using GameAIPrototypes.ProceduralLandscape.GenConfig;
 
 namespace GameAIPrototypes.ProceduralLandscape
 {
@@ -65,6 +67,36 @@ namespace GameAIPrototypes.ProceduralLandscape
             SceneView.lastActiveSceneView.Frame(terrain.terrainData.bounds);
         }
 
+        // Normalizing
+        private void Normalize(float[,] heightmap, float maxHeight = 1f)
+        {
+            int xdim = heightmap.GetLength(0);
+            int ydim = heightmap.GetLength(1);
+
+            float min = float.PositiveInfinity;
+            float max = float.NegativeInfinity;
+
+
+            for (int i = 0; i < xdim; i++)
+            {
+                for (int j = 0; j < ydim; j++)
+                {
+                    if (heightmap[i, j] < min) min = heightmap[i, j];
+                    else if (heightmap[i, j] > max) max = heightmap[i, j];
+                }
+            }
+
+            for (int i = 0; i < xdim; i++)
+            {
+                for (int j = 0; j < ydim; j++)
+                {
+                    heightmap[i, j] =
+                        maxHeight * (heightmap[i, j] - min) / (max - min);
+                }
+            }
+
+        }
+
         [Button("Generate", enabledMode: EButtonEnableMode.Editor)]
         private void Generate()
         {
@@ -80,27 +112,7 @@ namespace GameAIPrototypes.ProceduralLandscape
 
                 if (g.PostNormalize)
                 {
-                    float min = float.PositiveInfinity;
-                    float max = float.NegativeInfinity;
-
-                    // Normalizing
-                    for (int i = 0; i < xdim; i++)
-                    {
-                        for (int j = 0; j < ydim; j++)
-                        {
-                            if (partial_heights[i, j] < min) min = partial_heights[i, j];
-                            else if (partial_heights[i, j] > max) max = partial_heights[i, j];
-                        }
-                    }
-
-                    for (int i = 0; i < xdim; i++)
-                    {
-                        for (int j = 0; j < ydim; j++)
-                        {
-                            partial_heights[i, j] =
-                                g.MaxHeight * (partial_heights[i, j] - min) / (max - min);
-                        }
-                    }
+                    Normalize(partial_heights, g.MaxHeight);
                 }
                 else if (g.PostMultiply)
                 {
@@ -143,6 +155,46 @@ namespace GameAIPrototypes.ProceduralLandscape
 
             // Apply terrain heights
             terrain.terrainData.SetHeights(0, 0, heights);
+        }
+
+        [Button("Save Heightmap to PNG", enabledMode: EButtonEnableMode.Editor)]
+        private void SaveHeightmapToPNG()
+        {
+            int xdim = Heights.GetLength(0);
+            int ydim = heights.GetLength(1);
+
+            float[,] localHeights = new float[xdim, ydim];
+            Array.Copy(heights, localHeights, heights.Length);
+            Normalize(localHeights);
+
+            Texture2D hmTexture = new(xdim, ydim);
+            for (int x = 0; x < xdim; x++)
+            {
+                for (int y = 0; y < ydim; y++)
+                {
+                    float greyLevel = localHeights[x, y];
+                    hmTexture.SetPixel(x, y, new Color(greyLevel, greyLevel, greyLevel));
+                }
+            }
+            byte[] bytes = hmTexture.EncodeToPNG();
+
+            // Ask user for file name to save
+            string filename = EditorUtility.SaveFilePanel(
+                "Save image as PNG",
+                Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
+                "heightmap.png",
+                "png");
+
+            // Write to a file in the project folder
+            if (!string.IsNullOrEmpty(filename))
+            {
+                // Save image to file
+                File.WriteAllBytes(filename, bytes);
+
+                // Inform user of where image was saved to
+                Debug.Log($"Image saved as {filename}");
+            }
+
         }
 
         [Button("Flatten", enabledMode: EButtonEnableMode.Editor)]
