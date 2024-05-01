@@ -17,8 +17,14 @@ namespace GameAIPrototypes.ProceduralLandscape
     public class Controller : MonoBehaviour
     {
         [SerializeField]
+        [HideInInspector]
         [OnValueChanged(nameof(ResetGenerators))]
         private Terrain terrain;
+
+        [SerializeField]
+        [ShowAssetPreview]
+        [ReadOnly]
+	    private Texture2D heightmapTexture;
 
         [SerializeField]
         [Dropdown(nameof(validHeighmapResolutions))]
@@ -142,7 +148,7 @@ namespace GameAIPrototypes.ProceduralLandscape
                 }
             }
 
-            // Determine minimum and maximum heights
+            // Determine maximum height
             maxHeight = float.NegativeInfinity;
 
             for (int i = 0; i < xdim; i++)
@@ -155,6 +161,22 @@ namespace GameAIPrototypes.ProceduralLandscape
 
             // Apply terrain heights
             terrain.terrainData.SetHeights(0, 0, heights);
+
+            // Update preview texture
+            float[,] heights4texture = new float[xdim, ydim];
+            Array.Copy(heights, heights4texture, heights.Length);
+            Normalize(heights4texture);
+
+            heightmapTexture = new(xdim, ydim);
+            for (int x = 0; x < xdim; x++)
+            {
+                for (int y = 0; y < ydim; y++)
+                {
+                    float greyLevel = heights4texture[x, y];
+                    heightmapTexture.SetPixel(x, y, new Color(greyLevel, greyLevel, greyLevel));
+                }
+            }
+            heightmapTexture.Apply();
         }
 
         [Button("Save Heightmap to PNG", enabledMode: EButtonEnableMode.Editor)]
