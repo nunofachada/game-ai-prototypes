@@ -15,7 +15,7 @@ namespace GameAIPrototypes.ProceduralLandscape
     public class Controller : MonoBehaviour
     {
         [SerializeField]
-        [OnValueChanged(nameof(ResetConfiguration))]
+        [OnValueChanged(nameof(ResetGenerators))]
         private Terrain terrain;
 
         [SerializeField]
@@ -162,8 +162,14 @@ namespace GameAIPrototypes.ProceduralLandscape
             terrain.terrainData.SetHeights(0, 0, heights);
         }
 
-        [Button("Reset Configuration", enabledMode: EButtonEnableMode.Editor)]
-        private void ResetConfiguration()
+        [Button("Add Generator", enabledMode: EButtonEnableMode.Editor)]
+        private void AddGenerators()
+        {
+            gameObject.AddComponent<Generator>();
+        }
+
+        [Button("Reset Generators", enabledMode: EButtonEnableMode.Editor)]
+        private void ResetGenerators()
         {
             terrain.transform.SetPositionAndRotation(
                 new Vector3(0, 0, 0),
@@ -176,8 +182,6 @@ namespace GameAIPrototypes.ProceduralLandscape
             }
 
             gameObject.AddComponent<Generator>();
-            gameObject.AddComponent<Generator>();
-            gameObject.AddComponent<Generator>().SetAsNormalizer();
 
             AbstractGenConfig.ClearUnusedInstances();
 

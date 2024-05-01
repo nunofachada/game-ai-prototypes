@@ -226,8 +226,6 @@ GameObject:
   m_Component:
   - component: {fileID: 637276296}
   - component: {fileID: 637276295}
-  - component: {fileID: 637276299}
-  - component: {fileID: 637276298}
   - component: {fileID: 637276297}
   m_Layer: 0
   m_Name: Controller
@@ -249,7 +247,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrain: {fileID: 453445762}
-  heightmapResolution: 129
+  heightmapResolution: 33
   maxHeight: 0
 --- !u!4 &637276296
 Transform:
@@ -267,40 +265,6 @@ Transform:
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &637276297
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 637276294}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66531adbb1fd2fc0a9f236459e5a13eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  generatorName: PostProcessingOnly
-  generatorConfig: {fileID: 11400000, guid: 8d9a0ef4f5ca61b6a90744ae82dd3149, type: 2}
-  postProcessing: 1
-  maxHeight: 1
-  multiplier: 1
---- !u!114 &637276298
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 637276294}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66531adbb1fd2fc0a9f236459e5a13eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  generatorName: PostProcessingOnly
-  generatorConfig: {fileID: 11400000, guid: 35ac1e08e6987d18e82aa5bac26be426, type: 2}
-  postProcessing: 0
-  maxHeight: 1
-  multiplier: 1
---- !u!114 &637276299
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

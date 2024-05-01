@@ -167,18 +167,6 @@ namespace GameAIPrototypes.ProceduralLandscape
             return generatorConfig.Generate(heights);
         }
 
-
-        /// <summary>
-        /// Set this generator as a normalizer.
-        /// </summary>
-        public void SetAsNormalizer()
-        {
-            generatorName = SimpleName(typeof(PostProcessingOnlyConfig).FullName);
-            OnChangeGeneratorName();
-            postProcessing = PostProcess.Normalize;
-            maxHeight = 1;
-        }
-
         private void Reset()
         {
             generatorName = SimpleName(typeof(PostProcessingOnlyConfig).FullName);
