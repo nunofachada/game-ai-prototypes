@@ -58,7 +58,7 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
             {"HighLife", "M,1/2,3/3,6"},
             {"GameOfLife", "M,1/2,3/3"},
             {"Serviettes", "M,1//2-4"},
-            {"Flakes", "M,1/0-8/3"},
+            {"Flakes", "M,1/-/3"},
             {customRuleName, "" },
         };
 
