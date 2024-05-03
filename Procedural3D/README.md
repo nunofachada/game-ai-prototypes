@@ -10,9 +10,8 @@ stackable algorithms are implemented:
 - Diamond-square.
 - Perlin noise (via [Unity's implementation][uperlin]).
 - Fault generation.
-- Normalization (although optional, normalization is conveniently set up as the
-  final layer, since Unity requires [height maps] to have values between 0 and
-  1).
+- Cellular automata.
+- Per Bak sandpile (very slow, and not very good results)
 
 This prototype is used to showcase each technique after an in-lecture exposition
 of the underlying algorithm.
@@ -34,7 +33,7 @@ This prototype uses:
 
 ## Other materials
 
-- [Using the prototype (video)](https://youtu.be/ucg_KcJSSTs)
+- [Using the prototype (video)](https://youtu.be/ucg_KcJSSTs) (deprecated)
 
 [libgameai]:https://github.com/nunofachada/libgameai
 [height maps]:https://docs.unity3d.com/Manual/Textures.html#TerrainHeightmaps
