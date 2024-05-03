@@ -12,57 +12,45 @@ namespace LibGameAI.Util
 {
     public static class NeighborhoodExtensions
     {
-        public static IEnumerable<(int x, int y)> GetNeighborhood(this Neighborhood neighborhood, int radius, bool self = false)
+        public static IEnumerable<(int x, int y)> GetNeighborhood(this Neighborhood neighborhood, int radius)
         {
             return neighborhood switch
             {
-                Neighborhood.VonNeumann => VonNeumannNeighboors(radius, self),
-                Neighborhood.Moore => MooreNeighboors(radius, self),
-                Neighborhood.Hexagonal => HexNeighboors(radius, self),
+                Neighborhood.VonNeumann => VonNeumannNeighboors(radius),
+                Neighborhood.Moore => MooreNeighboors(radius),
+                Neighborhood.Hexagonal => HexNeighboors(radius),
                 _ => throw new ArgumentException("Unknown neighborhood!"),
             };
         }
 
-        public static IEnumerable<(int x, int y)> MooreNeighboors(int radius, bool self = false)
+        public static IEnumerable<(int x, int y)> MooreNeighboors(int radius)
         {
             for (int y = -radius; y <= radius; y++)
             {
                 for (int x = -radius; x <= radius; x++)
                 {
-                    if (!self && x == 0 && y == 0)
-                    {
-                        continue;
-                    }
                     yield return (x, y);
                 }
             }
         }
 
-        public static IEnumerable<(int x, int y)> VonNeumannNeighboors(int radius, bool self = false)
+        public static IEnumerable<(int x, int y)> VonNeumannNeighboors(int radius)
         {
             for (int y = -radius; y <= radius; y++)
             {
                 for (int x = Math.Abs(y) - radius; x <= -Math.Abs(y) + radius; x++)
                 {
-                    if (!self && x == 0 && y == 0)
-                    {
-                        continue;
-                    }
                     yield return (x, y);
                 }
             }
         }
 
-        public static IEnumerable<(int x, int y)> HexNeighboors(int radius, bool self = false)
+        public static IEnumerable<(int x, int y)> HexNeighboors(int radius)
         {
             for (int y = -radius; y <= radius; y++)
             {
                 for (int x = Math.Max(-radius, -y - radius); x <= Math.Min(radius, -y + radius); x++)
                 {
-                    if (!self && x == 0 && y == 0)
-                    {
-                        continue;
-                    }
                     yield return (x, y);
                 }
             }

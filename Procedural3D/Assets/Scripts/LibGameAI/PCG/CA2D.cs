@@ -153,10 +153,14 @@ namespace LibGameAI.PCG
         {
             int numNeighs = 0;
 
-            foreach ((int x, int y) in neighType.GetNeighborhood(radius, countSelf))
+            foreach ((int x, int y) in neighType.GetNeighborhood(radius))
             {
+                // Don't count self if countSelf is false
+                if (!countSelf && x == 0 && y == 0) continue;
+
                 int yNeigh = Wrap(yCell + y, yDim, out bool yWrap);
                 int xNeigh = Wrap(xCell + x, xDim, out bool xWrap);
+
 
                 if (!toroidal && (yWrap || xWrap))
                 {
