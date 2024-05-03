@@ -4,6 +4,9 @@
 
 namespace LibGameAI.Util
 {
+    /// <summary>
+    /// Known types of neighborhood.
+    /// </summary>
     public enum Neighborhood
     {
         Moore,
