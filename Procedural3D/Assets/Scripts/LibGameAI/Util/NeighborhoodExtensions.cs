@@ -30,7 +30,9 @@ namespace LibGameAI.Util
                 for (int x = -radius; x <= radius; x++)
                 {
                     if (!self && x == 0 && y == 0)
+                    {
                         continue;
+                    }
                     yield return (x, y);
                 }
             }
@@ -40,12 +42,8 @@ namespace LibGameAI.Util
         {
             for (int y = -radius; y <= radius; y++)
             {
-                for (int x = -radius; x <= radius; x++)
+                for (int x = Math.Abs(y) - radius; x <= -Math.Abs(y) + radius; x++)
                 {
-                    if (Math.Abs(y) + Math.Abs(x) < radius)
-                    {
-                        continue;
-                    }
                     if (!self && x == 0 && y == 0)
                     {
                         continue;
@@ -62,7 +60,9 @@ namespace LibGameAI.Util
                 for (int x = Math.Max(-radius, -y - radius); x <= Math.Min(radius, -y + radius); x++)
                 {
                     if (!self && x == 0 && y == 0)
+                    {
                         continue;
+                    }
                     yield return (x, y);
                 }
             }
