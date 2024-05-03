@@ -6,6 +6,7 @@
  * */
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using LibGameAI.Util;
 
@@ -161,42 +162,81 @@ namespace LibGameAI.PCG
             }
         }
 
-        public static int CountNeighbors(int[] map, int xDim, int yDim, int x, int y,
+        public static IEnumerable<(int x, int y)> MooreNeighboors(int radius, bool self = false)
+        {
+            for (int y = -radius; y <= radius; y++)
+            {
+                for (int x = -radius; x <= radius; x++)
+                {
+                    if (!self && x == 0 && y == 0)
+                        continue;
+                    yield return (x, y);
+                }
+            }
+        }
+
+        public static IEnumerable<(int x, int y)> VonNeumannNeighboors(int radius, bool self = false)
+        {
+            for (int y = -radius; y <= radius; y++)
+            {
+                for (int x = -radius; x <= radius; x++)
+                {
+                    if (Math.Abs(y) + Math.Abs(x) < radius)
+                    {
+                        continue;
+                    }
+                    if (!self && x == 0 && y == 0)
+                    {
+                        continue;
+                    }
+                    yield return (x, y);
+                }
+            }
+        }
+
+        public static IEnumerable<(int x, int y)> HexNeighboors(int radius, bool self = false)
+        {
+            for (int y = -radius; y <= radius; y++)
+            {
+                for (int x = Math.Max(-radius, -y - radius); x <= Math.Min(radius, -y + radius); x++)
+                {
+                    if (!self && x == 0 && y == 0)
+                        continue;
+                    yield return (x, y);
+                }
+            }
+        }
+
+        public static int CountNeighbors(int[] map, int xDim, int yDim, int xCell, int yCell,
             bool toroidal = true, int nonToroidalBorderCells = 0, int radius = 1,
             int neighValue = 1, bool countSelf = false, NeighborhoodType neighType = NeighborhoodType.Moore)
         {
             int numNeighs = 0;
 
-            for (int i = -radius; i <= radius; i++)
+            Func<int, bool, IEnumerable<(int, int)>> getNeighbors = neighType switch
             {
-                for (int j = -radius; j <= radius; j++)
+                NeighborhoodType.VonNeumann => VonNeumannNeighboors,
+                NeighborhoodType.Moore => MooreNeighboors,
+                NeighborhoodType.Hexagonal => HexNeighboors,
+                _ => throw new ArgumentException("Unknown neighborhood type")
+            };
+
+
+            foreach ((int x, int y) in getNeighbors(radius, countSelf))
+            {
+                int yNeigh = Wrap(yCell + y, yDim, out bool yWrap);
+                int xNeigh = Wrap(xCell + x, xDim, out bool xWrap);
+
+                if (!toroidal && (yWrap || xWrap))
                 {
-                    if (neighType == NeighborhoodType.VonNeumann && Math.Abs(i) + Math.Abs(j) < radius)
-                    {
-                        continue;
-                    }
-
-                    // TODO: HEX!
-
-                    if (!countSelf && i == 0 && j ==0)
-                    {
-                        continue;
-                    }
-
-                    int r = Wrap(y + i, yDim, out bool wrapRow);
-                    int c = Wrap(x + j, xDim, out bool wrapCol);
-
-                    if (!toroidal && (wrapRow || wrapCol))
-                    {
-                        if (nonToroidalBorderCells == neighValue)
-                        {
-                            numNeighs++;
-                        }
-                    }
-                    else if (map[r * xDim + c] == neighValue)
+                    if (nonToroidalBorderCells == neighValue)
                     {
                         numNeighs++;
                     }
+                }
+                else if (map[yNeigh * xDim + xNeigh] == neighValue)
+                {
+                    numNeighs++;
                 }
             }
             return numNeighs;
