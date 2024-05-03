@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using LibGameAI.Util;
 
 namespace LibGameAI.PCG
 {
@@ -10,7 +10,7 @@ namespace LibGameAI.PCG
         private const char rangeSep = '-';
         private const char inRuleSep = ',';
 
-        public NeighborhoodType NeighborhoodType { get; private set; }
+        public Neighborhood NeighborhoodType { get; private set; }
         public int Radius { get; private set; }
         public ISet<int> BirthRules { get; private set; }
         public ISet<int> SurvivalRules { get; private set; }
@@ -48,13 +48,13 @@ namespace LibGameAI.PCG
             Radius = int.Parse(nrParts[1]);
         }
 
-        private NeighborhoodType ParseNeighborhoodType(string code)
+        private Neighborhood ParseNeighborhoodType(string code)
         {
             return code switch
             {
-                "M" => NeighborhoodType.Moore,
-                "V" => NeighborhoodType.VonNeumann,
-                "H" => NeighborhoodType.Hexagonal,
+                "M" => Neighborhood.Moore,
+                "V" => Neighborhood.VonNeumann,
+                "H" => Neighborhood.Hexagonal,
                 _ => throw new ArgumentException("Unknown neighborhood type")
             };
         }
@@ -63,9 +63,9 @@ namespace LibGameAI.PCG
         {
             return NeighborhoodType switch
             {
-                NeighborhoodType.Moore => (2 * Radius + 1) * (2 * Radius + 1) - 1,
-                NeighborhoodType.VonNeumann => 2 * Radius * (1 + Radius),
-                NeighborhoodType.Hexagonal => 3 * Radius * (Radius + 1),
+                Neighborhood.Moore => (2 * Radius + 1) * (2 * Radius + 1) - 1,
+                Neighborhood.VonNeumann => 2 * Radius * (1 + Radius),
+                Neighborhood.Hexagonal => 3 * Radius * (Radius + 1),
                 _ => throw new ArgumentException("Unknown neighborhood type")
             };
         }

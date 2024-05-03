@@ -6,8 +6,6 @@
  * */
 
 using System;
-using System.Collections.Generic;
-using System.Data;
 using LibGameAI.Util;
 
 namespace LibGameAI.PCG
@@ -39,7 +37,6 @@ namespace LibGameAI.PCG
 
         public void DoStep()
         {
-            // DoStep(gridCurrent, gridNext, XDim, YDim, Toroidal, NonToroidalBorderCells);
             if (!initialized)
             {
                 throw new InvalidOperationException($"{nameof(CA2D)} instance is not yet initialized.");
@@ -57,20 +54,8 @@ namespace LibGameAI.PCG
             (gridNext, gridCurrent) = (gridCurrent, gridNext);
         }
 
-        // public static void DoStep(int[] map_in, int[] map_out, int xDim, int yDim, bool toroidal, int nonToroidalBorderCells) // , Rule rule
-        // {
-        //     for (int y = 0; y < yDim; y++)
-        //     {
-        //         for (int x = 0; x < xDim; x++)
-        //         {
-
-        //             map_out[y * xDim + x] = rule.ProcessRule()
-        //         }
-        //     }
-        // }
-
         public int CountNeighbors(int x, int y, int radius,
-            NeighborhoodType neighType = NeighborhoodType.Moore, int neighValue = 1, bool countSelf = false)
+            Neighborhood neighType = Neighborhood.Moore, int neighValue = 1, bool countSelf = false)
         {
             return CountNeighbors(gridCurrent, XDim, YDim, x, y, Toroidal, NonToroidalBorderCells, radius, neighValue, countSelf, neighType);
         }
@@ -162,67 +147,13 @@ namespace LibGameAI.PCG
             }
         }
 
-        public static IEnumerable<(int x, int y)> MooreNeighboors(int radius, bool self = false)
-        {
-            for (int y = -radius; y <= radius; y++)
-            {
-                for (int x = -radius; x <= radius; x++)
-                {
-                    if (!self && x == 0 && y == 0)
-                        continue;
-                    yield return (x, y);
-                }
-            }
-        }
-
-        public static IEnumerable<(int x, int y)> VonNeumannNeighboors(int radius, bool self = false)
-        {
-            for (int y = -radius; y <= radius; y++)
-            {
-                for (int x = -radius; x <= radius; x++)
-                {
-                    if (Math.Abs(y) + Math.Abs(x) < radius)
-                    {
-                        continue;
-                    }
-                    if (!self && x == 0 && y == 0)
-                    {
-                        continue;
-                    }
-                    yield return (x, y);
-                }
-            }
-        }
-
-        public static IEnumerable<(int x, int y)> HexNeighboors(int radius, bool self = false)
-        {
-            for (int y = -radius; y <= radius; y++)
-            {
-                for (int x = Math.Max(-radius, -y - radius); x <= Math.Min(radius, -y + radius); x++)
-                {
-                    if (!self && x == 0 && y == 0)
-                        continue;
-                    yield return (x, y);
-                }
-            }
-        }
-
         public static int CountNeighbors(int[] map, int xDim, int yDim, int xCell, int yCell,
             bool toroidal = true, int nonToroidalBorderCells = 0, int radius = 1,
-            int neighValue = 1, bool countSelf = false, NeighborhoodType neighType = NeighborhoodType.Moore)
+            int neighValue = 1, bool countSelf = false, Neighborhood neighType = Neighborhood.Moore)
         {
             int numNeighs = 0;
 
-            Func<int, bool, IEnumerable<(int, int)>> getNeighbors = neighType switch
-            {
-                NeighborhoodType.VonNeumann => VonNeumannNeighboors,
-                NeighborhoodType.Moore => MooreNeighboors,
-                NeighborhoodType.Hexagonal => HexNeighboors,
-                _ => throw new ArgumentException("Unknown neighborhood type")
-            };
-
-
-            foreach ((int x, int y) in getNeighbors(radius, countSelf))
+            foreach ((int x, int y) in neighType.GetNeighborhood(radius, countSelf))
             {
                 int yNeigh = Wrap(yCell + y, yDim, out bool yWrap);
                 int xNeigh = Wrap(xCell + x, xDim, out bool xWrap);

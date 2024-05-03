@@ -5,9 +5,9 @@
  * Author: Nuno Fachada
  * */
 
-namespace LibGameAI.PCG
+namespace LibGameAI.Util
 {
-    public enum NeighborhoodType
+    public enum Neighborhood
     {
         Moore,
         VonNeumann,
