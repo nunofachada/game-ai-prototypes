@@ -14,7 +14,7 @@ namespace LibGameAI.PCG
     /// <remarks>
     /// A rule is defined as a string as follows:
     ///
-    /// `<N,R/{values-for-survival}/{values-for-birth}>`
+    /// `&lt;N,R/{values-for-survival}/{values-for-birth}&gt;`
     ///
     /// Where:
     ///
@@ -35,7 +35,7 @@ namespace LibGameAI.PCG
     ///   - Survival: A cell survives if it has between 2 and 5 live neighbors.
     ///   - Birth: A cell is born if it has exactly 3 live neighbors or between
     ///     6 and 8 live neighbors.
-    /// - `V,2/-/1-4
+    /// - `V,2/-/1-4`
     ///   - Neighborhood: Von Neumann
     ///   - Radius: 2
     ///   - Survival: No specific survival rules; the hyphen implies all
@@ -54,7 +54,7 @@ namespace LibGameAI.PCG
     ///     more than 10 live neighbors.
     ///   - Birth: A cell is born if it has between 0 and 3 live neighbors or
     ///     between live 7 and 9 neighbors.
-    /// <remarks>
+    /// </remarks>
     public class CA2DBinaryRule : ICA2DRule
     {
         // Constants defining rule string separators
@@ -144,7 +144,7 @@ namespace LibGameAI.PCG
         // Parse the survival and birth rule string components
         private ISet<int> ParseRuleValues(string ruleValues)
         {
-            HashSet<int> values = new();
+            HashSet<int> values = new HashSet<int>();
             if (string.IsNullOrEmpty(ruleValues)) return values;
 
             foreach (string part in ruleValues.Split(inRuleSep))
