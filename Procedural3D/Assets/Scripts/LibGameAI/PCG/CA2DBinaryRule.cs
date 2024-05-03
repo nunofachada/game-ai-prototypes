@@ -95,9 +95,9 @@ namespace LibGameAI.PCG
         {
             string[] parts = ruleString.Split(ruleSep);
             (NeighborhoodType, Radius) = ParseNeighborhoodAndRadius(parts[0]);
+            maxNeighbors = NeighborhoodType.MaxNeighbors(Radius);
             SurvivalRules = ParseRuleValues(parts[1]);
             BirthRules = ParseRuleValues(parts[2]);
-            maxNeighbors = NeighborhoodType.MaxNeighbors(Radius);
         }
 
         /// <summary>
