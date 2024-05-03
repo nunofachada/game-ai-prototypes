@@ -8,14 +8,24 @@
 using UnityEngine;
 using LibGameAI.PCG;
 using NaughtyAttributes;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 {
     public class CellularAutomataConfig : StochasticGenConfig
     {
+        private const string customRuleName = "<Custom>";
 
         [SerializeField]
-        private CA2D.Rule rule = CA2D.Rule.MajR1N5;
+        [Dropdown(nameof(RuleNames))]
+        [OnValueChanged(nameof(UpdateRuleString))]
+        private string ruleName;
+
+        [SerializeField]
+        [EnableIf(nameof(IsCustom))]
+        private string ruleString;
+
         [SerializeField]
         [Range(0, 1)]
         private float initialFill = 0.5f;
@@ -30,6 +40,40 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
         [HideIf(nameof(toroidal))]
         private bool offGridBorderCellsAlive = false;
 
+        private readonly IDictionary<string, string> rules = new Dictionary<string, string>()
+        {
+            {"MajR1N5", "M,1/5-/5-"},
+            {"MajR2N13", "M,2/13-/13-"},
+            {"MajR4N38", "M,4/38-/38-"},
+            {"MajR4N39", "M,4/39-/39-"},
+            {"MajR4N40", "M,4/40-/40-"},
+            {"MajR4N41", "M,4/41-/41-"},
+            {"MajR4N42", "M,4/42-/42-"},
+            {"MajR4N43", "M,4/43-/43-"},
+            {"CavesR1N5", "M,1/4-/5-"},
+            {"CavesR2N13", "M,2/12-/13-"},
+            {"WalledCities", "M,1/2-5/4-"},
+            {"Diamoeba", "M,1/5-/3,5-"},
+            {"Coral", "M,1/4-/3"},
+            {"HighLife", "M,1/2,3/3,6"},
+            {"GameOfLife", "M,1/2,3/3"},
+            {"Serviettes", "M,1//2-4"},
+            {"Flakes", "M,1/0-8/3"},
+            {customRuleName, "" },
+        };
+
+        private bool IsCustom => ruleName == customRuleName;
+        private string[] RuleNames => rules.Keys.ToArray();
+
+        private void UpdateRuleString()
+        {
+            if (ruleName != customRuleName)
+            {
+                ruleString = rules[ruleName];
+            }
+        }
+
+
         public override float[,] Generate(float[,] prev_heights)
         {
             InitPRNG();
@@ -37,44 +81,33 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
             int xdim = prev_heights.GetLength(0);
             int ydim = prev_heights.GetLength(1);
 
-            int[] ca1 = new int[xdim * ydim];
-            int[] ca2 = new int[xdim * ydim];
-            int[] aux;
+            CA2D ca = new(new CA2DBinaryRule(ruleString), xdim, ydim, toroidal, offGridBorderCellsAlive ? 1 : 0);
+            ca.InitRandom(new int[] { 0, 1 }, new float[] { 1 - initialFill, initialFill }, () => (float)PRNG.NextDouble());
 
             float[,] ca_heights = new float[xdim, ydim];
 
-            CA2D.RandomFill(
-                ca1,
-                new int[] { 0, 1 },
-                new float[] { 1 - initialFill, initialFill },
-                () => (float)PRNG.NextDouble());
-
-            if (skipFirstNSteps == 0) AddLayer(ca_heights, ca1);
+            if (skipFirstNSteps == 0) AddLayer(ca_heights, ca);
 
             for (uint t = 1; t <= steps; t++)
             {
-                CA2D.DoStep(ca1, ca2, xdim, ydim, toroidal, offGridBorderCellsAlive ? 1 : 0, rule);
+                ca.DoStep();
 
                 if (t >= skipFirstNSteps)
-                    AddLayer(ca_heights, ca2);
-
-                aux = ca1;
-                ca1 = ca2;
-                ca2 = aux;
+                    AddLayer(ca_heights, ca);
             }
 
             return ca_heights;
         }
 
-        private void AddLayer(float[,] heights, int[] caLayer)
+        private void AddLayer(float[,] heights, CA2D caLayer)
         {
             int xdim = heights.GetLength(0);
             int ydim = heights.GetLength(1);
-            for (int i = 0; i < ydim; i++)
+            for (int y = 0; y < ydim; y++)
             {
-                for (int j = 0; j < xdim; j++)
+                for (int x = 0; x < xdim; x++)
                 {
-                    heights[j, i] += caLayer[i * xdim + j];
+                    heights[x, y] += caLayer[x, y];
                 }
             }
         }

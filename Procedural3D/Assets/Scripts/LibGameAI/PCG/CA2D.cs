@@ -6,31 +6,137 @@
  * */
 
 using System;
+using System.Data;
+using LibGameAI.Util;
 
 namespace LibGameAI.PCG
 {
     public class CA2D
     {
+        private int[] gridCurrent, gridNext;
+        private readonly ICA2DRule rule;
+        private bool initialized;
 
-        public enum Rule
+        public int XDim { get; }
+        public int YDim { get; }
+        public bool Toroidal { get; }
+        public int NonToroidalBorderCells { get; }
+
+        public int this[int x, int y] => gridCurrent[y * XDim + x];
+
+        public CA2D(ICA2DRule rule, int xDim, int yDim, bool toroidal, int nonToroidalBorderCells = 0)
         {
-            MajR1N5,
-            MajR2N13,
-            MajR4N38,
-            MajR4N39,
-            MajR4N40,
-            MajR4N41,
-            MajR4N42,
-            MajR4N43,
-            CavesR1N5,
-            CavesR2N13,
-            WalledCities,
-            Diamoeba,
-            Coral,
-            HighLife,
-            GameOfLife,
-            Serviettes,
-            Flakes,
+            this.rule = rule;
+            initialized = false;
+            gridCurrent = new int[xDim * yDim];
+            gridNext = new int[xDim * yDim];
+            XDim = xDim;
+            YDim = yDim;
+            Toroidal = toroidal;
+            NonToroidalBorderCells = nonToroidalBorderCells;
+        }
+
+        public void DoStep()
+        {
+            // DoStep(gridCurrent, gridNext, XDim, YDim, Toroidal, NonToroidalBorderCells);
+            if (!initialized)
+            {
+                throw new InvalidOperationException($"{nameof(CA2D)} instance is not yet initialized.");
+            }
+
+            for (int y = 0; y < YDim; y++)
+            {
+                for (int x = 0; x < XDim; x++)
+                {
+                    gridNext[y * XDim + x] = rule.ProcessRule(this, x, y);
+                }
+            }
+
+
+            (gridNext, gridCurrent) = (gridCurrent, gridNext);
+        }
+
+        // public static void DoStep(int[] map_in, int[] map_out, int xDim, int yDim, bool toroidal, int nonToroidalBorderCells) // , Rule rule
+        // {
+        //     for (int y = 0; y < yDim; y++)
+        //     {
+        //         for (int x = 0; x < xDim; x++)
+        //         {
+
+        //             map_out[y * xDim + x] = rule.ProcessRule()
+        //         }
+        //     }
+        // }
+
+        public int CountNeighbors(int x, int y, int radius,
+            NeighborhoodType neighType = NeighborhoodType.Moore, int neighValue = 1, bool countSelf = false)
+        {
+            return CountNeighbors(gridCurrent, XDim, YDim, x, y, Toroidal, NonToroidalBorderCells, radius, neighValue, countSelf, neighType);
+        }
+
+        public void InitRandom(int[] values, int? seed = null, float[] probabilities = null)
+        {
+            Random rnd = seed.HasValue ? new Random(seed.Value) : new Random();
+            if (probabilities == null)
+            {
+                probabilities = new float[values.Length];
+                Array.Fill(probabilities, 1.0f / values.Length);
+            }
+            InitRandom(values, probabilities, () => (float)rnd.NextDouble());
+        }
+
+        public void InitRandom(int[] values, float[] probabilities, Func<float> nextFloat)
+        {
+            RandomFill(gridCurrent, values, probabilities, nextFloat);
+            initialized = true;
+        }
+
+
+        public void InitExact(int[,] initialState)
+        {
+            if (initialState.GetLength(0) != XDim || initialState.GetLength(1) != YDim)
+            {
+                throw new ArgumentException(
+                    "Size of given initial state is different from size of CA grid:"
+                    + $" ({initialState.GetLength(0)}, {initialState.GetLength(1) != XDim} != ({XDim}, {YDim})");
+            }
+            for (int y = 0; y < YDim; y++)
+            {
+                for (int x = 0; x < XDim; x++)
+                {
+                    gridCurrent[y * XDim + x] = initialState[x, y];
+                }
+            }
+            initialized = true;
+        }
+
+        public void InitExact(int[] initialState)
+        {
+            if (initialState.Length != gridCurrent.Length)
+            {
+                throw new ArgumentException(
+                    "Size of given initial state is different from size of CA grid_"
+                    + $" {initialState.Length} != {gridCurrent.Length}");
+            }
+            Array.Copy(initialState, gridCurrent, initialState.Length);
+            initialized = true;
+        }
+
+        public void InitFunc(Func<int, int, int> initializer)
+        {
+            for (int y = 0; y < YDim; y++)
+            {
+                for (int x = 0; x < XDim; x++)
+                {
+                    gridCurrent[y * XDim + x] = initializer.Invoke(x, y);
+                }
+            }
+            initialized = true;
+        }
+
+        public static void RandomFill(CA2D ca, int[] values, float[] probabilities, Func<float> nextFloat)
+        {
+            RandomFill(ca.gridCurrent, values, probabilities, nextFloat);
         }
 
         public static void RandomFill(int[] map, int[] values, float[] probabilities, Func<float> nextFloat)
@@ -39,7 +145,7 @@ namespace LibGameAI.PCG
                 throw new InvalidOperationException(
                     $"'{nameof(values)}' and '{nameof(probabilities)}' have different lengths!");
 
-            float[] ncProbs = NormCumulProbs(probabilities);
+            float[] ncProbs = MMath.CumSum(probabilities);
 
             for (int i = 0; i < map.Length; i++)
             {
@@ -55,274 +161,9 @@ namespace LibGameAI.PCG
             }
         }
 
-
-        // TODO: This could go to Utils
-        private static float[] NormCumulProbs(float[] probabilities)
-        {
-            float totProb = 0.0f;
-            float cumulProb = 0.0f;
-            float[] ncProbs = new float[probabilities.Length];
-
-            for (int i = 0; i < probabilities.Length; i++)
-            {
-                totProb += probabilities[i];
-            }
-
-            for (int i = 0; i < ncProbs.Length; i++)
-            {
-                cumulProb += probabilities[i] / totProb;
-                ncProbs[i] = cumulProb;
-            }
-
-            return ncProbs;
-        }
-
-        public static void DoStep(int[] map_in, int[] map_out, int width, int height, bool toroidal, int nonToroidalBorderCells, Rule rule)
-        {
-            for (int i = 0; i < height; i++)
-            {
-                for (int j = 0; j < width; j++)
-                {
-
-                    if (rule == Rule.MajR1N5) // This was previously called Smooth45
-                    {
-                        // 5678/5678
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        // Alternative formulation
-                        // if (numNeighs > 4) map_out[i * width + j] = 1;
-                        // else map_out[i * width + j] = 0;
-
-                        if (map_in[i * width + j] == 1 && numNeighs >= 5)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else if (map_in[i * width + j] == 0 && numNeighs >= 5)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else map_out[i * width + j] = 0;
-                    }
-                    else if (rule == Rule.MajR2N13)
-                    {
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 2, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        map_out[i * width + j] = numNeighs >= 13 ? 1 : 0;
-                    }
-                    else if (rule == Rule.MajR4N38)
-                    {
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        if (numNeighs >= 38) map_out[i * width + j] = 1;
-                        else map_out[i * width + j] = 0;
-
-                    }
-                    else if (rule == Rule.MajR4N39)
-                    {
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        if (numNeighs >= 39) map_out[i * width + j] = 1;
-                        else map_out[i * width + j] = 0;
-
-                    }
-                    else if (rule == Rule.MajR4N40)
-                    {
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        if (numNeighs >= 40) map_out[i * width + j] = 1;
-                        else map_out[i * width + j] = 0;
-
-                    }
-                    else if (rule == Rule.MajR4N41)
-                    {
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        if (numNeighs >= 41) map_out[i * width + j] = 1;
-                        else map_out[i * width + j] = 0;
-
-                    }
-                    else if (rule == Rule.MajR4N42)
-                    {
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        if (numNeighs >= 42) map_out[i * width + j] = 1;
-                        else map_out[i * width + j] = 0;
-
-                    }
-                    else if (rule == Rule.MajR4N43)
-                    {
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 4, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        if (numNeighs >= 43) map_out[i * width + j] = 1;
-                        else map_out[i * width + j] = 0;
-
-                    }
-                    else if (rule == Rule.CavesR1N5) // This is the same as the previously called Smooth44
-                    {
-                        // 45678/5678
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        // Alternative:
-                        // if (numNeighs > 4) map_out[i * width + j] = 1;
-                        // else if (numNeighs < 4) map_out[i * width + j] = 0;
-                        // else map_out[i * width + j] = map_in[i * width + j];
-
-                        if (map_in[i * width + j] == 1 && numNeighs >= 4)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else if (map_in[i * width + j] == 0 && numNeighs >= 5)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else
-                        {
-                            map_out[i * width + j] = 0;
-                        }
-                    }
-
-                    else if (rule == Rule.CavesR2N13)
-                    {
-                        // 12..Nmax/13..Nmax
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 2, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        if (map_in[i * width + j] == 1 && numNeighs >= 12)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else if (map_in[i * width + j] == 0 && numNeighs >= 13)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else
-                        {
-                            map_out[i * width + j] = 0;
-                        }
-                    }
-                    else if (rule == Rule.WalledCities)
-                    {
-                        // 2345/45678
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        if (map_in[i * width + j] == 1 && numNeighs >= 2 && numNeighs <= 5)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else if (map_in[i * width + j] == 0 && numNeighs >= 4 && numNeighs <= 8)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else map_out[i * width + j] = 0;
-                    }
-                    else if (rule == Rule.Diamoeba)
-                    {
-                        // 5678/35678
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        if (map_in[i * width + j] == 1 && numNeighs >= 5 && numNeighs <= 8)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else if (map_in[i * width + j] == 0 && numNeighs >= 3 && numNeighs <= 8 && numNeighs != 4)
-                        //else if (map_in[i * width + j] == 0 && (numNeighs >= 5 && numNeighs <= 8 || numNeighs == 3)) // Like ARR had
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else map_out[i * width + j] = 0;
-
-                    }
-                    else if (rule == Rule.Coral)
-                    {
-                        // 45678/3
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        if (map_in[i * width + j] == 1 && numNeighs >= 4 && numNeighs <= 8)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else if (map_in[i * width + j] == 0 && numNeighs == 3)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else map_out[i * width + j] = 0;
-
-                    }
-                    else if (rule == Rule.HighLife)
-                    {
-                        // 23/36
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        if (map_in[i * width + j] == 1 && numNeighs >= 2 && numNeighs <= 3)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else if (map_in[i * width + j] == 0 && (numNeighs == 3 || numNeighs == 6))
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else map_out[i * width + j] = 0;
-
-
-                    }
-                    else if (rule == Rule.GameOfLife)
-                    {
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        // GoL rules 23/3
-                        if (map_in[i * width + j] == 1 && numNeighs >= 2 && numNeighs <= 3)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else if (map_in[i * width + j] == 0 && numNeighs == 3)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else
-                        {
-                            map_out[i * width + j] = 0;
-                        }
-
-                    }
-                    else if (rule == Rule.Serviettes)
-                    {
-                        // /234
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        if (map_in[i * width + j] == 1)
-                        {
-                            map_out[i * width + j] = 0;
-                        }
-                        else if (map_in[i * width + j] == 0 && numNeighs >= 2 && numNeighs <= 4)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else map_out[i * width + j] = 0;
-
-                    }
-                    else if (rule == Rule.Flakes)
-                    {
-                        // 012345678/3
-                        int numNeighs = CountNeighbors(map_in, width, height, i, j, 1, toroidal: toroidal, nonToroidalBorderCells :  nonToroidalBorderCells);
-
-                        if (map_in[i * width + j] == 1 && map_in[i * width + j] < 9)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else if (map_in[i * width + j] == 0 && numNeighs == 3)
-                        {
-                            map_out[i * width + j] = 1;
-                        }
-                        else map_out[i * width + j] = 0;
-
-                    }
-
-                }
-            }
-        }
-
-        public static int CountNeighbors(int[] map, int width, int height, int row, int col, int radius,
-            bool toroidal = true, int nonToroidalBorderCells = 0, int neighValue = 1, bool countSelf = false,
-            NeighType neighType = NeighType.Moore)
+        public static int CountNeighbors(int[] map, int xDim, int yDim, int x, int y,
+            bool toroidal = true, int nonToroidalBorderCells = 0, int radius = 1,
+            int neighValue = 1, bool countSelf = false, NeighborhoodType neighType = NeighborhoodType.Moore)
         {
             int numNeighs = 0;
 
@@ -330,18 +171,20 @@ namespace LibGameAI.PCG
             {
                 for (int j = -radius; j <= radius; j++)
                 {
-                    if (neighType == NeighType.VonNeumann && Math.Abs(i) + Math.Abs(j) < radius)
+                    if (neighType == NeighborhoodType.VonNeumann && Math.Abs(i) + Math.Abs(j) < radius)
                     {
                         continue;
                     }
+
+                    // TODO: HEX!
 
                     if (!countSelf && i == 0 && j ==0)
                     {
                         continue;
                     }
 
-                    int r = Wrap(row + i, height, out bool wrapRow);
-                    int c = Wrap(col + j, width, out bool wrapCol);
+                    int r = Wrap(y + i, yDim, out bool wrapRow);
+                    int c = Wrap(x + j, xDim, out bool wrapCol);
 
                     if (!toroidal && (wrapRow || wrapCol))
                     {
@@ -350,7 +193,7 @@ namespace LibGameAI.PCG
                             numNeighs++;
                         }
                     }
-                    else if (map[r * width + c] == neighValue)
+                    else if (map[r * xDim + c] == neighValue)
                     {
                         numNeighs++;
                     }

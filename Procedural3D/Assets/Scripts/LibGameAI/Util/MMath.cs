@@ -68,5 +68,32 @@ namespace LibGameAI.Util
                 vector[i] = (vector[i] - localMin) * newRange / origRange + min;
             }
         }
+
+        /// <summary>
+        /// Return cumulative sum of given vector.
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <returns>
+        /// A new vector with the cumulative sum of the input vector.
+        /// </returns>
+        public static float[] CumSum(float[] vector)
+        {
+            float total = 0.0f;
+            float acumul = 0.0f;
+            float[] csum = new float[vector.Length];
+
+            for (int i = 0; i < vector.Length; i++)
+            {
+                total += vector[i];
+            }
+
+            for (int i = 0; i < csum.Length; i++)
+            {
+                acumul += vector[i] / total;
+                csum[i] = acumul;
+            }
+
+            return csum;
+        }
     }
 }

@@ -7,9 +7,10 @@
 
 namespace LibGameAI.PCG
 {
-    public enum NeighType
+    public enum NeighborhoodType
     {
         Moore,
-        VonNeumann
+        VonNeumann,
+        Hexagonal
     }
 }
