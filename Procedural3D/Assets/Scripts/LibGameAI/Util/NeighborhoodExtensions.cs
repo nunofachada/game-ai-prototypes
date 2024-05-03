@@ -16,14 +16,14 @@ namespace LibGameAI.Util
         {
             return neighborhood switch
             {
-                Neighborhood.VonNeumann => VonNeumannNeighboors(radius),
-                Neighborhood.Moore => MooreNeighboors(radius),
-                Neighborhood.Hexagonal => HexNeighboors(radius),
+                Neighborhood.VonNeumann => VonNeumannNeighbors(radius),
+                Neighborhood.Moore => MooreNeighbors(radius),
+                Neighborhood.Hexagonal => HexNeighbors(radius),
                 _ => throw new ArgumentException("Unknown neighborhood!"),
             };
         }
 
-        public static IEnumerable<(int x, int y)> MooreNeighboors(int radius)
+        public static IEnumerable<(int x, int y)> MooreNeighbors(int radius)
         {
             for (int y = -radius; y <= radius; y++)
             {
@@ -34,7 +34,7 @@ namespace LibGameAI.Util
             }
         }
 
-        public static IEnumerable<(int x, int y)> VonNeumannNeighboors(int radius)
+        public static IEnumerable<(int x, int y)> VonNeumannNeighbors(int radius)
         {
             for (int y = -radius; y <= radius; y++)
             {
@@ -45,7 +45,7 @@ namespace LibGameAI.Util
             }
         }
 
-        public static IEnumerable<(int x, int y)> HexNeighboors(int radius)
+        public static IEnumerable<(int x, int y)> HexNeighbors(int radius)
         {
             for (int y = -radius; y <= radius; y++)
             {
