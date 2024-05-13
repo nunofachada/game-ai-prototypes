@@ -16,3 +16,15 @@ public class FileSelector
 
     public string Filename => filename;
 }
+
+
+[AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
+public sealed class OnPathChangedAttribute : Attribute
+{
+    public string Callback { get; }
+
+    public OnPathChangedAttribute(string callback)
+    {
+        Callback = callback;
+    }
+}

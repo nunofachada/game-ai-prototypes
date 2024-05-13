@@ -17,6 +17,7 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
     public class PointCloudConfig : AbstractGenConfig
     {
         [SerializeField]
+        [OnPathChanged(nameof(PathChanged))]
         private FileSelector dataFilePath;
 
         [SerializeField]
@@ -28,7 +29,7 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
         [HideInInspector]
         private float[] dataInArray;
 
-        private void OnValidate()
+        private void PathChanged()
         {
             Debug.Log($"selected file: " + dataFilePath);
 

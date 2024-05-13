@@ -5,6 +5,8 @@
  * Author: Diogo de Andrade
  * */
 
+using System;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -52,6 +54,15 @@ public class FileSelectorEditor : PropertyDrawer
                 propFilename.serializedObject.ApplyModifiedProperties();
 
                 EditorUtility.SetDirty(property.serializedObject.targetObject);
+
+                // Find the OnPathChangedAttribute on the field that this drawer represents
+                OnPathChangedAttribute attribute = FindAttribute<OnPathChangedAttribute>(property);
+
+                if (attribute != null)
+                {
+                    // Invoke the callback method
+                    InvokeCallback(property.serializedObject.targetObject, attribute.Callback, path);
+                }
             }
         }
     }
@@ -63,5 +74,31 @@ public class FileSelectorEditor : PropertyDrawer
         var propFilename = property.FindPropertyRelative("filename");
 
         return base.GetPropertyHeight(propFilename, label);
+    }
+
+    private T FindAttribute<T>(SerializedProperty property) where T : Attribute
+    {
+        // Get the field info and then the attributes of this field
+        var targetObject = property.serializedObject.targetObject;
+        var targetType = targetObject.GetType();
+        var field = targetType.GetField(property.propertyPath, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+        if (field != null)
+        {
+            return field.GetCustomAttribute<T>();
+        }
+        return null;
+    }
+
+    private void InvokeCallback(UnityEngine.Object targetObject, string methodName, string parameter)
+    {
+        var method = targetObject.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+        if (method != null)
+        {
+            method.Invoke(targetObject, new object[] { parameter });
+        }
+        else
+        {
+            Debug.LogError("Method '" + methodName + "' not found in " + targetObject.GetType().Name);
+        }
     }
 }
