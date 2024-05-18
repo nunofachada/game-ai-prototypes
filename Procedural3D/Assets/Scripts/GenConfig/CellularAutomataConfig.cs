@@ -103,9 +103,9 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
         {
             int xdim = heights.GetLength(0);
             int ydim = heights.GetLength(1);
-            for (int y = 0; y < ydim; y++)
+            for (int x = 0; x < xdim; x++)
             {
-                for (int x = 0; x < xdim; x++)
+                for (int y = 0; y < ydim; y++)
                 {
                     heights[x, y] += caLayer[x, y];
                 }
