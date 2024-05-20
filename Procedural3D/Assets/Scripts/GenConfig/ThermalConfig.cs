@@ -10,19 +10,22 @@ using LibGameAI.PCG;
 
 namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 {
-    public class ThermalConfig
+
+    public class ThermalConfig : AbstractGenConfig
     {
+        [SerializeField]
+        private float threshold = 0.01f;
+        [SerializeField]
+        private int iterations = 10;
 
+        public override bool IsModifier => true;
+
+        public override float[,] Generate(float[,] heights)
+        {
+            // Apply thermal erosion
+            Landscape.ThermalErosion(heights, threshold, iterations);
+
+            return heights;
+        }
     }
-    // public class ThermalConfig : AbstractGenConfig
-    // {
-    //     [SerializeField]
-    //     private float impact = 0.01f;
-
-    //     public override void Generate(float[,] heights)
-    //     {
-    //         // Apply thermal erosion
-    //         Landscape.ThermalErosion(heights, impact);
-    //     }
-    // }
 }

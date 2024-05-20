@@ -154,7 +154,7 @@ namespace GameAIPrototypes.ProceduralLandscape
                 {
                     Normalize(partial_heights, g.MaxHeight);
                 }
-                else if (g.PostScaling)
+                else if (g.PostScale)
                 {
                     // Apply scaling
                     for (int i = 0; i < xdim; i++)

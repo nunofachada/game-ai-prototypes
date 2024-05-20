@@ -20,11 +20,11 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
         [SerializeField]
         [Dropdown(nameof(RuleNames))]
         [OnValueChanged(nameof(UpdateRuleString))]
-        private string ruleName;
+        private string ruleName = customRuleName;
 
         [SerializeField]
         [EnableIf(nameof(IsCustom))]
-        private string ruleString;
+        private string ruleString = "M,1/5-/5-";
 
         [SerializeField]
         [Range(0, 1)]

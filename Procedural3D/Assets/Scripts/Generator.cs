@@ -71,11 +71,11 @@ namespace GameAIPrototypes.ProceduralLandscape
         private float maxHeight = 1;
 
         [SerializeField]
-        [ShowIf(nameof(PostScaling))]
+        [ShowIf(nameof(PostScale))]
         private float scaleFactor = 1;
 
         public bool PostNormalize => postProcessing == PostProcess.Normalize;
-        public bool PostScaling => postProcessing == PostProcess.Scale;
+        public bool PostScale => postProcessing == PostProcess.Scale;
 
         public float MaxHeight => maxHeight;
         public float ScaleFactor => scaleFactor;
