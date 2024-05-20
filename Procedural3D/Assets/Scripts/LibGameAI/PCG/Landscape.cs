@@ -207,6 +207,7 @@ namespace LibGameAI.PCG
         }
 
         // Useful for "wrapping around" matrices
+        // TODO Replace this implementation with the one in CA2D (maybe move it to Utils)
         private static int Wrap(int pos, int max)
         {
             while (pos < 0) pos = max + pos;
@@ -215,7 +216,7 @@ namespace LibGameAI.PCG
         }
 
         // Simple Thermal Erosion
-        public static void ThermalErosion(float[,] landscape, float threshold, int iterations)
+        public static void ThermalErosion(float[,] landscape, float threshold, int iterations, bool toroidal)
         {
             int xDim = landscape.GetLength(0);
             int yDim = landscape.GetLength(1);
@@ -245,8 +246,15 @@ namespace LibGameAI.PCG
                             int nx = x + d.x;
                             int ny = y + d.y;
 
-                            // TODO: Allow toroidal
-                            if (nx < 0 || ny < 0 || nx >= xDim || ny >= yDim) continue;
+                            if (toroidal)
+                            {
+                                nx = Wrap(nx, xDim);
+                                ny = Wrap(ny, yDim);
+                            }
+                            else if (nx < 0 || ny < 0 || nx >= xDim || ny >= yDim)
+                            {
+                                continue;
+                            }
 
                             float nHeight = landscape[nx, ny];
 

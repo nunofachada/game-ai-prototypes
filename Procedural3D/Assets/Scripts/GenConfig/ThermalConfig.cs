@@ -17,13 +17,15 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
         private float threshold = 0.01f;
         [SerializeField]
         private int iterations = 10;
+        [SerializeField]
+        private bool toroidal = true;
 
         public override bool IsModifier => true;
 
         public override float[,] Generate(float[,] heights)
         {
             // Apply thermal erosion
-            Landscape.ThermalErosion(heights, threshold, iterations);
+            Landscape.ThermalErosion(heights, threshold, iterations, toroidal);
 
             return heights;
         }
