@@ -38,7 +38,11 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
 
         [SerializeField]
         [DisableIf(nameof(toroidal))]
-        private CellType nonToroidalBorderCells; // TODO Can't allow border here
+        [Dropdown(nameof(allowedToroidalCells))]
+        private CellType nonToroidalBorderCells;
+
+        private readonly CellType[] allowedToroidalCells =
+            new CellType[] { CellType.Floor, CellType.Rock };
 
         private readonly Color ROCK = Color.white;
         private readonly Color FLOOR = Color.grey;
