@@ -91,12 +91,15 @@ namespace GameAIPrototypes.ProceduralLandscape
                 }
             }
 
-            for (int i = 0; i < xdim; i++)
+            if (max - min != 0) // Avoid divide by zero
             {
-                for (int j = 0; j < ydim; j++)
+                for (int i = 0; i < xdim; i++)
                 {
-                    heightmap[i, j] =
-                        maxHeight * (heightmap[i, j] - min) / (max - min);
+                    for (int j = 0; j < ydim; j++)
+                    {
+                        heightmap[i, j] =
+                            maxHeight * (heightmap[i, j] - min) / (max - min);
+                    }
                 }
             }
 
@@ -140,6 +143,13 @@ namespace GameAIPrototypes.ProceduralLandscape
         [Button("Generate", enabledMode: EButtonEnableMode.Editor)]
         private void Generate()
         {
+            static float Avg(float[,] local_heights)
+            {
+                float total = 0;
+                foreach (float f in local_heights) total += f;
+                return total / local_heights.Length;
+            }
+
             Zeros(Heights);
 
             int xdim = heights.GetLength(0);
@@ -149,6 +159,8 @@ namespace GameAIPrototypes.ProceduralLandscape
             foreach (Generator g in GetComponents<Generator>())
             {
                 float[,] partial_heights = g.Generate(heights);
+
+                Debug.Log($"Generator: {g} [Avg={Avg(partial_heights)}]");
 
                 if (g.PostNormalize)
                 {
