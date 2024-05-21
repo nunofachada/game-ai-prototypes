@@ -6,12 +6,15 @@
  * */
 
 using UnityEngine;
+using LibGameAI.PCG;
 using NaughtyAttributes;
+using System;
+
 namespace GameAIPrototypes.Procedural2D.Scenarios
 {
     public class CA2DCaveScenario : StochasticScenario
     {
-        private enum CellType { Rock, Floor }
+        private enum CellType { Floor = 0, Rock = 1, Wall = 2 }
 
         [SerializeField]
         private int rockThreshold = 5;
@@ -33,124 +36,75 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         [SerializeField]
         private bool toroidal = true;
 
-        [SerializeField] [DisableIf(nameof(toroidal))]
-        private CellType nonToroidalBorderCells;
+        [SerializeField]
+        [DisableIf(nameof(toroidal))]
+        private CellType nonToroidalBorderCells; // TODO Can't allow border here
 
         private readonly Color ROCK = Color.white;
         private readonly Color FLOOR = Color.grey;
-        private readonly Color BORDER = Color.red;
+        private readonly Color WALL = Color.red;
 
-        // TODO Move CA2D generic functionality to libGameAI
-        public override void Generate(Color[] pixels, int width, int height)
+        public override void Generate(Color[] pixels, int xDim, int yDim)
         {
-            base.Generate(pixels, width, height);
+            base.Generate(pixels, xDim, yDim);
 
-            Color[] aux;
-            Color[] buf1 = new Color[pixels.Length];
-            Color[] buf2 = new Color[pixels.Length];
+            // Define cellular automata (CA) Caves rule
+            CA2DBinaryRule rule = new CA2DBinaryRule(
+                $"M,{neighSize}/{rockThreshold - 1}-/{rockThreshold}-");
 
-            // Randomly place rocks in the scenario
-            for (int i = 0; i < height; i++)
+            // Setup CA with specified rule and parameters
+            CA2D ca = new CA2D(
+                rule, xDim, yDim, toroidal,
+                nonToroidalBorderCells == CellType.Rock ? 1 : 0);
+
+            // Initialize CA
+            ca.InitRandom(
+                // Initial types of cell
+                new int[] { (int)CellType.Floor, (int)CellType.Rock },
+                // Percentage of initial types of cell
+                new float[] { 1 - initRocks, initRocks },
+                // Method for generating random numbers
+                () => (float)PRNG.NextDouble());
+
+            // Run CA for the specified number of steps
+            for (int i = 0; i < steps; i++)
             {
-                for (int j = 0; j < width; j++)
-                {
-                    // Put rock or floor, randomly
-                    buf1[i * width + j] =
-                        PRNG.NextDouble() < initRocks ? ROCK : FLOOR;
-                }
+                ca.DoStep();
             }
 
-            // Run cellular automata
-            for (int step = 0; step < steps; step++)
+            // Convert CA to image colors and post-process border rocks for
+            // walls visual effect
+            for (int y = 0; y < yDim; y++)
             {
-                for (int i = 0; i < height; i++)
+                for (int x = 0; x < xDim; x++)
                 {
-                    for (int j = 0; j < width; j++)
-                    {
-                        // How many rocks around here?
-                        int numRocks = CountRocks(buf1, width, height, i, j, neighSize);
+                    Color pixelColor;
 
-                        // Put rock or floor, randomly
-                        buf2[i * width + j] =
-                            numRocks >= rockThreshold ? ROCK : FLOOR;
+                    if (ca[x, y] == (int)CellType.Floor)
+                    {
+                        pixelColor = FLOOR;
                     }
-                }
-
-                // Swap buffers
-                aux = buf1;
-                buf1 = buf2;
-                buf2 = aux;
-            }
-
-            // Post-process border rocks for visual effect
-            if (drawRockOutline)
-            {
-                for (int i = 0; i < height; i++)
-                {
-                    for (int j = 0; j < width; j++)
+                    else // We assume it's Rock
                     {
-                        if (buf1[i * width + j] == ROCK)
-                        {
-                            // How many rocks around here?
-                            int numRocks = CountRocks(buf1, width, height, i, j, 1);
+                        pixelColor = ROCK;
 
-                            if (numRocks < 9)
+                        if (drawRockOutline)
+                        {
+                            // How much rocks around here?
+                            int numRocks = ca.CountNeighbors(
+                                x, y, 1, neighValue: (int)CellType.Rock);
+
+                            if (numRocks < 8)
                             {
-                                // Put border rock
-                                buf1[i * width + j] = BORDER;
+                                // Put rock wall
+                                pixelColor = WALL;
                             }
                         }
                     }
+                    pixels[y * xDim + x] = pixelColor;
                 }
             }
 
-            // Copy buf1 data to pixels
-            for (int i = 0; i < pixels.Length; i++)
-                pixels[i] = buf1[i];
-        }
-
-        private int CountRocks(Color[] pixels, int width, int height, int row, int col, int nSize)
-        {
-            int numRocks = 0;
-
-            for (int i = -nSize; i <= nSize; i++)
-            {
-                for (int j = -nSize; j <= nSize; j++)
-                {
-                    bool wrapRow, wrapCol;
-                    int r = Wrap(row + i, height, out wrapRow);
-                    int c = Wrap(col + j, width, out wrapCol);
-
-                    if (!toroidal && (wrapRow || wrapCol))
-                    {
-                        if (nonToroidalBorderCells == CellType.Rock)
-                        {
-                            numRocks++;
-                        }
-                    }
-                    else if (pixels[r * width + c] != FLOOR)
-                    {
-                        numRocks++;
-                    }
-                }
-            }
-            return numRocks;
-        }
-
-        private int Wrap(int pos, int max, out bool wrap)
-        {
-            wrap = false;
-            if (pos < 0)
-            {
-                pos = max + pos;
-                wrap = true;
-            }
-            else if (pos >= max)
-            {
-                pos = pos - max;
-                wrap = true;
-            }
-            return pos;
         }
     }
 }

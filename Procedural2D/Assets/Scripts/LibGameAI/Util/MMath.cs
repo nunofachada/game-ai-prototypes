@@ -1,4 +1,4 @@
-/* Copyright (c) 2018-2023 Nuno Fachada and contributors
+/* Copyright (c) 2018-2024 Nuno Fachada and contributors
  * Distributed under the MIT License (See accompanying file LICENSE or copy
  * at http://opensource.org/licenses/MIT) */
 
@@ -67,6 +67,33 @@ namespace LibGameAI.Util
             {
                 vector[i] = (vector[i] - localMin) * newRange / origRange + min;
             }
+        }
+
+        /// <summary>
+        /// Return cumulative sum of given vector.
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <returns>
+        /// A new vector with the cumulative sum of the input vector.
+        /// </returns>
+        public static float[] CumSum(float[] vector)
+        {
+            float total = 0.0f;
+            float acumul = 0.0f;
+            float[] csum = new float[vector.Length];
+
+            for (int i = 0; i < vector.Length; i++)
+            {
+                total += vector[i];
+            }
+
+            for (int i = 0; i < csum.Length; i++)
+            {
+                acumul += vector[i] / total;
+                csum[i] = acumul;
+            }
+
+            return csum;
         }
     }
 }
