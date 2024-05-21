@@ -13,7 +13,7 @@ namespace LibGameAI.PCG
             float[,] landscape, float depth, Func<float> randFloat,
             float decreaseDistance = 0)
         {
-            // Create random fault epicentre and direction vector
+            // Create random fault epicenter and direction vector
             float cx = randFloat.Invoke() * landscape.GetLength(0);
             float cy = randFloat.Invoke() * landscape.GetLength(1);
             float direction = randFloat.Invoke() * 2 * (float)Math.PI;
@@ -93,10 +93,12 @@ namespace LibGameAI.PCG
             // Set virtual corners of the landscape to a random value within the
             // specified limit
             landscape[0, 0] = randFloat() * randness;
-            landscape[0, Wrap(vSide - 1, width)] = landscape[0, 0];
-            landscape[Wrap(vSide - 1, height), 0] = landscape[0, 0];
-            landscape[Wrap(vSide - 1, height), Wrap(vSide - 1, width)] =
-                landscape[0, 0];
+            int horizNeigh = Grid.Wrap(vSide - 1, width).pos;
+            int vertNeigh = Grid.Wrap(vSide - 1, height).pos;
+
+            landscape[0, horizNeigh] = landscape[0, 0];
+            landscape[vertNeigh, 0] = landscape[0, 0];
+            landscape[vertNeigh, horizNeigh] = landscape[0, 0];
 
             tileSide = vSide - 1;
 
@@ -112,15 +114,21 @@ namespace LibGameAI.PCG
                 {
                     for (int c = 0; c < vSide; c += tileSide)
                     {
-                        // UnityEngine.Debug.Log($"({Wrap(r, height)},{Wrap(c, width)}) -- ({Wrap(r + tileSide, height)},{Wrap(c, width)}) -- ({Wrap(r, height)},{Wrap(c + tileSide, width)}) -- ({Wrap(r + tileSide, height)},{Wrap(c + tileSide, width)})");
-                        float cornerSum =
-                            landscape[Wrap(r, height), Wrap(c, width)]
-                            + landscape[Wrap(r + tileSide, height), Wrap(c, width)]
-                            + landscape[Wrap(r, height), Wrap(c + tileSide, width)]
-                            + landscape[Wrap(r + tileSide, height), Wrap(c + tileSide, width)];
+                        int rWrap = Grid.Wrap(r, height).pos;
+                        int cWrap = Grid.Wrap(c, width).pos;
+                        int rTSWrap = Grid.Wrap(r + tileSide, height).pos;
+                        int cTSWrap = Grid.Wrap(c + tileSide, width).pos;
+                        int rHSWrap = Grid.Wrap(r + halfSide, height).pos;
+                        int cHSWrap = Grid.Wrap(c + halfSide, width).pos;
+                        // UnityEngine.Debug.Log($"({rWrap},{cWrap}) -- ({rTSWrap},{cWrap}) -- ({rWrap,{cTSWrap}) -- ({rTSWrap},{cTSWrap})");
 
-                        landscape[Wrap(r + halfSide, height), Wrap(c + halfSide, width)] =
-                            cornerSum / 4f + rand() * randness;
+                        float cornerSum =
+                            landscape[rWrap, cWrap]
+                            + landscape[rTSWrap, cWrap]
+                            + landscape[rWrap, cTSWrap]
+                            + landscape[rTSWrap, cTSWrap];
+
+                        landscape[rHSWrap, cHSWrap] = cornerSum / 4f + rand() * randness;
                     }
                 }
 
@@ -129,21 +137,32 @@ namespace LibGameAI.PCG
                 {
                     for (int c = (r + halfSide) % tileSide; c < vSide; c += tileSide)
                     {
-                        float sideSum =
-                            landscape[Wrap((r - halfSide + vSide - 1) % (vSide - 1), height), Wrap(c, width)]
-                            + landscape[Wrap((r + halfSide) % (vSide - 1), height), Wrap(c, width)]
-                            + landscape[Wrap(r, height), Wrap((c + halfSide) % (vSide - 1), width)]
-                            + landscape[Wrap(r, height), Wrap((c - halfSide + vSide - 1) % (vSide - 1), width)];
+                        int rWrap = Grid.Wrap(r, height).pos;
+                        int cWrap = Grid.Wrap(c, width).pos;
 
-                        landscape[Wrap(r, height), Wrap(c, width)] = sideSum / 4f + rand() * randness;
+                        int rHSPlusWrap = Grid.Wrap((r - halfSide + vSide - 1) % (vSide - 1), height).pos;
+                        int rHSMinusWrap = Grid.Wrap((r + halfSide) % (vSide - 1), height).pos;
+                        int cHSPlusWrap = Grid.Wrap((c + halfSide) % (vSide - 1), width).pos;
+                        int cHSMinusWrap = Grid.Wrap((c - halfSide + vSide - 1) % (vSide - 1), width).pos;
+
+
+                        float sideSum =
+                            landscape[rHSPlusWrap, cWrap]
+                            + landscape[rHSMinusWrap, cWrap]
+                            + landscape[rWrap, cHSPlusWrap]
+                            + landscape[rWrap, cHSMinusWrap];
+
+                        landscape[rWrap, cWrap] = sideSum / 4f + rand() * randness;
 
                         if (r == 0)
                         {
-                            landscape[Wrap(vSide - 1, height), Wrap(c, width)] = landscape[r, Wrap(c, width)];
+                            int rVSWrap = Grid.Wrap(vSide - 1, height).pos;
+                            landscape[rVSWrap, cWrap] = landscape[r, cWrap];
                         }
                         if (c == 0)
                         {
-                            landscape[Wrap(r, height), Wrap(vSide - 1, width)] = landscape[Wrap(r, height), c];
+                            int cVSWrap = Grid.Wrap(vSide - 1, width).pos;
+                            landscape[rWrap, cVSWrap] = landscape[rWrap, c];
                         }
                     }
                 }
@@ -206,15 +225,6 @@ namespace LibGameAI.PCG
 
         }
 
-        // Useful for "wrapping around" matrices
-        // TODO Replace this implementation with the one in CA2D (maybe move it to Utils)
-        private static int Wrap(int pos, int max)
-        {
-            while (pos < 0) pos = max + pos;
-            while (pos >= max) pos = pos - max;
-            return pos;
-        }
-
         // Simple Thermal Erosion
         public static void ThermalErosion(float[,] landscape, float threshold, int iterations, bool toroidal)
         {
@@ -248,8 +258,8 @@ namespace LibGameAI.PCG
 
                             if (toroidal)
                             {
-                                nx = Wrap(nx, xDim);
-                                ny = Wrap(ny, yDim);
+                                nx = Grid.Wrap(nx, xDim).pos;
+                                ny = Grid.Wrap(ny, yDim).pos;
                             }
                             else if (nx < 0 || ny < 0 || nx >= xDim || ny >= yDim)
                             {

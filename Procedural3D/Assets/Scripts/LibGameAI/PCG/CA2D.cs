@@ -312,8 +312,8 @@ namespace LibGameAI.PCG
                 // Don't count self if countSelf is false
                 if (!countSelf && x == 0 && y == 0) continue;
 
-                int yNeigh = Wrap(yCell + y, yDim, out bool yWrap);
-                int xNeigh = Wrap(xCell + x, xDim, out bool xWrap);
+                (int yNeigh, bool yWrap) = Grid.Wrap(yCell + y, yDim);
+                (int xNeigh, bool xWrap) = Grid.Wrap(xCell + x, xDim);
 
                 if (!toroidal && (yWrap || xWrap))
                 {
@@ -328,36 +328,6 @@ namespace LibGameAI.PCG
                 }
             }
             return numNeighs;
-        }
-
-        /// <summary>
-        /// Helper function to convert off-grid positions, wrapping them
-        /// around.
-        /// </summary>
-        /// <param name="pos">Grid position (width or height).</param>
-        /// <param name="max">Maximum grid length (width or height).</param>
-        /// <param name="wrap">
-        /// Set to `true` if the specified position is off-grid, `false`
-        /// otherwise.
-        /// </param>
-        /// <returns>
-        /// The wrapped-around position if the given position is outside the
-        /// given grid limit.
-        /// </returns>
-        private static int Wrap(int pos, int max, out bool wrap)
-        {
-            wrap = false;
-            if (pos < 0)
-            {
-                pos += max;
-                wrap = true;
-            }
-            else if (pos >= max)
-            {
-                pos -= max;
-                wrap = true;
-            }
-            return pos;
         }
     }
 }
