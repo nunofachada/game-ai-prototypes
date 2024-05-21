@@ -120,6 +120,25 @@ namespace GameAIPrototypes.ProceduralLandscape
             }
         }
 
+        // ////////////// //
+        // Public Methods //
+        // ////////////// //
+
+        public override string ToString()
+        {
+            string posProcStr = "no postprocessing";
+
+            if (postProcessing == PostProcess.Normalize)
+            {
+                posProcStr = $"{PostProcess.Normalize}:{maxHeight}";
+            }
+            else if (postProcessing == PostProcess.Scale)
+            {
+                posProcStr = $"{PostProcess.Scale}:{scaleFactor}";
+            }
+            return $"{generatorName} ({posProcStr})";
+        }
+
         // /////////////// //
         // Private Methods //
         // /////////////// //
