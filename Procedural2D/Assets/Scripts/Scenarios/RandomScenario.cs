@@ -15,14 +15,14 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         [Range(0, 1)]
         private float blackChance = 0.5f;
 
-        public override void Generate(Color[] pixels, int width, int height)
+        public override void Generate(Color[] pixels, int xDim, int yDim)
         {
-            base.Generate(pixels, width, height);
+            base.Generate(pixels, xDim, yDim);
 
             // Fill vector of pixels with random black or white pixels
-            for (int i = 0; i < height; i++)
+            for (int y = 0; y < yDim; y++)
             {
-                for (int j = 0; j < width; j++)
+                for (int x = 0; x < xDim; x++)
                 {
                     // Get a random value between 0 and 1
                     double val = PRNG.NextDouble();
@@ -31,7 +31,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
                     Color color = val > blackChance ? Color.white : Color.black;
 
                     // Set color in pixels array
-                    pixels[i * width + j] = color;
+                    pixels[y * xDim + x] = color;
                 }
             }
         }

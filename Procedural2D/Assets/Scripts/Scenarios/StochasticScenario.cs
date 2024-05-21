@@ -54,7 +54,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
 
         protected virtual bool RandActive => true;
 
-        public override void Generate(Color[] pixels, int width, int height)
+        public override void Generate(Color[] pixels, int xDim, int yDim)
         {
             random = useSeed
                 ? PRNGHelper.Instance.CreatePRNG(randGenerator, seed)

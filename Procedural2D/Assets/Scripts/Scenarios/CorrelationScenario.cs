@@ -57,7 +57,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             }
         }
 
-        public override void Generate(Color[] pixels, int width, int height)
+        public override void Generate(Color[] pixels, int xDim, int yDim)
         {
             // Get a copy of the base seed
             int localBaseSeed = baseSeed;
@@ -95,15 +95,15 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             }
 
             // Fill vector of pixels with random black or white pixels
-            for (int i = 0; i < height; i++)
+            for (int y = 0; y < yDim; y++)
             {
-                for (int j = 0; j < width; j++)
+                for (int x = 0; x < xDim; x++)
                 {
                     // Get a random value to choose a color
-                    int colorIndex = rnd[j % rnd.Length].Next(numberOfColors);
+                    int colorIndex = rnd[x % rnd.Length].Next(numberOfColors);
 
                     // Set color in pixels array
-                    pixels[i * width + j] = colors[colorIndex];
+                    pixels[y * xDim + x] = colors[colorIndex];
                 }
             }
         }

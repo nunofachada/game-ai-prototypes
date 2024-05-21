@@ -18,23 +18,23 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             new Color(0.95f, 0.96f, 0.98f)  // Snowy white
         };
 
-        public override void Generate(Color[] pixels, int width, int height)
+        public override void Generate(Color[] pixels, int xDim, int yDim)
         {
-            base.Generate(pixels, width, height);
+            base.Generate(pixels, xDim, yDim);
 
             // Add some random x and y displacement, so we can generate
             // different landscapes with this scenario
-            float xDisp = (float)PRNG.NextDouble() * span * width;
-            float yDisp = (float)PRNG.NextDouble() * span * height;
+            float xDisp = (float)PRNG.NextDouble() * span * xDim;
+            float yDisp = (float)PRNG.NextDouble() * span * yDim;
 
-            for (int i = 0; i < height; i++)
+            for (int y = 0; y < yDim; y++)
             {
-                for (int j = 0; j < width; j++)
+                for (int x = 0; x < xDim; x++)
                 {
                     // Get the Perlin noise value for this pixel
                     float value = Mathf.PerlinNoise(
-                        xDisp + span * i / (float)width,
-                        yDisp + span * (float)j / height);
+                        xDisp + span * y / xDim,
+                        yDisp + span * x / yDim);
 
                     // Sometimes Perlin returns values above 1, so lets make
                     // sure that doesn't happen
@@ -45,7 +45,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
                     Color color = heightColors[(int)(value * heightColors.Count)];
 
                     // Set that color in the current pixel
-                    pixels[i * width + j] = color;
+                    pixels[y * xDim + x] = color;
                 }
             }
         }

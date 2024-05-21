@@ -112,19 +112,19 @@ namespace GameAIPrototypes.Procedural2D
         {
             // Image width and height
             Rect rect = image.GetPixelAdjustedRect();
-            int width = (int)(rect.width / scale);
-            int height = (int)(rect.height / scale);
+            int xDim = (int)(rect.width / scale);
+            int yDim = (int)(rect.height / scale);
 
             //Debug.Log($"{width} {height}");
 
             // Create a vector of pixels
-            Color[] pixels = new Color[width * height];
+            Color[] pixels = new Color[xDim * yDim];
 
             // Texture to show on screen, to be randomly created
-            Texture2D texture = new Texture2D(width, height);
+            Texture2D texture = new Texture2D(xDim, yDim);
 
             // Generate scenario
-            scenarioConfig.Generate(pixels, width, height);
+            scenarioConfig.Generate(pixels, xDim, yDim);
 
             // Set and apply texture pixels
             texture.SetPixels(pixels);

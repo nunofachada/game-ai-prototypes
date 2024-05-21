@@ -22,9 +22,9 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         protected override bool RandActive => !singleCenterPixel;
 
         // TODO Move CA1D generic functionality to libGameAI
-        public override void Generate(Color[] pixels, int width, int height)
+        public override void Generate(Color[] pixels, int xDim, int yDim)
         {
-            base.Generate(pixels, width, height);
+            base.Generate(pixels, xDim, yDim);
 
             // Array of colors to generate according to the three previous
             // bits (2^3 = 8 values)
@@ -44,43 +44,43 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             // Initialize first (bottom) line
             if (singleCenterPixel)
             {
-                for (int i = 0; i < width; i++)
+                for (int i = 0; i < xDim; i++)
                 {
                     pixels[i] = Color.white;
                 }
 
                 // Put just one black pixel in the middle
-                pixels[width / 2] = Color.black;
+                pixels[xDim / 2] = Color.black;
             }
             else
             {
                 // Randomly initialize the bottom line
-                for (int i = 0; i < width; i++)
+                for (int i = 0; i < xDim; i++)
                 {
                     pixels[i] = PRNG.NextDouble() < 0.5 ? Color.white : Color.black;
                 }
             }
 
             // Run cellular automata rule on image
-            for (int i = 1; i < height; i++)
+            for (int y = 1; y < yDim; y++)
             {
-                for (int j = 0; j < width; j++)
+                for (int x = 0; x < xDim; x++)
                 {
                     // Find indexes of rule bits in previous line
-                    int i2 = j > 0 ? j - 1 : width - 1;
-                    int i1 = j;
-                    int i0 = j < width - 1 ? j + 1 : 0;
+                    int i2 = x > 0 ? x - 1 : xDim - 1;
+                    int i1 = x;
+                    int i0 = x < xDim - 1 ? x + 1 : 0;
 
                     // Get bits in previous line
-                    int v2 = pixels[(i - 1) * width + i2] == Color.black ? 1 : 0;
-                    int v1 = pixels[(i - 1) * width + i1] == Color.black ? 1 : 0;
-                    int v0 = pixels[(i - 1) * width + i0] == Color.black ? 1 : 0;
+                    int v2 = pixels[(y - 1) * xDim + i2] == Color.black ? 1 : 0;
+                    int v1 = pixels[(y - 1) * xDim + i1] == Color.black ? 1 : 0;
+                    int v0 = pixels[(y - 1) * xDim + i0] == Color.black ? 1 : 0;
 
                     // Get rule index
                     int ruleIdx = (v2 << 2) + (v1 << 1) + v0;
 
                     // Apply rule to current position
-                    pixels[i * width + j] = ruleList[ruleIdx];
+                    pixels[y * xDim + x] = ruleList[ruleIdx];
                 }
             }
         }

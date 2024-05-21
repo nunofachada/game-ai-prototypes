@@ -30,7 +30,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         [SerializeField]
         private int ySeed = 3;
 
-        public override void Generate(Color[] pixels, int width, int height)
+        public override void Generate(Color[] pixels, int xDim, int yDim)
         {
             // Instantiate random number generator for x coordinate
             Random xRand = xRandomNumberGenerator == PRNG.System
@@ -48,9 +48,9 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             // Place the specified number of points
             for (int i = 0; i < numberOfPoints; i++)
             {
-                int x = xRand.Next(width);
-                int y = yRand.Next(height);
-                pixels[y * width + x] = Color.black;
+                int x = xRand.Next(xDim);
+                int y = yRand.Next(yDim);
+                pixels[y * xDim + x] = Color.black;
             }
         }
     }

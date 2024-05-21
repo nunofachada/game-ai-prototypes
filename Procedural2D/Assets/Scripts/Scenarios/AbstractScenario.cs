@@ -33,9 +33,9 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         /// <param name="pixels">
         /// Pixels vector to fill with procedurally generated data.
         /// </param>
-        /// <param name="width">Image width.</param>
-        /// <param name="height">Image height.</param>
-        public abstract void Generate(Color[] pixels, int width, int height);
+        /// <param name="xDim">Image width.</param>
+        /// <param name="yDim">Image height.</param>
+        public abstract void Generate(Color[] pixels, int xDim, int yDim);
 
         /// <summary>
         /// Returns an instance of the scenario.

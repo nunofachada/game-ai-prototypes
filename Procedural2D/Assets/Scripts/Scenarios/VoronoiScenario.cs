@@ -29,45 +29,45 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             Color.blue, Color.green, Color.red, Color.yellow
         };
 
-        public override void Generate(Color[] pixels, int width, int height)
+        public override void Generate(Color[] pixels, int xDim, int yDim)
         {
             // Euclidean distance
-            double EuclideanDistance((int r, int c) a, (int r, int c) b)
+            float EuclideanDistance((int x, int y) a, (int x, int y) b)
             {
-                int dr = Math.Abs(a.r - b.r);
-                int dc = Math.Abs(a.c - b.c);
+                int dx = Math.Abs(a.x - b.x);
+                int dy = Math.Abs(a.y - b.y);
 
                 if (toroidal)
                 {
-                    if (dr > height / 2.0)
-                        dr = height - dr;
-                    if (dc > width / 2.0)
-                        dc = width - dc;
+                    if (dx > xDim / 2.0)
+                        dx = xDim - dx;
+                    if (dy > yDim / 2.0)
+                        dy = yDim - dy;
                 }
 
-                return Math.Sqrt(dr * dr + dc * dc);
+                return MathF.Sqrt(dx * dx + dy * dy);
             }
 
             // Manhattan distance
-            double ManhattanDistance((int r, int c) a, (int r, int c) b)
+            float ManhattanDistance((int x, int y) a, (int x, int y) b)
             {
-                int dr = Math.Abs(a.r - b.r);
-                int dc = Math.Abs(a.c - b.c);
+                int dx = Math.Abs(a.x - b.x);
+                int dy = Math.Abs(a.y - b.y);
 
                 if (toroidal)
                 {
-                    if (dr > height / 2)
-                        dr = height - dr;
-                    if (dc > width / 2)
-                        dc = width - dc;
+                    if (dx > xDim / 2)
+                        dx = xDim - dx;
+                    if (dy > yDim / 2)
+                        dy = yDim - dy;
                 }
 
-                return dr + dc;
+                return dx + dy;
             }
 
-            base.Generate(pixels, width, height);
+            base.Generate(pixels, xDim, yDim);
 
-            Func<(int, int), (int, int), double> distFunc = distanceType switch
+            Func<(int, int), (int, int), float> distFunc = distanceType switch
             {
                 Distance.Euclidean => EuclideanDistance,
                 Distance.Manhattan => ManhattanDistance,
@@ -81,19 +81,19 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             IDictionary<(int, int), int> visited = new Dictionary<(int, int), int>();
 
             // Will not allow more areas than we have room for in the image
-            if (maxAreas > width * height)
-                maxAreas = width * height;
+            if (maxAreas > xDim * yDim)
+                maxAreas = xDim * yDim;
 
             // In the beginning, we only have unvisited tiles
-            for (int i = 0; i < height; i++)
-                for (int j = 0; j < width; j++)
-                    unvisited.Add((i, j));
+            for (int y = 0; y < yDim; y++)
+                for (int x = 0; x < xDim; x++)
+                    unvisited.Add((x, y));
 
             // Determine area centers
             while (visited.Count < maxAreas)
             {
                 // Find a random center
-                (int, int) tilePos = (PRNG.Next(height), PRNG.Next(width));
+                (int, int) tilePos = (PRNG.Next(xDim), PRNG.Next(yDim));
 
                 // Only allow non-repeated centers
                 if (unvisited.Contains(tilePos))
@@ -106,20 +106,20 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             centers = new List<(int, int)>(visited.Keys);
 
             // Assign each point to the closest area center
-            for (int i = 0; i < height; i++)
+            for (int y = 0; y < yDim; y++)
             {
-                for (int j = 0; j < width; j++)
+                for (int x = 0; x < xDim; x++)
                 {
                     // Only do this if the current point is not already a center
-                    if (unvisited.Contains((i, j)))
+                    if (unvisited.Contains((x, y)))
                     {
                         double minDist = double.PositiveInfinity;
                         int closestCenter = int.MaxValue;
 
                         // Determine closest center
-                        foreach ((int r, int c) point in centers)
+                        foreach ((int, int) point in centers)
                         {
-                            double dist = distFunc((i, j), point);
+                            double dist = distFunc((x, y), point);
 
                             if (dist < minDist)
                             {
@@ -130,12 +130,12 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
 
                         // Remove current point from unvisited list, add it to
                         // visited collection, specifying the closest center
-                        unvisited.Remove((i, j));
-                        visited.Add((i, j), closestCenter);
+                        unvisited.Remove((x, y));
+                        visited.Add((x, y), closestCenter);
                     }
 
                     // Color current point according to closest center
-                    pixels[i * width + j] = areaTypes[visited[(i, j)]];
+                    pixels[y * xDim + x] = areaTypes[visited[(x, y)]];
                 }
             }
         }

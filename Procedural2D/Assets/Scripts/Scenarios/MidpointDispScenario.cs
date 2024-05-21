@@ -22,12 +22,12 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         [Range(0, 1f)]
         private float roughness = 0.5f;
 
-        public override void Generate(Color[] pixels, int width, int height)
+        public override void Generate(Color[] pixels, int xDim, int yDim)
         {
-            base.Generate(pixels, width, height);
+            base.Generate(pixels, xDim, yDim);
 
             // An array which will contain the procedurally generated heights
-            float[] heights = new float[width];
+            float[] heights = new float[xDim];
 
             // Perform midpoint displacement
             Noise.MPD(heights, roughness, () => (float)PRNG.NextDouble());
@@ -35,17 +35,17 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             // Normalize line to better fit in image
             MMath.Normalize(
                 heights,
-                height * imagePadding,
-                height - height * imagePadding - 1);
+                yDim * imagePadding,
+                yDim - yDim * imagePadding - 1);
 
             // Fill image with white
             Fill(pixels, Color.white);
 
             // Draw 2D landscape on image
-            for (int x = 0; x < width; x++)
+            for (int x = 0; x < xDim; x++)
             {
                 // Place the pixel in the image
-                pixels[(int)heights[x] * width + x] = Color.black;
+                pixels[(int)heights[x] * xDim + x] = Color.black;
 
                 // Create a line between unconnected neighbors
                 if (x > 0 && Math.Abs(heights[x - 1] - heights[x]) > 1)
@@ -69,9 +69,9 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
                     // Vertically connect high and low neighbor points
                     for (int dy = 1; dy <= toFill; dy++)
                     {
-                        pixels[(yHigh - dy) * width + xHigh] = Color.black;
+                        pixels[(yHigh - dy) * xDim + xHigh] = Color.black;
                         if ((yHigh - dy) != (yLow + dy))
-                            pixels[(yLow + dy) * width + xLow] = Color.black;
+                            pixels[(yLow + dy) * xDim + xLow] = Color.black;
                     }
                 }
             }
