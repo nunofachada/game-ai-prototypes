@@ -50,10 +50,23 @@ namespace LibGameAI.PCG
         /// A read-only indexer returning the value of the CA cell at the
         /// specified indexes.
         /// </summary>
+        /// <remarks>
+        /// Internally, rows are kept in sequence (row-major order). Therefore,
+        /// when iterating, use `y` for the outer loop and `x` for the inner
+        /// loop.
+        /// </remarks>
         /// <param name="x">Horizontal position of the cell.</param>
         /// <param name="y">Vertical position of the cell.</param>
         /// <returns>Value of the CA cell at the specified indexes.</returns>
         public int this[int x, int y] => gridCurrent[y * XDim + x];
+
+        /// <summary>
+        /// A read-only indexer returning the value of the CA cell at the
+        /// specified index in row-major order.
+        /// </summary>
+        /// <param name="i">Position of the cell in row-major order.</param>
+        /// <returns>Value of the CA cell at the specified index.</returns>
+        public int this[int i] => gridCurrent[i];
 
         /// <summary>
         /// Create a new 2D discrete cellular automaton.
