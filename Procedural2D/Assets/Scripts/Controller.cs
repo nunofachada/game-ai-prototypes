@@ -29,8 +29,7 @@ namespace GameAIPrototypes.Procedural2D
         private string scenarioName;
 
         [SerializeField]
-        [Range(0.1f, 200f)]
-        private float scale = 1;
+        private Vector2Int resolution = new Vector2Int(800, 600);
 
         [SerializeField]
         [Expandable]
@@ -110,21 +109,14 @@ namespace GameAIPrototypes.Procedural2D
         [Button("Generate", enabledMode: EButtonEnableMode.Editor)]
         private void Generate()
         {
-            // Image width and height
-            Rect rect = image.GetPixelAdjustedRect();
-            int xDim = (int)(rect.width / scale);
-            int yDim = (int)(rect.height / scale);
-
-            //Debug.Log($"{width} {height}");
-
             // Create a vector of pixels
-            Color[] pixels = new Color[xDim * yDim];
+            Color[] pixels = new Color[resolution.x * resolution.y];
 
             // Texture to show on screen, to be randomly created
-            Texture2D texture = new Texture2D(xDim, yDim);
+            Texture2D texture = new Texture2D(resolution.x, resolution.y);
 
             // Generate scenario
-            scenarioConfig.Generate(pixels, xDim, yDim);
+            scenarioConfig.Generate(pixels, resolution.x, resolution.y);
 
             // Set and apply texture pixels
             texture.SetPixels(pixels);
