@@ -16,6 +16,7 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
     public class CellularAutomataConfig : StochasticGenConfig
     {
         private const string customRuleName = "<Custom>";
+        private const string defaultCustomRule = "M,1/5-/5-";
 
         [SerializeField]
         [Dropdown(nameof(RuleNames))]
@@ -24,7 +25,7 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
 
         [SerializeField]
         [EnableIf(nameof(IsCustom))]
-        private string ruleString = "M,1/5-/5-";
+        private string ruleString = defaultCustomRule;
 
         [SerializeField]
         [Range(0, 1)]
@@ -59,7 +60,7 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
             {"GameOfLife", "M,1/2,3/3"},
             {"Serviettes", "M,1//2-4"},
             {"Flakes", "M,1/-/3"},
-            {customRuleName, "" },
+            {customRuleName, defaultCustomRule},
         };
 
         private bool IsCustom => ruleName == customRuleName;
@@ -72,7 +73,6 @@ namespace GameAIPrototypes.ProceduralLandscape.GenConfig
                 ruleString = rules[ruleName];
             }
         }
-
 
         public override float[,] Generate(float[,] prev_heights)
         {
