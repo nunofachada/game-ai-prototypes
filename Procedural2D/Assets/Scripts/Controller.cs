@@ -109,17 +109,60 @@ namespace GameAIPrototypes.Procedural2D
         [Button("Generate", enabledMode: EButtonEnableMode.Editor)]
         private void Generate()
         {
-            // Create a vector of pixels
+            // Texture where to place the scenario-generated pixels
+            Texture2D texture;
+
+            // Texture dimensions, by default equal to scenario resolution, but
+            // this may change, to better fit the UI image
+            int xTex = resolution.x;
+            int yTex = resolution.y;
+            int xEmpty = 0;
+            int yEmpty = 0;
+
+            // Vector of pixels, to be filled by the chosen scenario
             Color[] pixels = new Color[resolution.x * resolution.y];
 
-            // Texture to show on screen, to be randomly created
-            Texture2D texture = new Texture2D(resolution.x, resolution.y);
+            // Obtain aspect ratio of UI image
+            Rect imgRatio = image.GetPixelAdjustedRect();
 
-            // Generate scenario
+            // Compare aspect ratio of UI image and scenario pixels and
+            // determine resolution of scenario texture to have same aspect
+            // ratio as UI image
+            if ((float)resolution.x / resolution.y > imgRatio.width / imgRatio.height)
+            {
+                yTex = (int)(xTex * imgRatio.height / imgRatio.width);
+                yEmpty = yTex - resolution.y;
+            }
+            else if ((float)resolution.x / resolution.y < imgRatio.width / imgRatio.height)
+            {
+                xTex = (int)(yTex * imgRatio.width / imgRatio.height);
+                xEmpty = xTex - resolution.x;
+            }
+
+            // Create texture
+            texture = new Texture2D(xTex, yTex);
+            texture.filterMode = FilterMode.Point;
+
+            // Run scenario, generate pixels
             scenarioConfig.Generate(pixels, resolution.x, resolution.y);
 
-            // Set and apply texture pixels
-            texture.SetPixels(pixels);
+            // Set texture pixels, copy from scenario, set remaining as black
+            for (int y = 0; y < yTex; y++)
+            {
+                for (int x = 0; x < xTex; x++)
+                {
+                    Color pixel = Color.black;
+                    int xPixel = x - xEmpty / 2;
+                    int yPixel = y - yEmpty / 2;
+                    if (xPixel >= 0 && xPixel < resolution.x && yPixel >= 0 && yPixel < resolution.y)
+                    {
+                        pixel = pixels[yPixel * resolution.x + xPixel];
+                    }
+                    texture.SetPixel(x, y, pixel);
+                }
+            }
+
+            // Apply texture pixels (load them to the GPU)
             texture.Apply();
 
             // Place texture in image
