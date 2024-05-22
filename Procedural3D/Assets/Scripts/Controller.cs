@@ -293,13 +293,13 @@ namespace GameAIPrototypes.ProceduralLandscape
 
             // Determine the radius which the camera will orbit around the
             // center of the grid
-            float radius = (side1Len + side2Len) / 3f;
+            float radius = (side1Len + side2Len) / 4f;
 
             // Camera rotation speed
             float cameraRotationSpeed = 0.15f;
 
             // Camera height
-            float camHeight = Mathf.Max(1500 * maxHeight, 100);
+            float camHeight = 4f * maxHeight * heightmapResolution;
 
             // Determine camera position in its orbit around the center of the grid
             Camera.main.transform.position = new Vector3(side1Len / 2, camHeight, side2Len / 2)
