@@ -150,6 +150,7 @@ namespace GameAIPrototypes.ProceduralLandscape
                 return total / local_heights.Length;
             }
 
+            UpdateHeighmapResolution();
             Zeros(Heights);
 
             int xdim = heights.GetLength(0);
