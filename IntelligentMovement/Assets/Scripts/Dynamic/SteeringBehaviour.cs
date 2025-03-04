@@ -38,7 +38,7 @@ namespace GameAIPrototypes.Movement.Dynamic
         protected float AngularVelocity => rb.angularVelocity;
 
         // Current velocity of this agent
-        protected Vector2 Velocity => rb.velocity;
+        protected Vector2 Velocity => rb.linearVelocity;
 
         // Tag for this agent
         protected string Tag => agent.tag;

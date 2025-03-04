@@ -25,7 +25,8 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
             // 1. Find the target that's closest to collision
 
             // Get all possible targets
-            DynamicAgent[] targets = FindObjectsOfType<DynamicAgent>();
+            DynamicAgent[] targets =
+                FindObjectsByType<DynamicAgent>(FindObjectsSortMode.None);
 
             // First collision time
             float shortestTime = float.PositiveInfinity;

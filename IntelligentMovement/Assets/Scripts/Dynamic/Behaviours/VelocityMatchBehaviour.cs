@@ -29,7 +29,7 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
 
                 // Get the target's velocity (if its rigid body is not null)
                 Vector2 targetVelocity =
-                    targetRb != null ? targetRb.velocity : Vector2.zero;
+                    targetRb != null ? targetRb.linearVelocity : Vector2.zero;
 
                 // Acceleration tries to get to the target's velocity
                 linear = (targetVelocity - Velocity) / timeToTarget;

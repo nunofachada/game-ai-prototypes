@@ -56,7 +56,7 @@ namespace GameAIPrototypes.Movement.Dynamic
         public float AngularVelocity => rb.angularVelocity;
 
         // Current velocity of this agent
-        public Vector2 Velocity => rb.velocity;
+        public Vector2 Velocity => rb.linearVelocity;
 
         // Use this for initialization
         private void Start()
@@ -102,9 +102,9 @@ namespace GameAIPrototypes.Movement.Dynamic
             rb.AddTorque(steerWeighted.Angular * Mathf.Deg2Rad);
 
             // Limit speed
-            if (rb.velocity.magnitude > maxSpeed)
+            if (rb.linearVelocity.magnitude > maxSpeed)
             {
-                rb.velocity = rb.velocity.normalized * maxSpeed;
+                rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
             }
 
             // Limit rotation (angular velocity)

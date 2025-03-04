@@ -39,7 +39,7 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
             {
                 // Our target's velocity (this is inefficient!)
                 Vector2 targetVelocity =
-                    target.GetComponent<Rigidbody2D>()?.velocity ?? Vector2.zero;
+                    target.GetComponent<Rigidbody2D>()?.linearVelocity ?? Vector2.zero;
                 // Our target's position
                 Vector2 targetPosition = target.transform.position;
 
