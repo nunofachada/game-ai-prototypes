@@ -27,7 +27,7 @@ namespace GameAIPrototypes.BehaviorTrees
             BlackboardReference bbRef =
                 GetComponent<BehaviorGraphAgent>().BlackboardReference;
 
-            // Get referentes to the necessary blackboard variables
+            // Get references to the necessary blackboard variables
             // If some references don't exist, show error
             if (
                 !bbRef.GetVariable("Waypoints", out bbWaypoints)
