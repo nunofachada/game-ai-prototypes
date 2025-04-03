@@ -11,6 +11,7 @@ Games at [Lusófona University] (click on each for further information):
 - [SimpleNavMesh](SimpleNavMesh)
 - [SimpleDecisionTrees](SimpleDecisionTrees)
 - [SimpleFSMs](SimpleFSMs)
+- [SimpleBehaviorGraph](SimpleBehaviorGraph)
 - [Procedural2D](Procedural2D)
 - [Procedural3D](Procedural3D)
 - [TicTacToe](TicTacToe)
@@ -21,7 +22,7 @@ Check out our [YouTube channel] for videos of these prototypes and more.
 
 ## Compatibility
 
-- Unity 2022.3 LTS or higher
+- Unity 6000 LTS or higher
 
 ## Reference
 
