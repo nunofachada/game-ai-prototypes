@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 70593630}
   - component: {fileID: 70593629}
   - component: {fileID: 70593633}
+  - component: {fileID: 70593634}
   m_Layer: 0
   m_Name: AIAgent
   m_TagString: Untagged
@@ -249,6 +250,8 @@ MonoBehaviour:
   - rid: 2742493216858964242
   - rid: 2742493223768555602
   - rid: 2742493216858964324
+  - rid: 8734408304975938070
+  - rid: 8734408304975938175
   m_IsInitialised: 0
   m_IsStarted: 0
   references:
@@ -287,6 +290,36 @@ MonoBehaviour:
         - {x: -20, y: 1, z: 15}
         - {x: 13, y: 1, z: -20}
         - {x: -18, y: 1, z: -10}
+    - rid: 8734408304975938070
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]',
+        ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 5029896342744551760
+          m_Value1: 4733146745976357947
+        Name: WTF
+        m_Value: {fileID: 1629119232}
+    - rid: 8734408304975938175
+      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: Unity.Behavior,
+        asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 11702781063643756892
+          m_Value1: 9364927347513649089
+        Name: RandDecisionDuration
+        m_Value: 4
+--- !u!114 &70593634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 70593626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b3c976fa35809561a9d83c5cc6297c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -677,7 +710,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1629119233
 Transform:
   m_ObjectHideFlags: 0
@@ -702,10 +735,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1629119232}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9235e53524fe425ce8b862f4022148f2, type: 3}
+  m_Script: {fileID: 11500000, guid: fcb845c952719336c91aaade69eafcdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotateSpeed: {x: 0, y: 300, z: 0}
+  rotateSpeed: 150
 --- !u!102 &1629119235
 TextMesh:
   serializedVersion: 3

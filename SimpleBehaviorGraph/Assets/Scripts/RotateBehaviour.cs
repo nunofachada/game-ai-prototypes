@@ -12,12 +12,12 @@ namespace GameAIPrototypes.BehaviorTrees
     public class RotateBehaviour : MonoBehaviour
     {
         [SerializeField]
-        private Vector3 rotateSpeed = new Vector3(0f, 50f, 0f);
+        private float rotateSpeed = 50f;
 
         // Rotate the object
         private void Update()
         {
-            transform.Rotate(rotateSpeed * Time.deltaTime);
+            transform.Rotate(new Vector3(0, rotateSpeed, 0) * Time.deltaTime);
         }
     }
 }

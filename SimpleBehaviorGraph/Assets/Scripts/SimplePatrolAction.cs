@@ -1,3 +1,10 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * Author: Nuno Fachada
+ * */
+
 using System;
 using System.Collections.Generic;
 using Unity.Properties;
@@ -6,13 +13,18 @@ using Unity.Behavior;
 
 namespace GameAIPrototypes.BehaviorTrees
 {
+    /// <summary>
+    /// Simple patrol behavior based on Unity.Behavior.PatrolAction.
+    /// Remove support for navmesh and use Vector3 list instead of game object
+    /// list.
+    /// </summary>
     [Serializable, GeneratePropertyBag]
     [NodeDescription(
         name: "SimplePatrol",
         description: "Moves a GameObject along way points using its transform.",
         category: "Action/Navigation",
         story: "[Agent] patrols along [Waypoints]")]
-    internal partial class SimplePatrol : Unity.Behavior.Action
+    internal partial class SimplePatrolAction : Unity.Behavior.Action
     {
         [SerializeReference] public BlackboardVariable<GameObject> Agent;
         [SerializeReference] public BlackboardVariable<List<Vector3>> Waypoints;
@@ -20,6 +32,7 @@ namespace GameAIPrototypes.BehaviorTrees
         [SerializeReference] public BlackboardVariable<float> WaypointWaitTime = new BlackboardVariable<float>(1.0f);
         [SerializeReference] public BlackboardVariable<float> DistanceThreshold = new BlackboardVariable<float>(0.2f);
         [SerializeReference] public BlackboardVariable<bool> ArriveSlowdown = new(false);
+
         [Tooltip("Should patrol restart from the latest point?")]
         [SerializeReference] public BlackboardVariable<bool> PreserveLatestPatrolPoint = new(false);
 
