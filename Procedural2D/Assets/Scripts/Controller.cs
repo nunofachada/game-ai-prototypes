@@ -78,7 +78,7 @@ namespace GameAIPrototypes.Procedural2D
         // Callback invoked when user changes scenario type in editor
         private void OnChangeScenarioType()
         {
-            if (scenarioConfig is null)
+            if (scenarioConfig == null)
             {
                 // Cannot allow this field to be empty, so set it back to what
                 // is specified in the scenario name
