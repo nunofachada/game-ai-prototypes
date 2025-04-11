@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using LibGameAI.Geometry;
 
 namespace GameAIPrototypes.Procedural2D.Scenarios
 {
@@ -10,7 +11,10 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
     public class PoissonDiskScenario : StochasticScenario
     {
         [SerializeField]
-        private float span = 10f;
+        private int maxTries = 6;
+
+        [SerializeField]
+        private float separation = 1;
 
         public readonly struct Disk
         {
@@ -26,7 +30,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             }
         }
 
-        public IEnumerable<Disk> GenerateDisks(int xDim, int yDim)
+        private IEnumerable<Disk> GenerateDisks(int xDim, int yDim)
         {
             yield return new Disk(xDim / 2, yDim / 2, 10);
             yield return new Disk(xDim / 2 + 10, yDim / 2 + 20, 5);
@@ -45,6 +49,34 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             // yield return new Disk(-100, -80, 30);
         }
 
+        // private IEnumerable<Disk> GenerateDisks(Disk initial)
+        // {
+        //     Queue<Disk> active = new Queue<Disk>();
+        //     List<Disk> placed = new List<Disk>();
+
+        //     active.Enqueue(initial);
+        //     placed.Add(initial);
+
+        //     // Use the same radius for now
+        //     float radius = initial.Radius;
+
+        //     while (active.Count > 0)
+        //     {
+        //         Disk current = active.Peek();
+
+        //         for (int i = 0; i < maxTries; i++)
+        //         {
+        //             float angle = i / maxTries * 2 * Mathf.PI;
+        //             float r = 2 * radius + separation * (float)PRNG.NextDouble();
+
+        //             Disk newDisk = new Disk(
+        //                 current.X + r * Mathf.Cos(angle),
+        //                 current.Y + r * Mathf.Sin(angle),
+        //                 radius);
+        //         }
+        //     }
+        // }
+
         public override void Generate(Color[] pixels, int xDim, int yDim)
         {
             base.Generate(pixels, xDim, yDim);
@@ -53,50 +85,36 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
 
             foreach (Disk disk in GenerateDisks(xDim, yDim))
             {
-                int x = (int)disk.Radius;
-                int y = 0;
-                int decision = 1 - x;
-
-                while (x >= y)
+                IEnumerable<(int x, int y)> points = Bresenham.GetFilledCircle(((int)disk.X, (int)disk.Y), (int)disk.Radius, (xDim, yDim));
+                foreach ((int x, int y) in points)
                 {
-                    FillCircleLines(pixels, xDim, yDim, (int)disk.X, (int)disk.Y, x, y);
-                    y++;
-
-                    if (decision <= 0)
-                    {
-                        decision += 2 * y + 1;
-                    }
-                    else
-                    {
-                        x--;
-                        decision += 2 * (y - x) + 1;
-                    }
+                    pixels[y * xDim + x] = Color.black;
                 }
             }
 
         }
 
-        private void FillCircleLines(Color[] pixels, int width, int height, int cx, int cy, int x, int y)
-        {
-            DrawHorizontalLine(pixels, width, height, cx - x, cx + x, cy + y);
-            DrawHorizontalLine(pixels, width, height, cx - x, cx + x, cy - y);
-            DrawHorizontalLine(pixels, width, height, cx - y, cx + y, cy + x);
-            DrawHorizontalLine(pixels, width, height, cx - y, cx + y, cy - x);
-        }
+    //     private void FillCircleLines(Color[] pixels, int width, int height, int cx, int cy, int x, int y)
+    //     {
+    //         DrawHorizontalLine(pixels, width, height, cx - x, cx + x, cy + y);
+    //         DrawHorizontalLine(pixels, width, height, cx - x, cx + x, cy - y);
+    //         DrawHorizontalLine(pixels, width, height, cx - y, cx + y, cy + x);
+    //         DrawHorizontalLine(pixels, width, height, cx - y, cx + y, cy - x);
+    //     }
 
-        private void DrawHorizontalLine(Color[] pixels, int width, int height, int xStart, int xEnd, int y)
-        {
-            if (y < 0 || y >= height) return;
+    //     private void DrawHorizontalLine(Color[] pixels, int width, int height, int xStart, int xEnd, int y)
+    //     {
+    //         if (y < 0 || y >= height) return;
 
-            xStart = Mathf.Clamp(xStart, 0, width - 1);
-            xEnd = Mathf.Clamp(xEnd, 0, width - 1);
+    //         xStart = Mathf.Clamp(xStart, 0, width - 1);
+    //         xEnd = Mathf.Clamp(xEnd, 0, width - 1);
 
-            for (int x = xStart; x <= xEnd; x++)
-            {
-                int index = y * width + x;
-                pixels[index] = Color.black;
-            }
-        }
+    //         for (int x = xStart; x <= xEnd; x++)
+    //         {
+    //             int index = y * width + x;
+    //             pixels[index] = Color.black;
+    //         }
+    //     }
 
     }
 }
