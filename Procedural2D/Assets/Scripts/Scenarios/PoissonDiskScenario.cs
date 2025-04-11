@@ -85,7 +85,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
 
             foreach (Disk disk in GenerateDisks(xDim, yDim))
             {
-                IEnumerable<(int x, int y)> points = Bresenham.GetFilledCircle(((int)disk.X, (int)disk.Y), (int)disk.Radius, (xDim, yDim));
+                IEnumerable<(int x, int y)> points = Bresenham.GetFilledCircle(((int)disk.X, (int)disk.Y), (int)disk.Radius, (xDim, yDim), true);
                 foreach ((int x, int y) in points)
                 {
                     pixels[y * xDim + x] = Color.black;
@@ -93,28 +93,6 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             }
 
         }
-
-    //     private void FillCircleLines(Color[] pixels, int width, int height, int cx, int cy, int x, int y)
-    //     {
-    //         DrawHorizontalLine(pixels, width, height, cx - x, cx + x, cy + y);
-    //         DrawHorizontalLine(pixels, width, height, cx - x, cx + x, cy - y);
-    //         DrawHorizontalLine(pixels, width, height, cx - y, cx + y, cy + x);
-    //         DrawHorizontalLine(pixels, width, height, cx - y, cx + y, cy - x);
-    //     }
-
-    //     private void DrawHorizontalLine(Color[] pixels, int width, int height, int xStart, int xEnd, int y)
-    //     {
-    //         if (y < 0 || y >= height) return;
-
-    //         xStart = Mathf.Clamp(xStart, 0, width - 1);
-    //         xEnd = Mathf.Clamp(xEnd, 0, width - 1);
-
-    //         for (int x = xStart; x <= xEnd; x++)
-    //         {
-    //             int index = y * width + x;
-    //             pixels[index] = Color.black;
-    //         }
-    //     }
 
     }
 }
