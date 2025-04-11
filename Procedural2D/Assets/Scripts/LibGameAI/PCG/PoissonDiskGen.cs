@@ -1,111 +1,157 @@
+/* Copyright (c) 2018-2023 Nuno Fachada and contributors
+ * Distributed under the MIT License (See accompanying file LICENSE or copy
+ * at http://opensource.org/licenses/MIT) */
+
 using System;
 using System.Collections.Generic;
-
+using LibGameAI.Geometry;
 using LibGameAI.Util;
 
 namespace LibGameAI.PCG
 {
     public class PoissonDiskGen
     {
+        private class PlacedGrid
+        {
+            private readonly bool[] grid;
+            private readonly float detail;
+            private readonly int gridWidth, gridHeight;
+            private readonly List<(float x, float y, float r)> placed;
+            private readonly bool toroidal;
 
-        // private IEnumerable<Circle> GenerateDisks(int xDim, int yDim)
-        // {
-        //     yield return new Circle(xDim / 2, yDim / 2, 10);
-        //     yield return new Circle(xDim / 2 + 10, yDim / 2 + 20, 5);
-        //     yield return new Circle(xDim / 2 + 20, yDim / 2 - 15, 7);
-        //     yield return new Circle(xDim / 2 + 10, yDim / 2 - 12, 2);
-        //     yield return new Circle(xDim / 2 + 12, yDim / 2 - 7, 1);
-        //     yield return new Circle(xDim / 2 - 20, yDim / 2 + 9, 3);
-        //     yield return new Circle(xDim / 2 - 100, yDim / 2 - 80, 30);
+            public IEnumerable<(float x, float y, float r)> Placed => placed;
 
-        //     // yield return new Circle(0, 0, 10);
-        //     // yield return new Circle(10, 20, 5);
-        //     // yield return new Circle(20, -15, 7);
-        //     // yield return new Circle(10, -12, 2);
-        //     // yield return new Circle(12, -7, 1);
-        //     // yield return new Circle(-20, 9, 3);
-        //     // yield return new Circle(-100, -80, 30);
-        // }
+            public PlacedGrid(float width, float height, float detail, bool toroidal = false)
+            {
 
-        // private IEnumerable<Circle> GenerateDisks(Circle initial)
-        // {
-        //     Queue<Circle> active = new Queue<Circle>();
-        //     List<Circle> placed = new List<Circle>();
+                this.detail = detail;
+                this.toroidal = toroidal;
+                gridWidth = (int)(width * detail);
+                gridHeight = (int)(height * detail);
+                grid = new bool[gridWidth * gridHeight];
+                placed = new List<(float x, float y, float r)>();
+            }
 
-        //     active.Enqueue(initial);
-        //     placed.Add(initial);
+            public bool TryPlace(float x, float y, float r)
+            {
+                IEnumerable<(int x, int y)> cellsToCheck =
+                    Bresenham.GetFilledCircle(
+                        ((int)(x * detail), (int)(y * detail)),
+                        (int)(r * detail),
+                        (gridWidth, gridHeight),
+                        toroidal
+                    );
 
-        //     // Use the same radius for now
-        //     float radius = initial.Radius;
+                // Check if any cells are occupied
+                foreach ((int cx, int cy) in cellsToCheck)
+                {
+                    // If so, don't add anything and return false
+                    if (grid[cy * gridWidth + cx])
+                        return false;
+                }
 
-        //     while (active.Count > 0)
-        //     {
-        //         Circle current = active.Peek();
+                // If we get here, it means there's space to place a new disk
+                foreach ((int cx, int cy) in cellsToCheck)
+                {
+                    grid[cy * gridWidth + cx] = true;
+                }
 
-        //         for (int i = 0; i < maxTries; i++)
-        //         {
-        //             float angle = i / maxTries * 2 * MathF.PI;
-        //             float r = 2 * radius + separation * (float)PRNG.NextDouble();
+                placed.Add((x, y, r));
+                return true;
+            }
 
-        //             Circle newDisk = new Circle(
-        //                 current.X + r * MathF.Cos(angle),
-        //                 current.Y + r * MathF.Sin(angle),
-        //                 radius);
-        //         }
-        //     }
-        // }
+        }
 
-        // public override void Generate(Color[] pixels, int xDim, int yDim)
-        // {
-        //     base.Generate(pixels, xDim, yDim);
+        private readonly int maxTries;
+        private readonly float separation;
+        private readonly (float width, float height) dims;
+        private readonly bool toroidal;
+        private readonly Func<float> nextFloat;
+        private readonly float gridDetail;
 
-        //     Fill(pixels, Color.white);
 
-        //     foreach (Disk disk in GenerateDisks(xDim, yDim))
-        //     {
-        //         int x = (int)disk.Radius;
-        //         int y = 0;
-        //         int decision = 1 - x;
 
-        //         while (x >= y)
-        //         {
-        //             FillCircleLines(pixels, xDim, yDim, (int)disk.X, (int)disk.Y, x, y);
-        //             y++;
+        public PoissonDiskGen(
+            int maxTries,
+            float separation,
+            (float width, float height) dims,
+            bool toroidal = false,
+            Func<float> nextFloat = null,
+            float gridDetail = 1)
+        {
+            this.maxTries = maxTries;
+            this.separation = separation;
+            this.dims = dims;
+            this.toroidal = toroidal;
+            this.nextFloat = nextFloat ?? (() => (float)new Random().NextDouble());
+            this.gridDetail = gridDetail;
+        }
 
-        //             if (decision <= 0)
-        //             {
-        //                 decision += 2 * y + 1;
-        //             }
-        //             else
-        //             {
-        //                 x--;
-        //                 decision += 2 * (y - x) + 1;
-        //             }
-        //         }
-        //     }
 
-        // }
+        public PoissonDiskGen(
+            int maxTries,
+            float separation,
+            int seed,
+            (float width, float height) dims,
+            bool toroidal = false,
+            float gridDetail = 1)
+            : this(
+                maxTries,
+                separation,
+                dims,
+                toroidal,
+                () => (float)new Random(seed).NextDouble(),
+                gridDetail)
+        { }
 
-        // private void FillCircleLines(Color[] pixels, int width, int height, int cx, int cy, int x, int y)
-        // {
-        //     DrawHorizontalLine(pixels, width, height, cx - x, cx + x, cy + y);
-        //     DrawHorizontalLine(pixels, width, height, cx - x, cx + x, cy - y);
-        //     DrawHorizontalLine(pixels, width, height, cx - y, cx + y, cy + x);
-        //     DrawHorizontalLine(pixels, width, height, cx - y, cx + y, cy - x);
-        // }
 
-        // private void DrawHorizontalLine(Color[] pixels, int width, int height, int xStart, int xEnd, int y)
-        // {
-        //     if (y < 0 || y >= height) return;
+        public IEnumerable<(float x, float y, float r)> GenerateDisks()
+        {
+            return GenerateDisks((nextFloat() * dims.width, nextFloat() * dims.height, separation * 2));
+        }
 
-        //     xStart = Mathf.Clamp(xStart, 0, width - 1);
-        //     xEnd = Mathf.Clamp(xEnd, 0, width - 1);
+        public IEnumerable<(float x, float y, float r)> GenerateDisks((float x, float y, float r) initial)
+        {
+            RandomizedSet<(float x, float y, float r)> active = new();
+            PlacedGrid placedGrid = new(dims.width, dims.height, gridDetail);
 
-        //     for (int x = xStart; x <= xEnd; x++)
-        //     {
-        //         int index = y * width + x;
-        //         pixels[index] = Color.black;
-        //     }
-        // }
+            active.Add(initial);
+            placedGrid.TryPlace(initial.x, initial.y, initial.r);
+
+            // Use the same radius for now
+            float currentRadius = initial.r;
+
+            while (active.Count > 0)
+            {
+                (float x, float y, float r) current = active.GetRandom();
+                bool placed = false;
+
+                for (int i = 0; i < maxTries; i++)
+                {
+                    float angle = i / maxTries * 2 * MathF.PI;
+                    float r = 2 * currentRadius + separation * nextFloat.Invoke();
+
+                    (float x, float y, float r) newDisk = (
+                        current.x + r * MathF.Cos(angle),
+                        current.y + r * MathF.Sin(angle),
+                        currentRadius);
+
+                    if (placedGrid.TryPlace(newDisk.x, newDisk.y, newDisk.r))
+                    {
+                        active.Add(newDisk);
+                        placed = true;
+                        break;
+                    }
+                }
+
+                if (!placed)
+                {
+                    active.Remove(current);
+                }
+            }
+
+            return placedGrid.Placed;
+        }
+
     }
 }

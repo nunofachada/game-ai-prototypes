@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using LibGameAI.Geometry;
+using LibGameAI.PCG;
 
 namespace GameAIPrototypes.Procedural2D.Scenarios
 {
@@ -10,72 +11,26 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
     /// </summary>
     public class PoissonDiskScenario : StochasticScenario
     {
+        private enum InitialDisk { Random, Center }
+
         [SerializeField]
         private int maxTries = 6;
 
         [SerializeField]
-        private float separation = 1;
+        private float separation = 0.2f;
 
-        public readonly struct Disk
-        {
-            public float X { get; }
-            public float Y { get; }
-            public float Radius { get; }
+        [SerializeField]
+        private float radius = 1;
 
-            public Disk(float x, float y, float radius)
-            {
-                X = x;
-                Y = y;
-                Radius = radius;
-            }
-        }
+        [SerializeField]
+        private bool toroidal = false;
 
-        private IEnumerable<Disk> GenerateDisks(int xDim, int yDim)
-        {
-            yield return new Disk(xDim / 2, yDim / 2, 10);
-            yield return new Disk(xDim / 2 + 10, yDim / 2 + 20, 5);
-            yield return new Disk(xDim / 2 + 20, yDim / 2 - 15, 7);
-            yield return new Disk(xDim / 2 + 10, yDim / 2 - 12, 2);
-            yield return new Disk(xDim / 2 + 12, yDim / 2 - 7, 1);
-            yield return new Disk(xDim / 2 - 20, yDim / 2 + 9, 3);
-            yield return new Disk(xDim / 2 - 100, yDim / 2 - 80, 30);
+        [SerializeField]
+        private float gridDetail = 1;
 
-            // yield return new Disk(0, 0, 10);
-            // yield return new Disk(10, 20, 5);
-            // yield return new Disk(20, -15, 7);
-            // yield return new Disk(10, -12, 2);
-            // yield return new Disk(12, -7, 1);
-            // yield return new Disk(-20, 9, 3);
-            // yield return new Disk(-100, -80, 30);
-        }
+        [SerializeField]
+        private InitialDisk initialDisk = InitialDisk.Random;
 
-        // private IEnumerable<Disk> GenerateDisks(Disk initial)
-        // {
-        //     Queue<Disk> active = new Queue<Disk>();
-        //     List<Disk> placed = new List<Disk>();
-
-        //     active.Enqueue(initial);
-        //     placed.Add(initial);
-
-        //     // Use the same radius for now
-        //     float radius = initial.Radius;
-
-        //     while (active.Count > 0)
-        //     {
-        //         Disk current = active.Peek();
-
-        //         for (int i = 0; i < maxTries; i++)
-        //         {
-        //             float angle = i / maxTries * 2 * Mathf.PI;
-        //             float r = 2 * radius + separation * (float)PRNG.NextDouble();
-
-        //             Disk newDisk = new Disk(
-        //                 current.X + r * Mathf.Cos(angle),
-        //                 current.Y + r * Mathf.Sin(angle),
-        //                 radius);
-        //         }
-        //     }
-        // }
 
         public override void Generate(Color[] pixels, int xDim, int yDim)
         {
@@ -83,9 +38,22 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
 
             Fill(pixels, Color.white);
 
-            foreach (Disk disk in GenerateDisks(xDim, yDim))
+            PoissonDiskGen diskGen = new(
+                maxTries,
+                separation,
+                (xDim, yDim),
+                toroidal,
+                () => (float)PRNG.NextDouble(),
+                gridDetail);
+
+            (float x, float y, float r) initial =
+                initialDisk == InitialDisk.Random
+                ? (xDim * (float)PRNG.NextDouble(), yDim * (float)PRNG.NextDouble(), radius)
+                : (xDim / 2f, yDim / 2f, radius);
+
+            foreach ((float x, float y, float r) disk in diskGen.GenerateDisks(initial))
             {
-                IEnumerable<(int x, int y)> points = Bresenham.GetFilledCircle(((int)disk.X, (int)disk.Y), (int)disk.Radius, (xDim, yDim), true);
+                IEnumerable<(int x, int y)> points = Bresenham.GetFilledCircle(((int)disk.x, (int)disk.y), (int)disk.r, (xDim, yDim), true);
                 foreach ((int x, int y) in points)
                 {
                     pixels[y * xDim + x] = Color.black;
