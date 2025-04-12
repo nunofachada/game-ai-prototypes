@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using LibGameAI.Geometry;
 using LibGameAI.PCG;
+using LibGameAI.Util;
+using System.Linq;
+using System;
 
 namespace GameAIPrototypes.Procedural2D.Scenarios
 {
@@ -31,6 +34,13 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         [SerializeField]
         private InitialDisk initialDisk = InitialDisk.Random;
 
+        [SerializeField]
+        private float x;
+        [SerializeField]
+        private float y;
+        [SerializeField]
+
+
 
         public override void Generate(Color[] pixels, int xDim, int yDim)
         {
@@ -51,15 +61,40 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
                 ? (xDim * (float)PRNG.NextDouble(), yDim * (float)PRNG.NextDouble(), radius)
                 : (xDim / 2f, yDim / 2f, radius);
 
-            foreach ((float x, float y, float r) disk in diskGen.GenerateDisks(initial))
+            GridOccupancy go = diskGen.GenerateDisks(initial);
+
+            // foreach ((float x, float y, float r) disk in diskGen.GenerateDisks(initial))
+            // {
+            //     IEnumerable<(int x, int y)> points = Bresenham.GetFilledCircle(
+            //         (MMath.Round(disk.x), MMath.Round(disk.y)), MMath.Round(disk.r), (xDim, yDim), toroidal);
+
+                //Debug.Log($"Disk: ({disk.x}, {disk.y}, {disk.r})");
+
+            for (int py = 0; py < yDim; py++)
             {
-                IEnumerable<(int x, int y)> points = Bresenham.GetFilledCircle(((int)disk.x, (int)disk.y), (int)disk.r, (xDim, yDim), true);
-                foreach ((int x, int y) in points)
+                for (int px = 0; px < xDim; px++)
                 {
-                    pixels[y * xDim + x] = Color.black;
+                    if (go[px, py])
+                        pixels[py * xDim + px] = Color.gray;
                 }
             }
 
+
+            // IEnumerable<(int x, int y)> points = Bresenham.GetFilledCircle(
+            //     (MMath.Round(x), MMath.Round(y)), MMath.Round(radius), (xDim, yDim), toroidal);
+
+            // foreach ((int x, int y) in points)
+            // {
+            //     pixels[y * xDim + x] = Color.gray;
+            // }
+
+            // points = Bresenham.GetCircle(
+            //     (MMath.Round(x), MMath.Round(y)), MMath.Round(radius), (xDim, yDim), toroidal);
+
+            // foreach ((int x, int y) in points)
+            // {
+            //     pixels[y * xDim + x] = Color.red;
+            // }
         }
 
     }

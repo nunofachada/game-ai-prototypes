@@ -1,6 +1,8 @@
-/* Copyright (c) 2018-2024 Nuno Fachada and contributors
+/* Copyright (c) 2018-2025 Nuno Fachada and contributors
  * Distributed under the MIT License (See accompanying file LICENSE or copy
  * at http://opensource.org/licenses/MIT) */
+
+using System;
 
 namespace LibGameAI.Util
 {
@@ -95,5 +97,8 @@ namespace LibGameAI.Util
 
             return csum;
         }
+
+
+        public static int Round(float f) => (int)MathF.Round(f);
     }
 }

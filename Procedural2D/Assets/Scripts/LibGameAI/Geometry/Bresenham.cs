@@ -94,7 +94,7 @@ namespace LibGameAI.Geometry
                 }
                 else
                 {
-                    if (px >= 0 && px <= maxX && py >= 0 && py <= maxY)
+                    if (px >= 0 && px < maxX && py >= 0 && py < maxY)
                     {
                         visited.Add((px, py));
                     }
@@ -210,7 +210,7 @@ namespace LibGameAI.Geometry
                 }
             }
 
-            return circlePoints;
+            return new HashSet<(int x, int y)>(circlePoints);
 
         }
 
