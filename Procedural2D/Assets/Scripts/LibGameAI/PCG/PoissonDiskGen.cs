@@ -13,15 +13,16 @@ namespace LibGameAI.PCG
     public class PoissonDiskGen
     {
         private readonly int maxTries;
-        private readonly float separation;
+        private readonly (float min, float max) separation;
         private readonly (float width, float height) dims;
+
         private readonly bool toroidal;
         private readonly Random random;
         private readonly float gridDetail;
 
         public PoissonDiskGen(
             int maxTries,
-            float separation,
+            (float min, float max) separation,
             (float width, float height) dims,
             bool toroidal = false,
             Random random = null,
@@ -30,6 +31,7 @@ namespace LibGameAI.PCG
             this.maxTries = maxTries;
             this.separation = separation;
             this.dims = dims;
+
             this.toroidal = toroidal;
             this.random = random ?? new Random();
             this.gridDetail = gridDetail;
@@ -38,7 +40,7 @@ namespace LibGameAI.PCG
 
         public PoissonDiskGen(
             int maxTries,
-            float separation,
+            (float min, float max) separation,
             int seed,
             (float width, float height) dims,
             bool toroidal = false,
@@ -54,20 +56,20 @@ namespace LibGameAI.PCG
 
         private float NextFloat() => (float)random.NextDouble();
 
-        public IEnumerable<(float x, float y, float r)> GenerateDisks()
-        {
-            return GenerateDisks((NextFloat() * dims.width, NextFloat() * dims.height, separation * 2));
-        }
-
-        public IEnumerable<(float x, float y)> DiskPoints((float x, float y, float r) disk)
+        public IEnumerable<(float x, float y)> DiskPoints((float x, float y, float r) disk, float minSep = 0)
         {
             return Bresenham
                .GetFilledCircle(
                    (MMath.Round(disk.x), MMath.Round(disk.y)),
-                   MMath.Round(disk.r),
+                   MMath.Round(disk.r + minSep),
                    (MMath.Round(dims.width), MMath.Round(dims.height)),
                    toroidal)
                .Select(pf => ((float)pf.x, (float)pf.y));
+        }
+
+        public IEnumerable<(float x, float y, float r)> GenerateDisks()
+        {
+            return GenerateDisks((NextFloat() * dims.width, NextFloat() * dims.height, (separation.min + separation.max) / 2f));
         }
 
         public IEnumerable<(float x, float y, float r)> GenerateDisks((float x, float y, float r) initial)
@@ -79,7 +81,7 @@ namespace LibGameAI.PCG
             List<(float x, float y, float r)> placed = new();
 
             // Get "pixels" for the initial disk
-            IEnumerable<(float x, float y)> disk = DiskPoints(initial);
+            IEnumerable<(float x, float y)> disk = DiskPoints(initial, separation.min);
 
             // Place disk in collision grid
             if (!placedGrid.TryPlace(disk))
@@ -110,14 +112,14 @@ namespace LibGameAI.PCG
 
                 foreach (float angle in anglesToTry)
                 {
-                    float r = 2 * currentRadius + separation * NextFloat();
+                    float sep = 2 * currentRadius + (separation.min + separation.max) * NextFloat() - separation.min;
 
                     (float x, float y, float r) newDisk = (
-                        current.x + r * MathF.Cos(angle),
-                        current.y + r * MathF.Sin(angle),
+                        current.x + sep * MathF.Cos(angle),
+                        current.y + sep * MathF.Sin(angle),
                         currentRadius);
 
-                    if (placedGrid.TryPlace(DiskPoints(newDisk)))
+                    if (placedGrid.TryPlace(DiskPoints(newDisk, separation.min)))
                     {
                         active.Add(newDisk);
                         placed.Add(newDisk);

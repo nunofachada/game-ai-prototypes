@@ -5,6 +5,7 @@ using LibGameAI.PCG;
 using LibGameAI.Util;
 using System.Linq;
 using System;
+using NaughtyAttributes;
 
 namespace GameAIPrototypes.Procedural2D.Scenarios
 {
@@ -20,7 +21,8 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         private int maxTries = 6;
 
         [SerializeField]
-        private float separation = 0.2f;
+        [MinMaxSlider(0.0f, 250.0f)]
+        private Vector2 separation = new(0, 10f);
 
         [SerializeField]
         private float radius = 1;
@@ -44,7 +46,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
 
             PoissonDiskGen diskGen = new(
                 maxTries,
-                separation,
+                (separation.x, separation.y),
                 (xDim, yDim),
                 toroidal,
                 PRNG,
@@ -63,7 +65,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
 
                 foreach ((int px, int py) in diskPoints)
                 {
-                    pixels[py * xDim + px] = Color.gray;
+                    pixels[py * xDim + px] = Color.black;
                 }
             }
         }
