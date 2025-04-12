@@ -12,12 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ea86d3fc7af43fada9c95533984f0b0, type: 3}
   m_Name: PoissonDiskScenario
   m_EditorClassIdentifier: 
-  randGenerator: LCG48
-  useSeed: 0
-  seed: 0
-  maxTries: 6
-  separation: 32
-  radius: 0
-  toroidal: 0
-  gridDetail: 1
+  randGenerator: Random
+  useSeed: 1
+  seed: 234
   initialDisk: 1
+  maxTries: 12
+  separation: {x: 1, y: 45}
+  radius: {x: 0, y: 6}
+  toroidal: 0

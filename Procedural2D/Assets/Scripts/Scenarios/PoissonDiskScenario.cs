@@ -1,10 +1,15 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * Author: Nuno Fachada
+ * */
+
 using System.Collections.Generic;
 using UnityEngine;
-using LibGameAI.Geometry;
 using LibGameAI.PCG;
 using LibGameAI.Util;
 using System.Linq;
-using System;
 using NaughtyAttributes;
 
 namespace GameAIPrototypes.Procedural2D.Scenarios
@@ -63,24 +68,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
 
                 foreach ((int px, int py) in diskPoints)
                 {
-                    pixels[py * xDim + px] = Color.gray;
-                }
-
-                IEnumerable<(int px, int py)> borderPoints = Bresenham
-                    .GetCircle(
-                        (MMath.Round(disk.x), MMath.Round(disk.y)),
-                        MMath.Round(disk.r)//,
-                                           //(xDim, yDim),
-                                           //toroidal
-                        );
-
-                borderPoints = toroidal
-                    ? borderPoints.Select(pt => (LibGameAI.Util.Grid.Wrap(pt.px, xDim).pos, LibGameAI.Util.Grid.Wrap(pt.py, yDim).pos))
-                    : borderPoints.Where(pt => pt.px >= 0 && pt.px < MMath.Round(xDim) && pt.py >= 0 && pt.py < MMath.Round(yDim));
-
-                foreach ((int px, int py) in borderPoints)
-                {
-                    pixels[py * xDim + px] = Color.red;
+                    pixels[py * xDim + px] = Color.black;
                 }
             }
         }
