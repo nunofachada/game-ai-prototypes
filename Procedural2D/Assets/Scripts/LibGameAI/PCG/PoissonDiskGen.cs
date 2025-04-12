@@ -62,13 +62,19 @@ namespace LibGameAI.PCG
 
         public IEnumerable<(float x, float y)> DiskPoints((float x, float y, float r) disk, float minSep = 0)
         {
-            return Bresenham
-               .GetFilledCircle(
+            IEnumerable<(int x, int y)> iDiskPoints =
+                Bresenham.GetFilledCircle(
                    (MMath.Round(disk.x), MMath.Round(disk.y)),
-                   MMath.Round(disk.r + minSep),
-                   (MMath.Round(dims.width), MMath.Round(dims.height)),
-                   toroidal)
-               .Select(pf => ((float)pf.x, (float)pf.y));
+                   MMath.Round(disk.r + minSep)//,
+                                               //(MMath.Round(dims.width), MMath.Round(dims.height)),
+                                               //toroidal
+                   );
+
+            iDiskPoints = toroidal
+                ? iDiskPoints.Select(pt => (Grid.Wrap(pt.x, MMath.Round(dims.width)).pos, Grid.Wrap(pt.y, MMath.Round(dims.height)).pos))
+                : iDiskPoints.Where(pt => pt.x >= 0 && pt.x < MMath.Round(dims.width) && pt.y >= 0 && pt.y < MMath.Round(dims.height));
+
+            return iDiskPoints.Select(pf => ((float)pf.x, (float)pf.y));
         }
 
         public IEnumerable<(float x, float y, float r)> GenerateDisks()
@@ -124,6 +130,7 @@ namespace LibGameAI.PCG
                         active.Add(newDisk);
                         placed.Add(newDisk);
                         placedSuccessfully = true;
+                        UnityEngine.Debug.Log($"Placed {newDisk}");
                         break;
                     }
                 }
@@ -134,8 +141,8 @@ namespace LibGameAI.PCG
                 }
             }
 
+            UnityEngine.Debug.Log(placedGrid.ToString());
             return placed;
         }
-
     }
 }

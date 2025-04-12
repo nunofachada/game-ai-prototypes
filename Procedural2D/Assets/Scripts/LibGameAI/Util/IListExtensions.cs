@@ -1,7 +1,9 @@
+/* Copyright (c) 2018-2025 Nuno Fachada and contributors
+ * Distributed under the MIT License (See accompanying file LICENSE or copy
+ * at http://opensource.org/licenses/MIT) */
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LibGameAI.Util
 {
@@ -19,7 +21,7 @@ namespace LibGameAI.Util
         // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
         public static void Shuffle<T>(this IList<T> list, Random random = null)
         {
-            random = random ?? innerRandom;
+            random ??= innerRandom;
             for (int i = list.Count - 1; i >= 1; i--)
             {
                 T aux;

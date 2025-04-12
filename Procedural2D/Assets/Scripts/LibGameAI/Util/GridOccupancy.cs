@@ -44,12 +44,13 @@ namespace LibGameAI.Util
                 // If current coordinates are outside the grid, try next ones
                 if (cx < 0 || cx >= gridWidth || cy < 0 || cy >= gridHeight) continue;
 
-                // If so, don't add anything and return false
+                // If cell is occupied don't add anything and return false
                 if (grid[cy * gridWidth + cx])
                 {
                     return false;
                 }
 
+                // Cell not occupied, mark it as available
                 available.Add((cx, cy));
             }
 
@@ -57,10 +58,11 @@ namespace LibGameAI.Util
             // to the grid
             if (available.Count == 0) return false;
 
-            // If we get here, it means there's space to place a the object
+            // If we get here, it means there's space to place some or all parts
+            // of the object
             foreach ((int cx, int cy) in available)
             {
-                // Mark each "pixel" of the object as occupied
+                // Mark each valid cell the placed object occupies
                 grid[cy * gridWidth + cx] = true;
             }
 
@@ -81,7 +83,7 @@ namespace LibGameAI.Util
                 sb.Append(grid[i] ? "1" : 0);
             }
             output.Add(sb);
-            //output.Reverse();
+            output.Reverse();
             sb = new StringBuilder();
             sb.AppendJoin('\n', output);
             return sb.ToString();

@@ -63,7 +63,24 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
 
                 foreach ((int px, int py) in diskPoints)
                 {
-                    pixels[py * xDim + px] = Color.black;
+                    pixels[py * xDim + px] = Color.gray;
+                }
+
+                IEnumerable<(int px, int py)> borderPoints = Bresenham
+                    .GetCircle(
+                        (MMath.Round(disk.x), MMath.Round(disk.y)),
+                        MMath.Round(disk.r)//,
+                                           //(xDim, yDim),
+                                           //toroidal
+                        );
+
+                borderPoints = toroidal
+                    ? borderPoints.Select(pt => (LibGameAI.Util.Grid.Wrap(pt.px, xDim).pos, LibGameAI.Util.Grid.Wrap(pt.py, yDim).pos))
+                    : borderPoints.Where(pt => pt.px >= 0 && pt.px < MMath.Round(xDim) && pt.py >= 0 && pt.py < MMath.Round(yDim));
+
+                foreach ((int px, int py) in borderPoints)
+                {
+                    pixels[py * xDim + px] = Color.red;
                 }
             }
         }
