@@ -54,34 +54,42 @@ namespace LibGameAI.PCG
 
         private float NextFloat() => (float)random.NextDouble();
 
-        public GridOccupancy GenerateDisks()
+        public IEnumerable<(float x, float y, float r)> GenerateDisks()
         {
             return GenerateDisks((NextFloat() * dims.width, NextFloat() * dims.height, separation * 2));
         }
 
-        public GridOccupancy GenerateDisks((float x, float y, float r) initial)
+        public IEnumerable<(float x, float y)> DiskPoints((float x, float y, float r) disk)
+        {
+            return Bresenham
+               .GetFilledCircle(
+                   (MMath.Round(disk.x), MMath.Round(disk.y)),
+                   MMath.Round(disk.r),
+                   (MMath.Round(dims.width), MMath.Round(dims.height)),
+                   toroidal)
+               .Select(pf => ((float)pf.x, (float)pf.y));
+        }
+
+        public IEnumerable<(float x, float y, float r)> GenerateDisks((float x, float y, float r) initial)
         {
 
-            IEnumerable<(float x, float y)> DiskPoints((float x, float y, float r) disk)
-            {
-                return Bresenham
-                    .GetFilledCircle(
-                        (MMath.Round(disk.x), MMath.Round(disk.y)),
-                        MMath.Round(disk.r),
-                        (MMath.Round(dims.width), MMath.Round(dims.height)),
-                        toroidal)
-                    .Select(pf => ((float)pf.x, (float)pf.y));
-            }
 
             RandomizedSet<(float x, float y, float r)> active = new(MMath.Round(random.Next()));
             GridOccupancy placedGrid = new(dims.width, dims.height, gridDetail);
+            List<(float x, float y, float r)> placed = new();
 
+            // Get "pixels" for the initial disk
             IEnumerable<(float x, float y)> disk = DiskPoints(initial);
 
+            // Place disk in collision grid
             if (!placedGrid.TryPlace(disk))
                 throw new InvalidOperationException(
                     $"Unable to place initial disk {disk}");
 
+            // Add the initial disk to the placed disks list
+            placed.Add(initial);
+
+            // Add the initial disk to the active list
             active.Add(initial);
 
             // Use the same radius for now
@@ -96,7 +104,7 @@ namespace LibGameAI.PCG
             while (active.Count > 0)
             {
                 (float x, float y, float r) current = active.GetRandom();
-                bool placed = false;
+                bool placedSuccessfully = false;
 
                 anglesToTry.Shuffle(random);
 
@@ -112,18 +120,19 @@ namespace LibGameAI.PCG
                     if (placedGrid.TryPlace(DiskPoints(newDisk)))
                     {
                         active.Add(newDisk);
-                        placed = true;
+                        placed.Add(newDisk);
+                        placedSuccessfully = true;
                         break;
                     }
                 }
 
-                if (!placed)
+                if (!placedSuccessfully)
                 {
                     active.Remove(current);
                 }
             }
 
-            return placedGrid;
+            return placed;
         }
 
     }

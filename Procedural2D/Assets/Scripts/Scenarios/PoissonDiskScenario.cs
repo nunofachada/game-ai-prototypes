@@ -55,18 +55,18 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
                 ? (xDim * (float)PRNG.NextDouble(), yDim * (float)PRNG.NextDouble(), radius)
                 : (xDim / 2f, yDim / 2f, radius);
 
-            GridOccupancy go = diskGen.GenerateDisks(initial);
-
-            for (int py = 0; py < yDim; py++)
+            foreach ((float x, float y, float r) disk in diskGen.GenerateDisks(initial))
             {
-                for (int px = 0; px < xDim; px++)
+                IEnumerable<(int px, int py)> diskPoints = diskGen
+                    .DiskPoints(disk)
+                    .Select(fxy => (MMath.Round(fxy.x), MMath.Round(fxy.y)));
+
+                foreach ((int px, int py) in diskPoints)
                 {
-                    if (go[px, py])
-                        pixels[py * xDim + px] = Color.gray;
+                    pixels[py * xDim + px] = Color.gray;
                 }
             }
-
         }
-
     }
+
 }
