@@ -87,14 +87,21 @@ namespace LibGameAI.PCG
             // Use the same radius for now
             float currentRadius = initial.r;
 
+            float[] anglesToTry = new float[maxTries];
+            for (int i = 0; i < maxTries; i++)
+            {
+                anglesToTry[i] = (float)i / maxTries * 2 * MathF.PI;
+            }
+
             while (active.Count > 0)
             {
                 (float x, float y, float r) current = active.GetRandom();
                 bool placed = false;
 
-                for (int i = 0; i < maxTries; i++)
+                anglesToTry.Shuffle(random);
+
+                foreach (float angle in anglesToTry)
                 {
-                    float angle = (float)i / maxTries * 2 * MathF.PI;
                     float r = 2 * currentRadius + separation * NextFloat();
 
                     (float x, float y, float r) newDisk = (
