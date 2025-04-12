@@ -14,6 +14,8 @@ namespace LibGameAI.PCG
     {
         private readonly int maxTries;
         private readonly (float min, float max) separation;
+        private readonly (float min, float max) radius;
+
         private readonly (float width, float height) dims;
 
         private readonly bool toroidal;
@@ -23,6 +25,7 @@ namespace LibGameAI.PCG
         public PoissonDiskGen(
             int maxTries,
             (float min, float max) separation,
+            (float min, float max) radius,
             (float width, float height) dims,
             bool toroidal = false,
             Random random = null,
@@ -30,8 +33,8 @@ namespace LibGameAI.PCG
         {
             this.maxTries = maxTries;
             this.separation = separation;
+            this.radius = radius;
             this.dims = dims;
-
             this.toroidal = toroidal;
             this.random = random ?? new Random();
             this.gridDetail = gridDetail;
@@ -41,6 +44,7 @@ namespace LibGameAI.PCG
         public PoissonDiskGen(
             int maxTries,
             (float min, float max) separation,
+            (float min, float max) radius,
             int seed,
             (float width, float height) dims,
             bool toroidal = false,
@@ -48,13 +52,13 @@ namespace LibGameAI.PCG
             : this(
                 maxTries,
                 separation,
+                radius,
                 dims,
                 toroidal,
                 new Random(seed),
                 gridDetail)
         { }
 
-        private float NextFloat() => (float)random.NextDouble();
 
         public IEnumerable<(float x, float y)> DiskPoints((float x, float y, float r) disk, float minSep = 0)
         {
@@ -69,13 +73,11 @@ namespace LibGameAI.PCG
 
         public IEnumerable<(float x, float y, float r)> GenerateDisks()
         {
-            return GenerateDisks((NextFloat() * dims.width, NextFloat() * dims.height, (separation.min + separation.max) / 2f));
+            return GenerateDisks((random.NextFloat() * dims.width, random.NextFloat() * dims.height, (separation.min + separation.max) / 2f));
         }
 
         public IEnumerable<(float x, float y, float r)> GenerateDisks((float x, float y, float r) initial)
         {
-
-
             RandomizedSet<(float x, float y, float r)> active = new(MMath.Round(random.Next()));
             GridOccupancy placedGrid = new(dims.width, dims.height, gridDetail);
             List<(float x, float y, float r)> placed = new();
@@ -94,9 +96,6 @@ namespace LibGameAI.PCG
             // Add the initial disk to the active list
             active.Add(initial);
 
-            // Use the same radius for now
-            float currentRadius = initial.r;
-
             float[] anglesToTry = new float[maxTries];
             for (int i = 0; i < maxTries; i++)
             {
@@ -112,12 +111,13 @@ namespace LibGameAI.PCG
 
                 foreach (float angle in anglesToTry)
                 {
-                    float sep = 2 * currentRadius + (separation.min + separation.max) * NextFloat() - separation.min;
+                    float nextRadius = random.Range(radius.min, radius.max);
+                    float sep = current.r + nextRadius + random.Range(separation.min, separation.max);
 
                     (float x, float y, float r) newDisk = (
                         current.x + sep * MathF.Cos(angle),
                         current.y + sep * MathF.Sin(angle),
-                        currentRadius);
+                        nextRadius);
 
                     if (placedGrid.TryPlace(DiskPoints(newDisk, separation.min)))
                     {

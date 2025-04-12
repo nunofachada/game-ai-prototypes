@@ -28,7 +28,8 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         private Vector2 separation = new(0, 10f);
 
         [SerializeField]
-        private float radius = 1;
+        [MinMaxSlider(0.0f, 100.0f)]
+        private Vector2 radius = new(0, 3f);
 
         [SerializeField]
         private bool toroidal = false;
@@ -42,14 +43,17 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             PoissonDiskGen diskGen = new(
                 maxTries,
                 (separation.x, separation.y),
+                (radius.x, radius.y),
                 (xDim, yDim),
                 toroidal,
                 PRNG);
 
+            float initRadius = PRNG.Range(radius.x, radius.y);
+
             (float x, float y, float r) initial =
                 initialDisk == InitialDisk.Random
-                ? (xDim * (float)PRNG.NextDouble(), yDim * (float)PRNG.NextDouble(), radius)
-                : (xDim / 2f, yDim / 2f, radius);
+                ? (xDim * (float)PRNG.NextDouble(), yDim * (float)PRNG.NextDouble(), initRadius)
+                : (xDim / 2f, yDim / 2f, initRadius);
 
             foreach ((float x, float y, float r) disk in diskGen.GenerateDisks(initial))
             {
