@@ -18,6 +18,9 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         private enum InitialDisk { Random, Center }
 
         [SerializeField]
+        private InitialDisk initialDisk = InitialDisk.Random;
+
+        [SerializeField]
         private int maxTries = 6;
 
         [SerializeField]
@@ -30,14 +33,6 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         [SerializeField]
         private bool toroidal = false;
 
-        [SerializeField]
-        private float gridDetail = 1;
-
-        [SerializeField]
-        private InitialDisk initialDisk = InitialDisk.Random;
-
-
-
         public override void Generate(Color[] pixels, int xDim, int yDim)
         {
             base.Generate(pixels, xDim, yDim);
@@ -49,8 +44,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
                 (separation.x, separation.y),
                 (xDim, yDim),
                 toroidal,
-                PRNG,
-                gridDetail);
+                PRNG);
 
             (float x, float y, float r) initial =
                 initialDisk == InitialDisk.Random
