@@ -5,8 +5,7 @@
 
 using System.Text;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace LibGameAI.Util
 {
@@ -16,68 +15,54 @@ namespace LibGameAI.Util
         private readonly bool[] grid;
         private readonly float detail;
         private readonly int gridWidth, gridHeight;
-        //private readonly List<(float x, float y, float r)> placed;
-        //private readonly bool toroidal;
 
-        //public IEnumerable<(float x, float y)> Placed => placed;
-
-        //public int Count => placed.Count;
 
         public bool this[float x, float y] =>
-            grid[MMath.Round(y *  detail) * gridWidth + MMath.Round(x * detail)];
+            grid[MMath.Round(y * detail) * gridWidth + MMath.Round(x * detail)];
 
 
-        public GridOccupancy(float width, float height, float detail) //, bool toroidal = false)
+        public GridOccupancy(float width, float height, float detail)
         {
-
             this.detail = detail;
-            //this.toroidal = toroidal;
             gridWidth = MMath.Round(width * detail);
             gridHeight = MMath.Round(height * detail);
             grid = new bool[gridWidth * gridHeight];
-            //placed = new List<(float x, float y, float r)>();
         }
 
         public bool TryPlace(IEnumerable<(float x, float y)> toPlace)
         {
 
-            //UnityEngine.Debug.Log($"Putting {cellsToCheck.Count()} cells for ({x}, {y}, {r})!");
-            bool anyInGrid = false;
+            List<(int x, int y)> available = new();
 
             // Check if any cells are occupied
             foreach ((float x, float y) in toPlace)
             {
+                // Convert coordinates to grid space
                 int cx = MMath.Round(x * detail);
                 int cy = MMath.Round(y * detail);
 
+                // If current coordinates are outside the grid, try next ones
                 if (cx < 0 || cx >= gridWidth || cy < 0 || cy >= gridHeight) continue;
-                anyInGrid = true;
 
                 // If so, don't add anything and return false
                 if (grid[cy * gridWidth + cx])
                 {
-                    //UnityEngine.Debug.Log($"   => Unable to place in grid: ({cx}, {cy}) is true! Real = ({x}, {y})!");
                     return false;
                 }
+
+                available.Add((cx, cy));
             }
 
-            if (!anyInGrid)
+            // If no cells are available, it's not possible to add this object
+            // to the grid
+            if (available.Count == 0) return false;
+
+            // If we get here, it means there's space to place a the object
+            foreach ((int cx, int cy) in available)
             {
-                //UnityEngine.Debug.Log($"   => Unable to place {toPlace}! All points outside grid!");
-                return false;
+                // Mark each "pixel" of the object as occupied
+                grid[cy * gridWidth + cx] = true;
             }
-
-            // If we get here, it means there's space to place a new disk
-                foreach ((float x, float y) in toPlace)
-                {
-                    int cx = MMath.Round(x * detail);
-                    int cy = MMath.Round(y * detail);
-
-                    if (cx < 0 || cx >= gridWidth || cy < 0 || cy >= gridHeight) continue;
-
-                    //UnityEngine.Debug.Log($"   => Set grid ({cx}, {cy}) to True!!!!");
-                    grid[cy * gridWidth + cx] = true;
-                }
 
             return true;
         }
@@ -96,7 +81,7 @@ namespace LibGameAI.Util
                 sb.Append(grid[i] ? "1" : 0);
             }
             output.Add(sb);
-            output.Reverse();
+            //output.Reverse();
             sb = new StringBuilder();
             sb.AppendJoin('\n', output);
             return sb.ToString();
