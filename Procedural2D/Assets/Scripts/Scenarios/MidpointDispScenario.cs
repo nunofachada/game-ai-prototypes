@@ -30,7 +30,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             float[] heights = new float[xDim];
 
             // Perform midpoint displacement
-            Noise.MPD(heights, roughness, () => (float)PRNG.NextDouble());
+            Noise.MPD(heights, roughness, PRNG.Next());
 
             // Normalize line to better fit in image
             MMath.Normalize(
