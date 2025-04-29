@@ -6,6 +6,7 @@
  * */
 
 using System;
+using System.Collections;
 using UnityEngine;
 using NaughtyAttributes;
 using Random = System.Random;
@@ -54,11 +55,13 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
 
         protected virtual bool RandActive => true;
 
-        public override void Generate(Color[] pixels, int xDim, int yDim)
+        public override IEnumerator Generate(Color[] pixels, int xDim, int yDim)
         {
             random = useSeed
                 ? PRNGHelper.Instance.CreatePRNG(randGenerator, seed)
                 : PRNGHelper.Instance.CreatePRNG(randGenerator);
+
+            return null;
         }
     }
 }

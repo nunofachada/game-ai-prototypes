@@ -6,6 +6,7 @@
  * */
 
 using UnityEngine;
+using System.Collections;
 
 namespace GameAIPrototypes.Procedural2D.Scenarios
 {
@@ -22,7 +23,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         protected override bool RandActive => !singleCenterPixel;
 
         // TODO Move CA1D generic functionality to libGameAI
-        public override void Generate(Color[] pixels, int xDim, int yDim)
+        public override IEnumerator Generate(Color[] pixels, int xDim, int yDim)
         {
             base.Generate(pixels, xDim, yDim);
 
@@ -83,6 +84,8 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
                     pixels[y * xDim + x] = ruleList[ruleIdx];
                 }
             }
+
+            return null;
         }
     }
 }

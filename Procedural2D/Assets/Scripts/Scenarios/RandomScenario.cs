@@ -6,6 +6,8 @@
  * */
 
 using UnityEngine;
+using System.Collections;
+
 
 namespace GameAIPrototypes.Procedural2D.Scenarios
 {
@@ -15,7 +17,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         [Range(0, 1)]
         private float blackChance = 0.5f;
 
-        public override void Generate(Color[] pixels, int xDim, int yDim)
+        public override IEnumerator Generate(Color[] pixels, int xDim, int yDim)
         {
             base.Generate(pixels, xDim, yDim);
 
@@ -34,6 +36,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
                     pixels[y * xDim + x] = color;
                 }
             }
+            return null;
         }
     }
 }

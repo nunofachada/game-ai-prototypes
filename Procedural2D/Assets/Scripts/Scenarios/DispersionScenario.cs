@@ -5,6 +5,7 @@
  * Author: Nuno Fachada
  * */
 
+using System.Collections;
 using UnityEngine;
 using LibGameAI.QRNG;
 using Random = System.Random;
@@ -30,7 +31,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         [SerializeField]
         private int ySeed = 3;
 
-        public override void Generate(Color[] pixels, int xDim, int yDim)
+        public override IEnumerator Generate(Color[] pixels, int xDim, int yDim)
         {
             // Instantiate random number generator for x coordinate
             Random xRand = xRandomNumberGenerator == PRNG.System
@@ -52,6 +53,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
                 int y = yRand.Next(yDim);
                 pixels[y * xDim + x] = Color.black;
             }
+            return null;
         }
     }
 }

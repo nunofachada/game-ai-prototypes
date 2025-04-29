@@ -6,6 +6,7 @@
  * */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -143,30 +144,35 @@ namespace GameAIPrototypes.Procedural2D
             texture = new Texture2D(xTex, yTex);
             texture.filterMode = FilterMode.Point;
 
+            // Get generation enumerator
+            IEnumerator enumerator =
+                scenarioConfig.Generate(pixels, resolution.x, resolution.y);
+
             // Run scenario, generate pixels
-            scenarioConfig.Generate(pixels, resolution.x, resolution.y);
-
-            // Set texture pixels, copy from scenario, set remaining as black
-            for (int y = 0; y < yTex; y++)
+            do
             {
-                for (int x = 0; x < xTex; x++)
+                // Set texture pixels, copy from scenario, set remaining as black
+                for (int y = 0; y < yTex; y++)
                 {
-                    Color pixel = Color.black;
-                    int xPixel = x - xEmpty / 2;
-                    int yPixel = y - yEmpty / 2;
-                    if (xPixel >= 0 && xPixel < resolution.x && yPixel >= 0 && yPixel < resolution.y)
+                    for (int x = 0; x < xTex; x++)
                     {
-                        pixel = pixels[yPixel * resolution.x + xPixel];
+                        Color pixel = Color.black;
+                        int xPixel = x - xEmpty / 2;
+                        int yPixel = y - yEmpty / 2;
+                        if (xPixel >= 0 && xPixel < resolution.x && yPixel >= 0 && yPixel < resolution.y)
+                        {
+                            pixel = pixels[yPixel * resolution.x + xPixel];
+                        }
+                        texture.SetPixel(x, y, pixel);
                     }
-                    texture.SetPixel(x, y, pixel);
                 }
-            }
 
-            // Apply texture pixels (load them to the GPU)
-            texture.Apply();
+                // Apply texture pixels (load them to the GPU)
+                texture.Apply();
 
-            // Place texture in image
-            image.texture = texture;
+                // Place texture in image
+                image.texture = texture;
+            } while (enumerator?.MoveNext() ?? false);
         }
 
         [Button("Save Image", enabledMode: EButtonEnableMode.Editor)]

@@ -5,6 +5,7 @@
  * Author: Nuno Fachada
  * */
 
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,7 +26,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             new Color(0.95f, 0.96f, 0.98f)  // Snowy white
         };
 
-        public override void Generate(Color[] pixels, int xDim, int yDim)
+        public override IEnumerator Generate(Color[] pixels, int xDim, int yDim)
         {
             base.Generate(pixels, xDim, yDim);
 
@@ -55,6 +56,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
                     pixels[y * xDim + x] = color;
                 }
             }
+            return null;
         }
     }
 }

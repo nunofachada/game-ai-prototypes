@@ -5,6 +5,7 @@
  * Author: Nuno Fachada
  * */
 
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LibGameAI.PCG;
@@ -39,7 +40,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         [SerializeField]
         private bool toroidal = false;
 
-        public override void Generate(Color[] pixels, int xDim, int yDim)
+        public override IEnumerator Generate(Color[] pixels, int xDim, int yDim)
         {
             base.Generate(pixels, xDim, yDim);
 
@@ -71,7 +72,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
                     pixels[py * xDim + px] = Color.black;
                 }
             }
+            return null;
         }
     }
-
 }

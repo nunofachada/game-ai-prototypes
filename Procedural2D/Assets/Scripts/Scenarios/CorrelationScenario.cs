@@ -6,6 +6,7 @@
  * */
 
 using System;
+using System.Collections;
 using UnityEngine;
 using NaughtyAttributes;
 using Random = System.Random;
@@ -57,7 +58,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             }
         }
 
-        public override void Generate(Color[] pixels, int xDim, int yDim)
+        public override IEnumerator Generate(Color[] pixels, int xDim, int yDim)
         {
             // Get a copy of the base seed
             int localBaseSeed = baseSeed;
@@ -106,6 +107,8 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
                     pixels[y * xDim + x] = colors[colorIndex];
                 }
             }
+
+            return null;
         }
     }
 }

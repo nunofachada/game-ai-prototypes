@@ -6,6 +6,7 @@
  * */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,7 +30,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             Color.blue, Color.green, Color.red, Color.yellow
         };
 
-        public override void Generate(Color[] pixels, int xDim, int yDim)
+        public override IEnumerator Generate(Color[] pixels, int xDim, int yDim)
         {
             // Euclidean distance
             float EuclideanDistance((int x, int y) a, (int x, int y) b)
@@ -138,6 +139,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
                     pixels[y * xDim + x] = areaTypes[visited[(x, y)]];
                 }
             }
+            return null;
         }
     }
 }

@@ -10,6 +10,7 @@ using LibGameAI.PCG;
 using LibGameAI.Util;
 using NaughtyAttributes;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -78,12 +79,11 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             }
         }
 
-
         private readonly Color DEAD = Color.white;
         private readonly Color ALIVE = Color.gray;
         private readonly Color WALL = Color.red;
 
-        public override void Generate(Color[] pixels, int xDim, int yDim)
+        public override IEnumerator Generate(Color[] pixels, int xDim, int yDim)
         {
             base.Generate(pixels, xDim, yDim);
 
@@ -105,6 +105,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
             for (int i = 0; i < steps; i++)
             {
                 ca.DoStep();
+                yield return null;
             }
 
             // Convert CA to image colors and post-process borders for
@@ -139,7 +140,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
                     pixels[y * xDim + x] = pixelColor;
                 }
             }
-
+            yield break;
         }
     }
 }

@@ -6,6 +6,7 @@
  * */
 
 using System;
+using System.Collections;
 using UnityEngine;
 using LibGameAI.PCG;
 using LibGameAI.Util;
@@ -22,7 +23,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         [Range(0, 1f)]
         private float roughness = 0.5f;
 
-        public override void Generate(Color[] pixels, int xDim, int yDim)
+        public override IEnumerator Generate(Color[] pixels, int xDim, int yDim)
         {
             base.Generate(pixels, xDim, yDim);
 
@@ -75,6 +76,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
                     }
                 }
             }
+            return null;
         }
     }
 }

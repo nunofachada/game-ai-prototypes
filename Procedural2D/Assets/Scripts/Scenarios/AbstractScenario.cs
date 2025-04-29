@@ -6,6 +6,7 @@
  * */
 
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEditor;
 
@@ -35,7 +36,7 @@ namespace GameAIPrototypes.Procedural2D.Scenarios
         /// </param>
         /// <param name="xDim">Image width.</param>
         /// <param name="yDim">Image height.</param>
-        public abstract void Generate(Color[] pixels, int xDim, int yDim);
+        public abstract IEnumerator Generate(Color[] pixels, int xDim, int yDim);
 
         /// <summary>
         /// Returns an instance of the scenario.
