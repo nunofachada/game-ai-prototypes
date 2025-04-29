@@ -17,10 +17,10 @@ namespace LibGameAI.PCG
             public int Right { get; }
             public float Randness { get; }
 
-            public LineData(int start, int width, float randness)
+            public LineData(int left, int right, float randness)
             {
-                Left = start;
-                Right = width;
+                Left = left;
+                Right = right;
                 Randness = randness;
             }
         }
@@ -53,8 +53,8 @@ namespace LibGameAI.PCG
             queue.Enqueue(new LineData(0, width - 1, 1));
 
             // Determine the start and end heights of the first line
-            heights[0] = random.Range(-1, 1);
-            heights[width - 1] = random.Range(-1, 1);
+            heights[0] = random.Range(-roughness, roughness);
+            heights[width - 1] = random.Range(-roughness, roughness);
 
             // Perform midpoint displacement on all sublines until no more
             // sublines are possible
