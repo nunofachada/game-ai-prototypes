@@ -11,17 +11,17 @@ namespace LibGameAI.PCG
     public static class Noise
     {
         // Helper struct for line data
-        private struct LineData
+        private struct SubLine
         {
             public int Left { get; }
             public int Right { get; }
-            public float Randness { get; }
+            public float Displacement { get; }
 
-            public LineData(int left, int right, float randness)
+            public SubLine(int left, int right, float randness)
             {
                 Left = left;
                 Right = right;
-                Randness = randness;
+                Displacement = randness;
             }
         }
 
@@ -47,10 +47,10 @@ namespace LibGameAI.PCG
             Random random= seed.HasValue ? new Random(seed.Value) : new Random();
 
             // A queue to help us perform the midpoint displacement
-            Queue<LineData> queue = new Queue<LineData>();
+            Queue<SubLine> queue = new Queue<SubLine>();
 
             // Enqueue the first line
-            queue.Enqueue(new LineData(0, width - 1, 1));
+            queue.Enqueue(new SubLine(0, width - 1, 1));
 
             // Determine the start and end heights of the first line
             heights[0] = random.Range(-roughness, roughness);
@@ -61,27 +61,29 @@ namespace LibGameAI.PCG
             while (queue.Count >  0)
             {
                 // Process next subline
-                LineData data = queue.Dequeue();
+                SubLine subLine = queue.Dequeue();
 
                 // Obtain center of current subline
-                int center = (data.Left + data.Right + 1) / 2;
+                int center = (subLine.Left + subLine.Right) / 2;
 
                 // Set height of current subline as the mean between its
                 // endpoints
-                heights[center] = (heights[data.Left] + heights[data.Right]) / 2;
+                heights[center] =
+                    (heights[subLine.Left] + heights[subLine.Right]) / 2;
 
                 // Add some randomness
-                heights[center] += random.Range(-data.Randness, data.Randness);
+                heights[center] +=
+                    random.Range(-subLine.Displacement, subLine.Displacement);
 
                 // If the current subline can be further divided...
-                if (data.Right - data.Left >  2)
+                if (subLine.Right - subLine.Left >  2)
                 {
                     // ...divide it and add resulting sublines to the queue for
                     // future processing
-                    queue.Enqueue(new LineData(
-                        data.Left, center, data.Randness * roughness));
-                    queue.Enqueue(new LineData(
-                        center, data.Right, data.Randness * roughness));
+                    queue.Enqueue(new SubLine(
+                        subLine.Left, center, subLine.Displacement * roughness));
+                    queue.Enqueue(new SubLine(
+                        center, subLine.Right, subLine.Displacement * roughness));
                 }
             }
         }
