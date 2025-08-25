@@ -11,6 +11,8 @@ using UnityEngine;
 using UnityEditor;
 using NaughtyAttributes;
 using GameAIPrototypes.ProceduralLandscape.GenConfig;
+using LibGameAI.PCG;
+using System.Collections.Generic;
 
 namespace GameAIPrototypes.ProceduralLandscape
 {
@@ -24,7 +26,7 @@ namespace GameAIPrototypes.ProceduralLandscape
         [SerializeField]
         [ShowAssetPreview]
         [ReadOnly]
-	    private Texture2D heightmapTexture;
+        private Texture2D heightmapTexture;
 
         [SerializeField]
         [Dropdown(nameof(validHeighmapResolutions))]
@@ -46,6 +48,13 @@ namespace GameAIPrototypes.ProceduralLandscape
         [SerializeField]
         [HideInInspector]
         private float[,] heights;
+
+        [SerializeField]
+        [HideInInspector]
+        private bool[,] walkable;
+        [SerializeField]
+        [HideInInspector]
+        private HashSet<(int x, int y)> largestWalkable;
 
         [SerializeField]
         [HideInInspector]
@@ -152,6 +161,7 @@ namespace GameAIPrototypes.ProceduralLandscape
 
             UpdateHeighmapResolution();
             Zeros(Heights);
+            walkable = null;
 
             int xdim = heights.GetLength(0);
             int ydim = Heights.GetLength(1);
@@ -258,6 +268,26 @@ namespace GameAIPrototypes.ProceduralLandscape
             UpdateHeightMapTexture();
         }
 
+        [Button("Metrics", enabledMode: EButtonEnableMode.Editor)]
+        private void Metrics()
+        {
+            float ri = TerrainMetrics.ComputeRoughnessIndex(Heights);
+            float fd = TerrainMetrics.ComputeFractalDimension(Heights);
+            float en = TerrainMetrics.ComputeEntropy(Heights);
+            (float sw, bool[,] wlk) = TerrainMetrics.ComputeSlopeWalkability(Heights, 30, heightmapResolution * 0.0001f);
+            //(float sw2, bool[,] wlk2) = TerrainMetrics.ComputeSlopeWalkability(Heights, 30, 2.0f);
+            float pc = TerrainMetrics.ComputePathCoveragePercentage(wlk);
+            //float pc2 = TerrainMetrics.ComputePathCoveragePercentage(wlk2);
+            //float avgCost = TerrainMetrics.AveragePathCost(Heights, wlk, 1000);
+            //float ps = TerrainMetrics.AveragePathStretchFactor(Heights, wlk, 1000);
+            walkable = wlk;
+            largestWalkable = new HashSet<(int x, int y)>(TerrainMetrics.GetLargestWalkableRegion(wlk));
+            //Debug.Log($"Metrics:\nRI = {ri}\nFD = {fd}\nEN = {en}\nSW = {sw}\nPC = {pc}\nAVC={avgCost}\nPS = {ps}");
+            Debug.Log($"\\metic{{ {ri:f3} }}{{ {fd:f3} }}{{ {en:f3} }}{{ {sw * 100:f1}\\% }}{{ {pc * 100:f1}\\% }}");
+
+
+        }
+
         [Button("Add Generator", enabledMode: EButtonEnableMode.Editor)]
         private void AddGenerators()
         {
@@ -322,6 +352,41 @@ namespace GameAIPrototypes.ProceduralLandscape
         // {
         //     GUI.Label(new Rect(10, 10, 100, 20), $"Dist: {(Camera.main.transform.position - new Vector3(500, 1500 * maxAltitude, 500)).magnitude}");
         // }
+
+
+        public Color walkableColor = Color.yellow;
+        public Color unwalkableColor = Color.red;
+        public Color largestWalkableColor = Color.green;
+        public float markerSize = 0.3f;
+
+        void OnDrawGizmos()
+        {
+            if (walkable == null || Heights == null || terrain == null)
+                return;
+
+            int rows = Heights.GetLength(0);
+            int cols = Heights.GetLength(1);
+
+            Vector3 terrainPos = terrain.GetPosition();
+            Vector3 terrainSize = terrain.terrainData.size;
+
+            for (int x = 0; x < rows; x++)
+            {
+                for (int y = 0; y < cols; y++)
+                {
+                    float height = Heights[x, y];
+                    bool isWalkable = walkable[x, y];
+
+                    // Convert from heightmap coords to world position
+                    float worldX = terrainPos.x + (x / (float)(cols - 1)) * terrainSize.x;
+                    float worldZ = terrainPos.z + (y / (float)(rows - 1)) * terrainSize.z;
+                    float worldY = terrainPos.y + height * terrainSize.y;
+
+                    Gizmos.color = isWalkable ? (largestWalkable.Contains((x, y)) ? largestWalkableColor : walkableColor) : unwalkableColor;
+                    Gizmos.DrawCube(new Vector3(worldZ, worldY + 0.5f, worldX), Vector3.one * markerSize);
+                }
+            }
+        }
 
     }
 }
