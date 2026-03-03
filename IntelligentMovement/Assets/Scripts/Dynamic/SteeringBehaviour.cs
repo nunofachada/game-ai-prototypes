@@ -62,13 +62,5 @@ namespace GameAIPrototypes.Movement.Dynamic
         {
             return Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg;
         }
-
-        public static GameObject CreateTarget(Vector3 position, float orientation)
-        {
-            GameObject target = new GameObject();
-            target.transform.position = position;
-            target.transform.Rotate(new Vector3(0, 0, orientation), Space.World);
-            return target;
-        }
     }
 }
