@@ -19,12 +19,19 @@ namespace GameAIPrototypes.Movement.Core
         [SerializeField] private float delay = 0.5f;
 
         // The game area
-        private GameArea gameArea;
+        [SerializeField] private GameArea gameArea;
+
+        private void Awake()
+        {
+            if (gameArea == null)
+            {
+                gameArea = FindAnyObjectByType<GameArea>();
+            }
+        }
 
         // Use this for initialization
         private void Start()
         {
-            gameArea = new GameArea();
             SpawnTarget();
         }
 

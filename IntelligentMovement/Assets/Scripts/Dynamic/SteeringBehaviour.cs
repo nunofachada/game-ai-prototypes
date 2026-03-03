@@ -43,6 +43,8 @@ namespace GameAIPrototypes.Movement.Dynamic
         // Tag for this agent
         protected string Tag => agent.tag;
 
+        protected DynamicAgent Agent => agent;
+
         // Use this for initialization
         protected virtual void Start()
         {

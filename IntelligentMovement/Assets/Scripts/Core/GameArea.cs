@@ -10,27 +10,27 @@ using UnityEngine;
 namespace GameAIPrototypes.Movement.Core
 {
     // Helper class to determine game area and obtain random positions within it
-    public class GameArea
+    public class GameArea : MonoBehaviour
     {
-        public float Xmax { get; }
-        public float Xmin { get; }
-        public float Ymax { get; }
-        public float Ymin { get; }
+        public float Xmax { get; private set; }
+        public float Xmin { get; private set; }
+        public float Ymax { get; private set; }
+        public float Ymin { get; private set; }
 
-        // Create new game area limits object
-        public GameArea()
+        // Configure game area limits object
+        private void Awake()
         {
             // Get world bounds
             GameObject bg = GameObject.FindWithTag("Background");
 
             SpriteRenderer sr = bg.GetComponent<SpriteRenderer>();
-            Bounds bounds = sr.sprite.bounds;
+            Bounds bounds = sr.bounds;
 
             // Determine and keep game area limits
-            Xmax = (bounds.center.x - bounds.extents.x) * sr.transform.lossyScale.x;
-            Xmin = (bounds.center.x + bounds.extents.x) * sr.transform.lossyScale.x;
-            Ymax = (bounds.center.y - bounds.extents.y) * sr.transform.lossyScale.y;
-            Ymin = (bounds.center.y + bounds.extents.y) * sr.transform.lossyScale.y;
+            Xmax = bounds.min.x; // * sr.transform.lossyScale.x;
+            Xmin = bounds.max.x; // * sr.transform.lossyScale.x;
+            Ymax = bounds.min.y; // * sr.transform.lossyScale.y;
+            Ymin = bounds.max.y; // * sr.transform.lossyScale.x;
         }
 
         // Determine random position within game area
@@ -44,26 +44,38 @@ namespace GameAIPrototypes.Movement.Core
         // Determine opposite position within game area
         public Vector2 OppositePosition(char wall, Vector2 currentPos)
         {
-            Vector2 newPosition;
-            switch (wall)
+            Vector2 newPosition = wall switch
             {
-                case 'E':
-                    newPosition = new Vector2(Xmax * 0.9f, currentPos.y);
-                    break;
-                case 'W':
-                    newPosition = new Vector2(Xmin * 0.9f, currentPos.y);
-                    break;
-                case 'N':
-                    newPosition = new Vector2(currentPos.x, Ymax * 0.9f);
-                    break;
-                case 'S':
-                    newPosition = new Vector2(currentPos.x, Ymin * 0.9f);
-                    break;
-                default:
-                    newPosition = new Vector2();
-                    break;
-            }
+                'E' => new Vector2(Xmax * 0.9f, currentPos.y),
+                'W' => new Vector2(Xmin * 0.9f, currentPos.y),
+                'N' => new Vector2(currentPos.x, Ymax * 0.9f),
+                'S' => new Vector2(currentPos.x, Ymin * 0.9f),
+                _ => new Vector2(),
+            };
             return newPosition;
+        }
+
+        // Draw gizmos, namely borders around the game area
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.blueViolet;
+
+            Vector3[] points = new Vector3[]
+            {
+                new Vector3(Xmin, Ymin, 0),
+                new Vector3(Xmin, Ymax, 0),
+
+                new Vector3(Xmin, Ymax, 0),
+                new Vector3(Xmax, Ymax, 0),
+
+                new Vector3(Xmax, Ymax, 0),
+                new Vector3(Xmax, Ymin, 0),
+
+                new Vector3(Xmax, Ymin, 0),
+                new Vector3(Xmin, Ymin, 0)
+            };
+
+            Gizmos.DrawLineList(points);
         }
     }
 }

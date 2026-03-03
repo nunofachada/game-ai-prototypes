@@ -54,7 +54,7 @@ namespace GameAIPrototypes.Movement.Kinematic
             rb = GetComponent<Rigidbody2D>();
 
             // Get world bounds
-            gameArea = new GameArea();
+            gameArea = GetComponentInParent<GameArea>();
 
             // Determine the specific steering behaviour to use
             switch (steeringBehaviour)
@@ -122,6 +122,7 @@ namespace GameAIPrototypes.Movement.Kinematic
         // If we bump into wall, we call the bump delegate to decide what to do
         private void OnTriggerEnter2D(Collider2D other)
         {
+            Debug.Log("I bumped!");
             bump(other);
         }
 

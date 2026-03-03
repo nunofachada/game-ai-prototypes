@@ -26,7 +26,7 @@ namespace GameAIPrototypes.Movement.Core
         private void OnTriggerEnter2D(Collider2D other)
         {
             // Destroy this target
-            Destroy(this.gameObject);
+            Destroy(gameObject);
 
             // Notify listeners this target has been destroyed
             Destroyed.Invoke();
