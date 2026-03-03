@@ -6,12 +6,29 @@
  * */
 
 using UnityEngine;
+using UnityEngine.InputSystem;
 using GameAIPrototypes.Movement.Core;
 
 namespace GameAIPrototypes.Movement.Dynamic.Behaviours
 {
+    /// <summary>
+    /// Controls an agent using standard player input.
+    /// </summary>
     public class PlayerBehaviour : SteeringBehaviour
     {
+        // Player input (movement) object
+        private InputAction moveAction;
+
+        // We override Start so we can get input from the player
+        protected override void Start()
+        {
+            // Invoke Start() in the base class
+            base.Start();
+
+            // Get input from the player
+            moveAction = InputSystem.actions.FindAction("Move");
+        }
+
         // Player behaviour
         public override SteeringOutput GetSteering(GameObject target)
         {
@@ -19,11 +36,7 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
             Vector2 linear;
 
             // Get player input
-            float x = Input.GetAxis("Horizontal");
-            float y = Input.GetAxis("Vertical");
-
-            // Normalize direction
-            linear = (new Vector2(x, y)).normalized;
+            linear = moveAction.ReadValue<Vector2>();
 
             // Give full acceleration along this direction
             linear = linear.normalized * MaxAccel;
