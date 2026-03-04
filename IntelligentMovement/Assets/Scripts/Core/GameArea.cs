@@ -20,17 +20,15 @@ namespace GameAIPrototypes.Movement.Core
         // Configure game area limits object
         private void Awake()
         {
-            // Get world bounds
-            GameObject bg = GameObject.FindWithTag("Background");
-
-            SpriteRenderer sr = bg.GetComponent<SpriteRenderer>();
+            // Get the sprite renderer and its bounds
+            SpriteRenderer sr = GetComponentInParent<SpriteRenderer>();
             Bounds bounds = sr.bounds;
 
             // Determine and keep game area limits
-            Xmax = bounds.min.x; // * sr.transform.lossyScale.x;
-            Xmin = bounds.max.x; // * sr.transform.lossyScale.x;
-            Ymax = bounds.min.y; // * sr.transform.lossyScale.y;
-            Ymin = bounds.max.y; // * sr.transform.lossyScale.x;
+            Xmax = bounds.min.x;
+            Xmin = bounds.max.x;
+            Ymax = bounds.min.y;
+            Ymin = bounds.max.y;
         }
 
         // Determine random position within game area
