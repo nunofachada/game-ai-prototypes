@@ -122,7 +122,6 @@ namespace GameAIPrototypes.Movement.Kinematic
         // If we bump into wall, we call the bump delegate to decide what to do
         private void OnTriggerEnter2D(Collider2D other)
         {
-            Debug.Log("I bumped!");
             bump(other);
         }
 
@@ -232,7 +231,7 @@ namespace GameAIPrototypes.Movement.Kinematic
                 {
                     // We need to move to our target, we'd like to there in
                     // timeToTarget seconds
-                    linear = linear / timeToTarget;
+                    linear /= timeToTarget;
 
                     // If this is too fast, clip it to the max speed
                     if (linear.magnitude > maxSpeed)

@@ -23,10 +23,7 @@ namespace GameAIPrototypes.Movement.Core
 
         private void Awake()
         {
-            if (gameArea == null)
-            {
-                gameArea = FindAnyObjectByType<GameArea>();
-            }
+            gameArea = GetComponentInParent<GameArea>();
         }
 
         // Use this for initialization
@@ -49,7 +46,8 @@ namespace GameAIPrototypes.Movement.Core
             Vector2 pos = gameArea.RandomPosition(0.9f);
 
             // Create a new target game object in that random position
-            GameObject targetObj = Instantiate(target, pos, Quaternion.identity);
+            GameObject targetObj = Instantiate(
+                target, pos, Quaternion.identity, transform.parent);
 
             // Get the script associated with the target game object
             StaticTarget targetScript = targetObj.GetComponent<StaticTarget>();
