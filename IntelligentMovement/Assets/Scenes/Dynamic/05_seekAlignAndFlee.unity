@@ -525,11 +525,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -15
+      value: -63.3
       objectReference: {fileID: 0}
     - target: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 10.3
+      value: 36.3
       objectReference: {fileID: 0}
     - target: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_LocalPosition.z
@@ -564,12 +564,12 @@ PrefabInstance:
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 3}
       propertyPath: maxAccel
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 3}
       propertyPath: maxSpeed
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 3}
@@ -634,11 +634,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 14.1
+      value: -17.8
       objectReference: {fileID: 0}
     - target: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.1
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_LocalPosition.z
@@ -673,12 +673,12 @@ PrefabInstance:
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 3}
       propertyPath: maxAccel
-      value: 50
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 3}
       propertyPath: maxSpeed
-      value: 60
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 114214433432081372, guid: b07f44db1aa7651428552241d8310441,
         type: 3}
