@@ -5,6 +5,7 @@
  * Author: Nuno Fachada
  * */
 
+using System.Collections.Generic;
 using UnityEngine;
 using GameAIPrototypes.Movement.Core;
 
@@ -12,6 +13,9 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
 {
     public class ObstacleAvoidanceBehaviour : SeekBehaviour
     {
+        // Number of rays
+        private const int numRays = 3;
+
         // Minimum distance to a wall, should be greater than the radius of the
         // agent
         [SerializeField] private float avoidDist = 2f;
@@ -19,8 +23,17 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
         // Lookahead distance for raycast
         [SerializeField] private float lookaheadDist = 4;
 
-        // Where the casted ray ends, for gizmo drawing purposes
-        private Vector2 endRay;
+        // Angle between whisker rays and main ray
+        [SerializeField] [Range(0, 90)] private float whiskerAngle = 30;
+
+        // Whisker length relative to main ray
+        [SerializeField] [Range(0, 1)] private float whiskerRelLength = 0.6f;
+
+        // Where the casted rays ends, for gizmo drawing purposes
+        private Vector2[] endRays;
+
+        // Ray hits per frame
+        private RaycastHit2D[] raycastHits;
 
         // Obstacle layer mask, for ray casting purposes
         private int obstLayerMask;
@@ -31,6 +44,12 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
         // Use Awake() to initialize a fake target
         private void Awake()
         {
+            // Array of casted rays
+            endRays = new Vector2[numRays];
+
+            // Main ray and two whiskers
+            raycastHits = new RaycastHit2D[numRays];
+
             fakeTarget = new GameObject();
             fakeTarget.hideFlags = HideFlags.HideInHierarchy;
             fakeTarget.transform.eulerAngles = Vector3.zero;
@@ -46,18 +65,32 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
         // Obstacle avoidance behaviour
         public override SteeringOutput GetSteering(GameObject target)
         {
+            // Whisker variables
+            float whiskLookaheadDist = lookaheadDist * whiskerRelLength;
+
             // Initialize linear and angular forces to zero
             SteeringOutput sout = new SteeringOutput(Vector2.zero, 0);
 
             // Determine the collision ray direction
             Vector2 rayDir = Velocity.normalized;
+            Vector2 whisker1Dir = Quaternion.Euler(0, 0, -whiskerAngle) * rayDir;
+            Vector2 whisker2Dir = Quaternion.Euler(0, 0, whiskerAngle) * rayDir;
 
-            // Find the collision
+            // Fire the main ray
             RaycastHit2D hit = Physics2D.Raycast(
                 transform.position, rayDir, lookaheadDist, obstLayerMask);
 
-            // Keep the end of the casted ray, for gizmo drawing purposes
-            endRay = (Vector2)transform.position + rayDir * lookaheadDist;
+            // Fire the secondary rays
+            RaycastHit2D hitWhisk1 = Physics2D.Raycast(
+                transform.position, whisker1Dir, whiskLookaheadDist, obstLayerMask);
+
+            RaycastHit2D hitWhisk2 = Physics2D.Raycast(
+                transform.position, whisker2Dir, whiskLookaheadDist, obstLayerMask);
+
+            // Keep the end of the casted rays, for gizmo drawing purposes
+            endRays[0] = (Vector2)transform.position + rayDir * lookaheadDist;
+            endRays[1] = (Vector2)transform.position + whisker1Dir * whiskLookaheadDist;
+            endRays[2] = (Vector2)transform.position + whisker2Dir * whiskLookaheadDist;
 
             // Do we have a collision?
             if (hit)
@@ -79,7 +112,8 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
         {
             if (!Application.isPlaying) return;
             Gizmos.color = Color.red;
-            Gizmos.DrawLine(transform.position, endRay);
+            foreach (Vector2 endRay in endRays)
+                Gizmos.DrawLine(transform.position, endRay);
         }
 
     }
