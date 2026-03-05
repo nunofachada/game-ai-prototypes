@@ -26,9 +26,7 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
 
             // Get all possible targets
             DynamicAgent[] targets =
-                FindObjectsByType<DynamicAgent>(FindObjectsSortMode.None);
-
-            Debug.Log($"Found {targets.Length} agents");
+                transform.parent.GetComponentsInChildren<DynamicAgent>();
 
             // First collision time
             float shortestTime = float.PositiveInfinity;
@@ -41,14 +39,11 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
             // Loop through each target
             foreach (DynamicAgent currTarget in targets)
             {
-                // if (currTarget.gameObject == gameObject)
-                // if (currTarget == Agent)
-                // {
-                //     Debug.Log("myself detected!");
-                //     continue;
-                // }
-
-
+                // Ignore myself
+                if (currTarget == Agent)
+                {
+                    continue;
+                }
 
                 // Calculate the time to collision
                 Vector2 relPos =

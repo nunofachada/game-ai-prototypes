@@ -7,6 +7,7 @@
 
 using UnityEngine;
 using GameAIPrototypes.Movement.Core;
+using System.Collections.Generic;
 
 namespace GameAIPrototypes.Movement.Dynamic.Behaviours
 {
@@ -26,7 +27,7 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
             float angular = 0f; // Not used
 
             // Find similar agents to me
-            GameObject[] neighbours = GameObject.FindGameObjectsWithTag(Tag);
+            IEnumerable<GameObject> neighbours = Agent.GetAllTargets(Tag);
 
             // Loop through each target
             foreach (GameObject neighbour in neighbours)
@@ -34,9 +35,6 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
                 // Direction and distance to current neighbour
                 Vector2 direction;
                 float distance;
-
-                // Is the neighbour me? Then skip current iteration!
-                if (neighbour == gameObject) continue;
 
                 // Get direction and distance from current neighbour
                 direction = transform.position - neighbour.transform.position;

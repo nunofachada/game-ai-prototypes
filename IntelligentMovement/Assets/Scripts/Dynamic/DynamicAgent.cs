@@ -11,7 +11,7 @@ using GameAIPrototypes.Movement.Core;
 namespace GameAIPrototypes.Movement.Dynamic
 {
     // This class defines movement for dynamic agents
-    public class DynamicAgent : MonoBehaviour
+    public class DynamicAgent : Agent
     {
         // TODO Implement priorities, maybe just add group ID to movements
 
@@ -72,9 +72,7 @@ namespace GameAIPrototypes.Movement.Dynamic
         private void FixedUpdate()
         {
             // Is there any target for me?
-            GameObject target = targetTag != ""
-                ? GameObject.FindWithTag(targetTag)
-                : null;
+            GameObject target = GetFirstTarget(targetTag);
 
             // Obtain steering behaviours
             SteeringOutput steerWeighted = new SteeringOutput();

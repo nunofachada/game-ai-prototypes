@@ -13,7 +13,7 @@ using GameAIPrototypes.Movement.Core;
 namespace GameAIPrototypes.Movement.Kinematic
 {
     // This class defines movement for kinematic agents
-    public class KinematicAgent : MonoBehaviour
+    public class KinematicAgent : Agent
     {
         // Maximum speed for this agent
         [SerializeField] private float maxSpeed = 10;
@@ -89,9 +89,7 @@ namespace GameAIPrototypes.Movement.Kinematic
         private void FixedUpdate()
         {
             // Is there any target for me?
-            Transform target = targetTag != ""
-                ? GameObject.FindWithTag(targetTag)?.transform
-                : null;
+            Transform target = GetFirstTarget(targetTag)?.transform;
 
             // Obtain steering (velocity and angular velocity) given a target
             SteeringOutput steering = steer(target);
