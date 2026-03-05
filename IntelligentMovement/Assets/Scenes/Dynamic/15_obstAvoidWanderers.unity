@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 201035929}
   - component: {fileID: 201035931}
   - component: {fileID: 201035930}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WallW
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -268,6 +268,10 @@ PrefabInstance:
     - target: {fileID: 1506471656861450, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_Name
       value: DynamicAgent (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1506471656861450, guid: b07f44db1aa7651428552241d8310441, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_RootOrder
@@ -422,6 +426,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DynamicAgent (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 1506471656861450, guid: b07f44db1aa7651428552241d8310441, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_RootOrder
       value: 11
@@ -574,6 +582,10 @@ PrefabInstance:
     - target: {fileID: 1506471656861450, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_Name
       value: DynamicAgent (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1506471656861450, guid: b07f44db1aa7651428552241d8310441, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_RootOrder
@@ -728,6 +740,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DynamicAgent (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 1506471656861450, guid: b07f44db1aa7651428552241d8310441, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -880,6 +896,10 @@ PrefabInstance:
     - target: {fileID: 1506471656861450, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_Name
       value: DynamicAgent (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1506471656861450, guid: b07f44db1aa7651428552241d8310441, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_RootOrder
@@ -1034,6 +1054,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DynamicAgent (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 1506471656861450, guid: b07f44db1aa7651428552241d8310441, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_RootOrder
       value: 9
@@ -1184,7 +1208,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 843727302}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1218,6 +1242,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1594872489}
     m_Modifications:
+    - target: {fileID: 1506471656861450, guid: b07f44db1aa7651428552241d8310441, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -1437,7 +1465,7 @@ GameObject:
   - component: {fileID: 1025632115}
   - component: {fileID: 1025632117}
   - component: {fileID: 1025632116}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WallE
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1575,6 +1603,10 @@ PrefabInstance:
     - target: {fileID: 1506471656861450, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_Name
       value: DynamicAgent (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1506471656861450, guid: b07f44db1aa7651428552241d8310441, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_RootOrder
@@ -1829,7 +1861,7 @@ GameObject:
   - component: {fileID: 1556772311}
   - component: {fileID: 1556772313}
   - component: {fileID: 1556772312}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WallS
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -2007,7 +2039,7 @@ GameObject:
   - component: {fileID: 1595621953}
   - component: {fileID: 1595621955}
   - component: {fileID: 1595621954}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WallN
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -2145,6 +2177,10 @@ PrefabInstance:
     - target: {fileID: 1506471656861450, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_Name
       value: DynamicAgent (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1506471656861450, guid: b07f44db1aa7651428552241d8310441, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4159157630384086, guid: b07f44db1aa7651428552241d8310441, type: 3}
       propertyPath: m_RootOrder
