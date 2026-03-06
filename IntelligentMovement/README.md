@@ -24,7 +24,7 @@ movement is further supported by [code specific for defining paths].
 
 The following UML class diagram summarizes the [dynamic movement code]:
 
-![Alt text](img/uml.svg)
+![Alt text](img/uml.png)
 
 ## Other materials
 
