@@ -5,7 +5,6 @@
  * Author: Nuno Fachada
  * */
 
-using System.Collections.Generic;
 using UnityEngine;
 using GameAIPrototypes.Movement.Core;
 
@@ -29,11 +28,11 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
         // Whisker length relative to main ray
         [SerializeField] [Range(0, 1)] private float whiskerRelLength = 0.6f;
 
-        // Where the casted rays ends, for gizmo drawing purposes
-        private Vector2[] endRays;
+        // Where the casted rays ends and if they hit, for gizmo drawing purposes
+        private (Vector2 end, bool hit)[] endRays;
 
-        // Ray hits per frame
-        private RaycastHit2D[] raycastHits;
+        // Array of ray information
+        private (Vector2 dir, float lookaheadDist)[] rayInfo;
 
         // Obstacle layer mask, for ray casting purposes
         private int obstLayerMask;
@@ -45,11 +44,16 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
         private void Awake()
         {
             // Array of casted rays
-            endRays = new Vector2[numRays];
+            endRays = new (Vector2, bool)[numRays];
 
-            // Main ray and two whiskers
-            raycastHits = new RaycastHit2D[numRays];
+            // Information on the main ray and two whiskers
+            rayInfo = new (Vector2, float)[numRays];
 
+            // Get the obstacle layer
+            obstLayerMask = LayerMask.GetMask("Obstacle");
+
+            // Initialize the fake object which will serve as target to avoid
+            // collisions
             fakeTarget = new GameObject();
             fakeTarget.hideFlags = HideFlags.HideInHierarchy;
             fakeTarget.transform.eulerAngles = Vector3.zero;
@@ -59,47 +63,57 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
         protected override void Start()
         {
             base.Start();
-            obstLayerMask = LayerMask.GetMask("Obstacle");
         }
 
         // Obstacle avoidance behaviour
         public override SteeringOutput GetSteering(GameObject target)
         {
-            // Whisker variables
-            float whiskLookaheadDist = lookaheadDist * whiskerRelLength;
-
             // Initialize linear and angular forces to zero
             SteeringOutput sout = new SteeringOutput(Vector2.zero, 0);
 
-            // Determine the collision ray direction
-            Vector2 rayDir = Velocity.normalized;
-            Vector2 whisker1Dir = Quaternion.Euler(0, 0, -whiskerAngle) * rayDir;
-            Vector2 whisker2Dir = Quaternion.Euler(0, 0, whiskerAngle) * rayDir;
+            // Obtain main ray direction
+            Vector2 mainDir = Velocity.normalized;
 
-            // Fire the main ray
-            RaycastHit2D hit = Physics2D.Raycast(
-                transform.position, rayDir, lookaheadDist, obstLayerMask);
+            // Determine whisker rays lookahead distance
+            float whiskLookaheadDist = lookaheadDist * whiskerRelLength;
 
-            // Fire the secondary rays
-            RaycastHit2D hitWhisk1 = Physics2D.Raycast(
-                transform.position, whisker1Dir, whiskLookaheadDist, obstLayerMask);
+            // Configure rays
+            rayInfo[0] = (mainDir, lookaheadDist);
+            rayInfo[1] = (Quaternion.Euler(0, 0, -whiskerAngle) * mainDir, whiskLookaheadDist);
+            rayInfo[2] = (Quaternion.Euler(0, 0, whiskerAngle) * mainDir, whiskLookaheadDist);
 
-            RaycastHit2D hitWhisk2 = Physics2D.Raycast(
-                transform.position, whisker2Dir, whiskLookaheadDist, obstLayerMask);
+            // Detect hits and find a fake target if any hits detected
+            Vector2 hitNormalSum = Vector2.zero;
 
-            // Keep the end of the casted rays, for gizmo drawing purposes
-            endRays[0] = (Vector2)transform.position + rayDir * lookaheadDist;
-            endRays[1] = (Vector2)transform.position + whisker1Dir * whiskLookaheadDist;
-            endRays[2] = (Vector2)transform.position + whisker2Dir * whiskLookaheadDist;
-
-            // Do we have a collision?
-            if (hit)
+            for (int i = 0; i < numRays; i++)
             {
-                // Set up a fake target for Seek
-                fakeTarget.transform.position =
-                    ((Vector2)transform.position) + hit.normal * avoidDist;
+                // Keep the ray ending for Gizmo drawing purposes
+                endRays[i] = (
+                    (Vector2)transform.position + rayInfo[i].dir * rayInfo[i].lookaheadDist,
+                    false);
 
-                // Delegate to seek
+                // Check if the current ray hits something
+                RaycastHit2D hit = Physics2D.Raycast(
+                    transform.position, rayInfo[i].dir,
+                    rayInfo[i].lookaheadDist, obstLayerMask);
+
+                // If a hit occurred, update fake target vector
+                if (hit)
+                {
+                    hitNormalSum += hit.normal;
+                    endRays[i].hit = true;
+                }
+            }
+
+            // If the fake target vector has any magniture (is not zero), then
+            // delegate steering to seek that fake target
+            if (hitNormalSum.magnitude > 0)
+            {
+                // Update the fake target position with respect to this agent
+                fakeTarget.transform.position =
+                    ((Vector2)transform.position) + hitNormalSum * avoidDist;
+
+                // Delegate steering towards the fake target to Seek
                 sout = base.GetSteering(fakeTarget);
             }
 
@@ -111,9 +125,12 @@ namespace GameAIPrototypes.Movement.Dynamic.Behaviours
         public void OnDrawGizmos()
         {
             if (!Application.isPlaying) return;
-            Gizmos.color = Color.red;
-            foreach (Vector2 endRay in endRays)
-                Gizmos.DrawLine(transform.position, endRay);
+
+            foreach ((Vector2 ray, bool hit) endRay in endRays)
+            {
+                Gizmos.color = endRay.hit ? Color.red : Color.yellow;
+                Gizmos.DrawLine(transform.position, endRay.ray);
+            }
         }
 
     }
