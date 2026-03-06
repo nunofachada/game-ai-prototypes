@@ -19,9 +19,8 @@ namespace GameAIPrototypes.Movement.Core
     /// Tags are still used to find agents: consider that this is not a good
     /// practice in larger projects.
     /// </remarks>
-    public class Agent : MonoBehaviour
+    public abstract class Agent : MonoBehaviour
     {
-
         /// <summary>
         /// Finding agents only works properly if they're all under a game
         /// object literally named `Agents`.
