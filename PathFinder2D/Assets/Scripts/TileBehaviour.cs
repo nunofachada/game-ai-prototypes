@@ -40,8 +40,8 @@ namespace GameAIPrototypes.PathFinder2D
         // Is the mouse over this tile?
         private bool mouseOver = false;
 
-        // Position of this tile in the world
-        internal Vector2Int Pos { get; set; }
+        // Position of this tile in the world (TODO Get rid of the internal set)
+        public Vector2Int Pos { get; internal set; }
 
         // Awake is called when the script instance is being loaded.
         private void Awake()
