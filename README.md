@@ -22,7 +22,7 @@ Check out our [YouTube channel] for videos of these prototypes and more.
 
 ## Compatibility
 
-- Unity 6000 LTS or higher
+- Unity 6.3 LTS or higher
 
 ## Reference
 
