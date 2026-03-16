@@ -32,7 +32,7 @@ namespace GameAIPrototypes.SimpleNavMesh
             // Did agent collide with goal?
             if (other.name == "Goal")
                 // If so, update destination (let goal reposition itself first)
-                Invoke("UpdateDestination", 0.1f);
+                Invoke(nameof(UpdateDestination), 0.1f);
         }
 
         // Update destination
