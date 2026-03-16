@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace GameAIPrototypes.SimpleNavMesh
 {
+    [RequireComponent(typeof(Rigidbody))]
     public class ObstacleBehaviour : WaypointCycler
     {
 
